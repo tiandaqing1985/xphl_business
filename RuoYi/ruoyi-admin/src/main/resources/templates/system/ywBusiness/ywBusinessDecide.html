@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+	<th:block th:include="include :: header('商机判定')" />
+</head>
+<body class="gray-bg">
+    
+     <div class="container-div">
+		<div class="row">
+			<div class="col-sm-12 search-collapse">
+				<form id="formId">
+					<div class="select-list">
+						<ul>
+							<li>
+								公司名称：<input type="text" name="companyName"/>
+							</li>
+
+							<li>
+								简称：<input type="text" name="shortName"/>
+							</li>
+
+							<li>
+								创建人：<input type="text" name="createUser"/>
+							</li>
+
+							<li>
+								商机归属人：<input type="text" name="businessUser"/>
+							</li>
+
+							<li>
+								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+								<a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+							</li>
+						</ul>
+					</div>
+				</form>
+			</div>
+			
+	        <div class="btn-group-sm" id="toolbar" role="group">
+				<a class="btn btn-success" onclick="$.operate.addTab()" shiro:hasPermission="system:ywBusiness:add">
+					<i class="fa fa-plus"></i> 添加
+				</a>
+				<a class="btn btn-primary btn-edit disabled" onclick="$.operate.edit()" shiro:hasPermission="system:ywBusiness:edit">
+					<i class="fa fa-edit"></i> 修改
+				</a>
+				<a class="btn btn-danger btn-del btn-del disabled" onclick="$.operate.removeAll()" shiro:hasPermission="system:ywBusiness:remove">
+					<i class="fa fa-remove"></i> 删除
+				</a>
+				<a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="system:ywBusiness:export">
+						<i class="fa fa-download"></i> 导出
+				 </a>
+			</div>
+			<div class="col-sm-12 select-table table-striped">
+				<table id="bootstrap-table" data-mobile-responsive="true"></table>
+			</div>
+		</div>
+	</div>
+    <div th:include="include :: footer"></div>
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('system:ywBusiness:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('system:ywBusiness:remove')}]];
+        var prefix = ctx + "system/ywBusiness";
+
+        $(function() {
+            var options = {
+                url: prefix + "/decideList",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+				exportUrl: prefix + "/export",
+                modalName: "商机公共库",
+		        showExport: true,
+                columns: [{
+		            checkbox: true
+		        },
+				{
+					field : 'businessId', 
+					title : 'ID',
+					visible: false
+				},
+				{
+					field : 'companyName', 
+					title : '公司名称',
+					sortable: true
+				},
+				{
+					field : 'shortName', 
+					title : '简称',
+					sortable: true
+				},
+				{
+					field : 'linkname1', 
+					title : '联系人1',
+					sortable: true
+				},
+				{
+					field : 'position1Remark', 
+					title : '岗位职责1',
+					sortable: true
+				},
+				{
+					field : 'responsibility1', 
+					title : '职责1',
+					sortable: true
+				},
+				{
+					field : 'linkTel1', 
+					title : '联系电话1',
+					sortable: true
+				},
+				{
+					field : 'createTime', 
+					title : '创建时间',
+					sortable: true
+				},
+
+				{
+					field : 'businessGrade', 
+					title : '商机评分',
+					sortable: true
+				},
+				{
+					field : 'createUser', 
+					title : '商机创建人',
+					sortable: true
+				},
+				{
+					field : 'businessUser', 
+					title : '商机归属人',
+					sortable: true
+				},
+		        {
+		            title: '操作',
+		            align: 'center',
+		            formatter: function(value, row, index) {
+		            	var actions = [];
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="decide(\'' + row.businessId + '\')">判定归属</a>');
+						return actions.join('');
+		            }
+		        }]
+            };
+            $.table.init(options);
+        });
+        
+        
+        
+        function   decide(id) {
+        	 var url = ctx + "system/ywBusiness/decideBusinessUser";
+            	$.modal.confirm("确定判定给该创建人吗？", function() {
+            	    var data = { "ids": id };
+            	    $.operate.submit(url, "post", "json", data);
+        	});
+        	
+        }
+        
+    </script>
+</body>
+</html>

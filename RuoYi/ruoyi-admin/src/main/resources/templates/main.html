@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--360浏览器优先以webkit内核解析-->
+    <title>若依介绍</title>
+    <link rel="shortcut icon" href="favicon.ico">
+    <link href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
+    <link href="../static/css/font-awesome.min.css" th:href="@{/css/font-awesome.min.css}" rel="stylesheet"/>
+    <link href="../static/css/main/animate.min.css" th:href="@{/css/main/animate.min.css}" rel="stylesheet"/>
+    <link href="../static/css/main/style.min862f.css" th:href="@{/css/main/style.min862f.css}" rel="stylesheet"/>
+</head>
+
+<body class="gray-bg">
+    <div class="row  border-bottom white-bg dashboard-header">
+
+
+        <div  th:if="${admin}"  class="col-sm-5">
+            <h2>商机信息统计</h2>
+            <p > 系统现有有效商机：[[${bu}]]条 </br>
+            	  跟进记录 ： [[${tr}]]条</br>	
+            	 下单记录 ：[[${con}]]条
+            </p>
+
+        </div>
+        <div th:if="${admin}" class="col-sm-4">
+            <h2>上周一截止今天：</h2>
+           <p>
+                                                新录入有效商机：[[${bu1}]]条</br>
+			                新更近记录：[[${tr1}]]条</br>
+			                新下单：[[${con1}]]条
+            </p>
+        </div>
+
+    </div>
+
+    <script th:src="@{/js/jquery.min.js}"></script>
+    <script th:src="@{/js/bootstrap.min.js}"></script>
+    <script th:src="@{/ajax/libs/layer/layer.min.js}"></script>
+    <script type="text/javascript">
+	    $('#pay-qrcode').click(function(){
+	        var html=$(this).html();
+	        parent.layer.open({
+	            title: false,
+	            type: 1,
+	            closeBtn:false,
+	            shadeClose:true,
+	            area: ['600px', 'auto'],
+	            content: html
+	        });
+	    });
+    </script>
+</body>
+</html>

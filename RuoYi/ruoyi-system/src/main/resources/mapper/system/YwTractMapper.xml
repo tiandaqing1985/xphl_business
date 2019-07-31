@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.YwTractMapper">
+    
+    <resultMap type="YwTract" id="YwTractResult">
+        <result property="id"    column="id"    />
+        <result property="businessId"    column="business_id"    />
+        <result property="traceTime"    column="trace_time"    />
+        <result property="tractUser"    column="tract_user"    />
+        <result property="tractMessage"    column="tract_message"    />
+        <result property="tractResult"    column="tract_result"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="companyName"    column="company_name"    />
+        <result property="advertiser"    column="advertiser"    />
+        <result property="shortName"    column="short_name"    />
+    </resultMap>
+	
+	<sql id="selectYwTractVo">
+        select id, business_id, trace_time, tract_user, tract_message, tract_result, create_by, create_time, update_by, update_time, remark from yw_tract
+    </sql>
+	
+    <select id="selectYwTractList" parameterType="YwTract" resultMap="YwTractResult">
+        select id, a.business_id, trace_time, tract_user, tract_message, tract_result, a.create_by, a.create_time, a.update_by, a.update_time, a.remark,company_name,advertiser,short_name 
+        	
+        	from yw_tract a
+        	LEFT JOIN yw_business b  on a.business_id = b.business_id  
+        <where>  
+            <if test="id != null "> and a.id = #{id}</if>
+             <if test="businessId != null "> and business_id = #{businessId}</if>
+           <!--   <if test="traceTime != null "> and trace_time = #{traceTime}</if> -->
+             <if test="tractUser != null  and tractUser != '' "> and tract_user = #{tractUser}</if>
+             <if test="tractMessage != null  and tractMessage != '' "> and tract_message = #{tractMessage}</if>
+             <if test="tractResult != null  and tractResult != '' "> and tract_result = #{tractResult}</if>
+             <if test="createBy != null  and createBy != '' "> and a.create_by = #{createBy}</if>
+             <if test="createTime != null "> and a.create_time  BETWEEN #{createTime} AND SYSDATE()</if>
+            <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+				AND date_format(trace_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+			</if>
+			<if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+				AND date_format(trace_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+			</if>
+           
+           	 <if test="createBy1 != null "> and a.create_by in  
+                  <foreach item="createBy1" collection="createBy1" open="(" separator="," close=")">
+           			 #{createBy1}
+       			 </foreach>   	
+             </if>
+           
+             <if test="updateTime != null "> and a.update_time = #{updateTime}</if>
+             <if test="remark != null  and remark != '' "> and a.remark = #{remark}</if>
+         </where>
+         order by a.trace_time desc
+    </select>
+    
+    <select id="selectYwTractById" parameterType="Long" resultMap="YwTractResult">
+        <include refid="selectYwTractVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertYwTract" parameterType="YwTract" useGeneratedKeys="true" keyProperty="id">
+        insert into yw_tract
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="businessId != null  ">business_id,</if>
+			<if test="traceTime != null  ">trace_time,</if>
+			<if test="tractUser != null  and tractUser != ''  ">tract_user,</if>
+			<if test="tractMessage != null  and tractMessage != ''  ">tract_message,</if>
+			<if test="tractResult != null  and tractResult != ''  ">tract_result,</if>
+			<if test="createBy != null  and createBy != ''  ">create_by,</if>
+			<if test="createTime != null  ">create_time,</if>
+			<if test="updateBy != null  and updateBy != ''  ">update_by,</if>
+			<if test="updateTime != null  ">update_time,</if>
+			<if test="remark != null  and remark != ''  ">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="businessId != null  ">#{businessId},</if>
+			<if test="traceTime != null  ">#{traceTime},</if>
+			<if test="tractUser != null  and tractUser != ''  ">#{tractUser},</if>
+			<if test="tractMessage != null  and tractMessage != ''  ">#{tractMessage},</if>
+			<if test="tractResult != null  and tractResult != ''  ">#{tractResult},</if>
+			<if test="createBy != null  and createBy != ''  ">#{createBy},</if>
+			<if test="createTime != null  ">#{createTime},</if>
+			<if test="updateBy != null  and updateBy != ''  ">#{updateBy},</if>
+			<if test="updateTime != null  ">#{updateTime},</if>
+			<if test="remark != null  and remark != ''  ">#{remark},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateYwTract" parameterType="YwTract">
+        update yw_tract
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="businessId != null  ">business_id = #{businessId},</if>
+            <if test="traceTime != null  ">trace_time = #{traceTime},</if>
+            <if test="tractUser != null  and tractUser != ''  ">tract_user = #{tractUser},</if>
+            <if test="tractMessage != null  and tractMessage != ''  ">tract_message = #{tractMessage},</if>
+            <if test="tractResult != null  and tractResult != ''  ">tract_result = #{tractResult},</if>
+            <if test="createBy != null  and createBy != ''  ">create_by = #{createBy},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''  ">update_by = #{updateBy},</if>
+            <if test="updateTime != null  ">update_time = #{updateTime},</if>
+            <if test="remark != null  and remark != ''  ">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+	<delete id="deleteYwTractById" parameterType="Long">
+        delete from yw_tract where id = #{id}
+    </delete>
+	
+    <delete id="deleteYwTractByIds" parameterType="String">
+        delete from yw_tract where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+    <select id="getYwTractByBusinessId" parameterType="Long" resultMap="YwTractResult">
+        <include refid="selectYwTractVo"/>
+        where business_id = #{id} order by id
+    </select></mapper>

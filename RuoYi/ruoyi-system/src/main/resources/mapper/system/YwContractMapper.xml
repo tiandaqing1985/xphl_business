@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.YwContractMapper">
+    
+    <resultMap type="YwContract" id="YwContractResult">
+        <result property="id"    column="id"    />
+        <result property="businessId"    column="business_id"    />
+        <result property="media"    column="media"    />
+        <result property="startDate"    column="startDate"    />
+        <result property="endDate"    column="endDate"    />
+        <result property="contractMoney"    column="contract_money"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="companyName"    column="company_name"    />
+        <result property="advertiser"    column="advertiser"    />
+        <result property="status"    column="status"    />
+        <result property="shortName"    column="short_name"    />
+    </resultMap>
+	
+	<sql id="selectYwContractVo">
+        select id, business_id, media, startDate, endDate, contract_money, create_by, create_time, update_by, update_time, remark,status from yw_contract
+    </sql>
+	
+    <select id="selectYwContractList" parameterType="YwContract" resultMap="YwContractResult">
+        <!-- <include refid="selectYwContractVo"/> -->
+        select a.id, a.business_id, a.media, startDate, endDate, contract_money, a.create_by, a.create_time, a.update_by, a.update_time, a.remark,company_name,advertiser,short_name 
+        
+        from yw_contract a
+        LEFT JOIN yw_business b  on a.business_id = b.business_id  
+        <where>  
+            <if test="id != null "> and a.id = #{id}</if>
+             <if test="businessId != null "> and business_id = #{businessId}</if>
+             <if test="media != null  and media != '' "> and a.media = #{media}</if>
+             <if test="startDate != null "> and startDate = #{startDate}</if>
+             <if test="endDate != null "> and endDate = #{endDate}</if>
+             <if test="contractMoney != null "> and contract_money = #{contractMoney}</if>
+             <if test="createBy != null  and createBy != '' "> and a.create_by = #{createBy}</if>
+             <if test="createTime != null "> and a.create_time  BETWEEN #{createTime} AND SYSDATE()</if>
+             <if test="updateBy != null  and updateBy != '' "> and a.update_by = #{updateBy}</if>
+             
+             <if test="createBy1 != null "> and a.create_by in  
+                  <foreach item="createBy1" collection="createBy1" open="(" separator="," close=")">
+           			 #{createBy1}
+       			 </foreach>   	
+             </if>
+             
+             <if test="updateTime != null "> and a.update_time = #{updateTime}</if>
+             <if test="remark != null  and remark != '' "> and a.remark = #{remark}</if>
+         </where>
+         
+         order by a.id desc
+    </select>
+    
+    <select id="selectYwContractById" parameterType="Long" resultMap="YwContractResult">
+        <include refid="selectYwContractVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertYwContract" parameterType="YwContract" useGeneratedKeys="true" keyProperty="id">
+        insert into yw_contract
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="businessId != null  ">business_id,</if>
+			<if test="media != null  and media != ''  ">media,</if>
+			<if test="startDate != null  ">startDate,</if>
+			<if test="endDate != null  ">endDate,</if>
+			<if test="contractMoney != null  ">contract_money,</if>
+			<if test="createBy != null  and createBy != ''  ">create_by,</if>
+			<if test="createTime != null  ">create_time,</if>
+			<if test="updateBy != null  and updateBy != ''  ">update_by,</if>
+			<if test="updateTime != null  ">update_time,</if>
+			<if test="remark != null  and remark != ''  ">remark,</if>
+			<if test="status != null  and status != ''  ">status,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="businessId != null  ">#{businessId},</if>
+			<if test="media != null  and media != ''  ">#{media},</if>
+			<if test="startDate != null  ">#{startDate},</if>
+			<if test="endDate != null  ">#{endDate},</if>
+			<if test="contractMoney != null  ">#{contractMoney},</if>
+			<if test="createBy != null  and createBy != ''  ">#{createBy},</if>
+			<if test="createTime != null  ">#{createTime},</if>
+			<if test="updateBy != null  and updateBy != ''  ">#{updateBy},</if>
+			<if test="updateTime != null  ">#{updateTime},</if>
+			<if test="remark != null  and remark != ''  ">#{remark},</if>
+			<if test="status != null  and status != ''  ">#{status},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateYwContract" parameterType="YwContract">
+        update yw_contract
+        <trim prefix="SET" suffixOverrides=",">
+<!--             <if test="businessId != null  ">business_id = #{businessId},</if> -->
+            <if test="media != null  and media != ''  ">media = #{media},</if>
+            <if test="startDate != null  ">startDate = #{startDate},</if>
+            <if test="endDate != null  ">endDate = #{endDate},</if>
+            <if test="contractMoney != null  ">contract_money = #{contractMoney},</if>
+<!--             <if test="createBy != null  and createBy != ''  ">create_by = #{createBy},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if> -->
+            <if test="updateBy != null  and updateBy != ''  ">update_by = #{updateBy},</if>
+            <if test="updateTime != null  ">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="status != null  and status != ''  ">status = #{status},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+	<delete id="deleteYwContractById" parameterType="Long">
+        delete from yw_contract where id = #{id}
+    </delete>
+	
+    <delete id="deleteYwContractByIds" parameterType="String">
+        delete from yw_contract where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+    <select id="getYwContractByBusinessId" parameterType="Long" resultMap="YwContractResult">
+        <include refid="selectYwContractVo"/>
+        where business_id = #{id}  and status = '0'
+    </select>
+    
+    
+    <update id="updateYwContractByStatus" parameterType="YwContract">
+        update yw_contract set status = '1' where SYSDATE() > endDate
+    </update>
+    
+    
+</mapper>

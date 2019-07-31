@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.YwBusinessMapper">
+    
+    <resultMap type="YwBusiness" id="YwBusinessResult">
+        <result property="businessId"    column="business_id"    />
+        <result property="companyName"    column="company_name"    />
+        <result property="advertiser"    column="advertiser"    />
+        <result property="shortName"    column="short_name"    />
+        <result property="linkname1"    column="linkname1"    />
+        <result property="position1"    column="position1"    />
+        <result property="position1Remark"    column="position1_remark"    />
+        <result property="responsibility1"    column="responsibility1"    />
+        <result property="linkTel1"    column="link_tel1"    />
+        <result property="linkname2"    column="linkname2"    />
+        <result property="position2"    column="position2"    />
+        <result property="position2Remark"    column="position2_remark"    />
+        <result property="responsibility2"    column="responsibility2"    />
+        <result property="linkTel2"    column="link_tel2"    />
+        <result property="linkname3"    column="linkname3"    />
+        <result property="position3"    column="position3"    />
+        <result property="position3Remark"    column="position3_remark"    />
+        <result property="responsibility3"    column="responsibility3"    />
+        <result property="linkTel3"    column="link_tel3"    />
+        <result property="companyRemark1"    column="company_remark1"    />
+        <result property="companyRemark2"    column="company_remark2"    />
+        <result property="companyRemark3"    column="company_remark3"    />
+        <result property="companyRemark4"    column="company_remark4"    />
+        <result property="companyRemark5"    column="company_remark5"    />
+        <result property="companyRemark6"    column="company_remark6"    />
+        <result property="companyRemark7"    column="company_remark7"    />
+        <result property="companyRemark8"    column="company_remark8"    />
+        <result property="companyRemark9"    column="company_remark9"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="businessGrade"    column="business_grade"    />
+        <result property="businessStatus"    column="business_status"    />
+        <result property="businessUser"    column="business_user"    />
+        <result property="businessCard1"    column="business_card1"    />
+        <result property="businessCard2"    column="business_card2"    />
+        <result property="businessCard3"    column="business_card3"    />
+        
+        <result property="responsibility1Remark"    column="responsibility1_remark"    />
+        <result property="responsibility2Remark"    column="responsibility2_remark"    />
+        <result property="responsibility3Remark"    column="responsibility3_remark"    />
+        <result property="orderStatus"    column="order_status"    />
+        <result property="media"    column="media"    />
+        <result property="createend"    column="createend"    />
+    </resultMap>
+	
+	<sql id="selectYwBusinessVo">
+        select business_id, company_name, advertiser, short_name, linkname1, position1, position1_remark, responsibility1, link_tel1, linkname2, position2, position2_remark, responsibility2, link_tel2, linkname3, position3, position3_remark, responsibility3, link_tel3, company_remark1, company_remark2, company_remark3, company_remark4, company_remark5, company_remark6, company_remark7, company_remark8, company_remark9, create_time, create_by, update_time, update_by, business_grade, business_status, business_user,business_card1,business_card2,business_card3,responsibility1_remark,responsibility2_remark,responsibility3_remark,order_status,media from yw_business
+    </sql>
+	
+    <select id="selectYwBusinessList" parameterType="YwBusiness" resultMap="YwBusinessResult">
+        <include refid="selectYwBusinessVo"/>
+        <where>  
+            <if test="businessId != null "> and business_id = #{businessId}</if>
+             <if test="companyName != null  and companyName != '' "> and company_name = #{companyName}</if>
+             <if test="advertiser != null  and advertiser != '' "> and advertiser = #{advertiser}</if>
+             <if test="shortName != null  and shortName != '' "> and short_name = #{shortName}</if>
+             <if test="linkname1 != null  and linkname1 != '' "> and linkname1 = #{linkname1}</if>
+             <if test="position1 != null  and position1 != '' "> and position1 = #{position1}</if>
+             <if test="position1Remark != null  and position1Remark != '' "> and position1_remark = #{position1Remark}</if>
+             <if test="responsibility1 != null  and responsibility1 != '' "> and responsibility1 = #{responsibility1}</if>
+             <if test="linkTel1 != null  and linkTel1 != '' "> and link_tel1 = #{linkTel1}</if>
+             <if test="linkname2 != null  and linkname2 != '' "> and linkname2 = #{linkname2}</if>
+             <if test="position2 != null  and position2 != '' "> and position2 = #{position2}</if>
+             <if test="position2Remark != null  and position2Remark != '' "> and position2_remark = #{position2Remark}</if>
+             <if test="responsibility2 != null  and responsibility2 != '' "> and responsibility2 = #{responsibility2}</if>
+             <if test="linkTel2 != null  and linkTel2 != '' "> and link_tel2 = #{linkTel2}</if>
+             <if test="linkname3 != null  and linkname3 != '' "> and linkname3 = #{linkname3}</if>
+             <if test="position3 != null  and position3 != '' "> and position3 = #{position3}</if>
+             <if test="position3Remark != null  and position3Remark != '' "> and position3_remark = #{position3Remark}</if>
+             <if test="responsibility3 != null  and responsibility3 != '' "> and responsibility3 = #{responsibility3}</if>
+             <if test="linkTel3 != null  and linkTel3 != '' "> and link_tel3 = #{linkTel3}</if>
+             <if test="companyRemark1 != null  and companyRemark1 != '' "> and company_remark1 = #{companyRemark1}</if>
+             <if test="companyRemark2 != null  and companyRemark2 != '' "> and company_remark2 = #{companyRemark2}</if>
+             <if test="companyRemark3 != null  and companyRemark3 != '' "> and company_remark3 = #{companyRemark3}</if>
+             <if test="companyRemark4 != null  and companyRemark4 != '' "> and company_remark4 = #{companyRemark4}</if>
+             <if test="companyRemark5 != null  and companyRemark5 != '' "> and company_remark5 = #{companyRemark5}</if>
+             <if test="companyRemark6 != null  and companyRemark6 != '' "> and company_remark6 = #{companyRemark6}</if>
+             <if test="companyRemark7 != null  and companyRemark7 != '' "> and company_remark7 = #{companyRemark7}</if>
+             <if test="companyRemark8 != null  and companyRemark8 != '' "> and company_remark8 = #{companyRemark8}</if>
+             <if test="companyRemark9 != null  and companyRemark9 != '' "> and company_remark9 = #{companyRemark9}</if>
+             <if test="createTime != null "> and create_time BETWEEN #{createTime} AND SYSDATE()</if>
+             <if test="createBy != null  and createBy != '' "> and create_by = #{createBy}</if>
+             
+             <if test="createBy1 != null "> and create_by in  
+                  <foreach item="createBy1" collection="createBy1" open="(" separator="," close=")">
+           			 #{createBy1}
+       			 </foreach>   	
+             </if>
+             
+             <if test="updateTime != null "> and update_time = #{updateTime}</if>
+             <if test="updateBy != null  and updateBy != '' "> and update_by   #{updateBy}  </if>
+             <if test="businessGrade != null  and businessGrade != '' "> and business_grade = #{businessGrade}</if>
+             <if test="businessStatus != null  and businessStatus != '' "> and business_status = #{businessStatus}</if>
+             <if test="businessUser != null  and businessUser != '' "> and business_user = #{businessUser}</if>
+             
+             <if test="businessUser1 != null "> and business_user in
+                 <foreach item="businessUser1" collection="businessUser1" open="(" separator="," close=")">
+           			 #{businessUser1}
+       			 </foreach>   
+             
+             </if>
+             
+             <if test="orderStatus != null  and orderStatus != '' "> and order_status = #{orderStatus}</if>
+             
+         </where>
+         order by business_id desc
+    </select>
+    
+    <select id="selectYwBusinessById" parameterType="Long" resultMap="YwBusinessResult">
+        <include refid="selectYwBusinessVo"/>
+        where business_id = #{businessId}
+    </select>
+        
+    <insert id="insertYwBusiness" parameterType="YwBusiness" useGeneratedKeys="true" keyProperty="businessId">
+        insert into yw_business
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="companyName != null  and companyName != ''  ">company_name,</if>
+			<if test="advertiser != null  and advertiser != ''  ">advertiser,</if>
+			<if test="shortName != null  and shortName != ''  ">short_name,</if>
+			<if test="linkname1 != null  and linkname1 != ''  ">linkname1,</if>
+			<if test="position1 != null  and position1 != ''  ">position1,</if>
+			<if test="position1Remark != null  and position1Remark != ''  ">position1_remark,</if>
+			<if test="responsibility1 != null  and responsibility1 != ''  ">responsibility1,</if>
+			<if test="linkTel1 != null  and linkTel1 != ''  ">link_tel1,</if>
+			<if test="linkname2 != null  and linkname2 != ''  ">linkname2,</if>
+			<if test="position2 != null  and position2 != ''  ">position2,</if>
+			<if test="position2Remark != null  and position2Remark != ''  ">position2_remark,</if>
+			<if test="responsibility2 != null  and responsibility2 != ''  ">responsibility2,</if>
+			<if test="linkTel2 != null  and linkTel2 != ''  ">link_tel2,</if>
+			<if test="linkname3 != null  and linkname3 != ''  ">linkname3,</if>
+			<if test="position3 != null  and position3 != ''  ">position3,</if>
+			<if test="position3Remark != null  and position3Remark != ''  ">position3_remark,</if>
+			<if test="responsibility3 != null  and responsibility3 != ''  ">responsibility3,</if>
+			<if test="linkTel3 != null  and linkTel3 != ''  ">link_tel3,</if>
+			<if test="companyRemark1 != null  and companyRemark1 != ''  ">company_remark1,</if>
+			<if test="companyRemark2 != null  and companyRemark2 != ''  ">company_remark2,</if>
+			<if test="companyRemark3 != null  and companyRemark3 != ''  ">company_remark3,</if>
+			<if test="companyRemark4 != null  and companyRemark4 != ''  ">company_remark4,</if>
+			<if test="companyRemark5 != null  and companyRemark5 != ''  ">company_remark5,</if>
+			<if test="companyRemark6 != null  and companyRemark6 != ''  ">company_remark6,</if>
+			<if test="companyRemark7 != null  and companyRemark7 != ''  ">company_remark7,</if>
+			<if test="companyRemark8 != null  and companyRemark8 != ''  ">company_remark8,</if>
+			<if test="companyRemark9 != null  and companyRemark9 != ''  ">company_remark9,</if>
+			<if test="createTime != null  ">create_time,</if>
+			<if test="createBy != null  and createBy != ''  ">create_by,</if>
+			<if test="updateTime != null  ">update_time,</if>
+			<if test="updateBy != null  and updateBy != ''  ">update_by,</if>
+			<if test="businessGrade != null  and businessGrade != ''  ">business_grade,</if>
+			<if test="businessStatus != null  and businessStatus != ''  ">business_status,</if>
+			<if test="businessUser != null ">business_user,</if>
+			<if test="businessCard1 != null  and businessCard1 != ''  ">business_card1,</if>
+			<if test="businessCard2 != null  and businessCard2 != ''  ">business_card2,</if>
+			<if test="businessCard3 != null  and businessCard3 != ''  ">business_card3,</if>
+			
+			<if test="responsibility1Remark != null  and responsibility1Remark != ''  ">responsibility1_remark,</if>
+			<if test="responsibility2Remark != null  and responsibility2Remark != ''  ">responsibility2_remark,</if>
+			<if test="responsibility3Remark != null  and responsibility3Remark != ''  ">responsibility3_remark,</if>
+			<if test="orderStatus != null  and orderStatus != ''  ">order_status,</if>
+			<if test="media != null ">media,</if>
+			
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="companyName != null  and companyName != ''  ">#{companyName},</if>
+			<if test="advertiser != null  and advertiser != ''  ">#{advertiser},</if>
+			<if test="shortName != null  and shortName != ''  ">#{shortName},</if>
+			<if test="linkname1 != null  and linkname1 != ''  ">#{linkname1},</if>
+			<if test="position1 != null  and position1 != ''  ">#{position1},</if>
+			<if test="position1Remark != null  and position1Remark != ''  ">#{position1Remark},</if>
+			<if test="responsibility1 != null  and responsibility1 != ''  ">#{responsibility1},</if>
+			<if test="linkTel1 != null  and linkTel1 != ''  ">#{linkTel1},</if>
+			<if test="linkname2 != null  and linkname2 != ''  ">#{linkname2},</if>
+			<if test="position2 != null  and position2 != ''  ">#{position2},</if>
+			<if test="position2Remark != null  and position2Remark != ''  ">#{position2Remark},</if>
+			<if test="responsibility2 != null  and responsibility2 != ''  ">#{responsibility2},</if>
+			<if test="linkTel2 != null  and linkTel2 != ''  ">#{linkTel2},</if>
+			<if test="linkname3 != null  and linkname3 != ''  ">#{linkname3},</if>
+			<if test="position3 != null  and position3 != ''  ">#{position3},</if>
+			<if test="position3Remark != null  and position3Remark != ''  ">#{position3Remark},</if>
+			<if test="responsibility3 != null  and responsibility3 != ''  ">#{responsibility3},</if>
+			<if test="linkTel3 != null  and linkTel3 != ''  ">#{linkTel3},</if>
+			<if test="companyRemark1 != null  and companyRemark1 != ''  ">#{companyRemark1},</if>
+			<if test="companyRemark2 != null  and companyRemark2 != ''  ">#{companyRemark2},</if>
+			<if test="companyRemark3 != null  and companyRemark3 != ''  ">#{companyRemark3},</if>
+			<if test="companyRemark4 != null  and companyRemark4 != ''  ">#{companyRemark4},</if>
+			<if test="companyRemark5 != null  and companyRemark5 != ''  ">#{companyRemark5},</if>
+			<if test="companyRemark6 != null  and companyRemark6 != ''  ">#{companyRemark6},</if>
+			<if test="companyRemark7 != null  and companyRemark7 != ''  ">#{companyRemark7},</if>
+			<if test="companyRemark8 != null  and companyRemark8 != ''  ">#{companyRemark8},</if>
+			<if test="companyRemark9 != null  and companyRemark9 != ''  ">#{companyRemark9},</if>
+			<if test="createTime != null  ">#{createTime},</if>
+			<if test="createBy != null  and createBy != ''  ">#{createBy},</if>
+			<if test="updateTime != null  ">#{updateTime},</if>
+			<if test="updateBy != null  and updateBy != ''  ">#{updateBy},</if>
+			<if test="businessGrade != null  and businessGrade != ''  ">#{businessGrade},</if>
+			<if test="businessStatus != null  and businessStatus != ''  ">#{businessStatus},</if>
+			<if test="businessUser != null ">#{businessUser},</if>
+			<if test="businessCard1 != null  and businessCard1 != ''  ">#{businessCard1},</if>
+			<if test="businessCard2 != null  and businessCard2 != ''  ">#{businessCard2},</if>
+			<if test="businessCard3 != null  and businessCard3 != ''  ">#{businessCard3},</if>
+			
+			<if test="responsibility1Remark != null  and responsibility1Remark != ''  ">#{responsibility1Remark},</if>
+			<if test="responsibility2Remark != null  and responsibility2Remark != ''  ">#{responsibility2Remark},</if>
+			<if test="responsibility3Remark != null  and responsibility3Remark != ''  ">#{responsibility3Remark},</if>
+			<if test="orderStatus != null  and orderStatus != ''  ">#{orderStatus},</if>
+			<if test="media != null ">#{media},</if>
+			
+         </trim>
+    </insert>
+	 
+    <update id="updateYwBusiness" parameterType="YwBusiness">
+        update yw_business
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="companyName != null  and companyName != ''  ">company_name = #{companyName},</if>
+            <if test="advertiser != null  and advertiser != ''  ">advertiser = #{advertiser},</if>
+            <if test="shortName != null  and shortName != ''  ">short_name = #{shortName},</if>
+            <if test="linkname1 != null  and linkname1 != ''  ">linkname1 = #{linkname1},</if>
+            <if test="position1 != null  and position1 != ''  ">position1 = #{position1},</if>
+            <if test="position1Remark != null  and position1Remark != ''  ">position1_remark = #{position1Remark},</if>
+            <if test="responsibility1 != null  and responsibility1 != ''  ">responsibility1 = #{responsibility1},</if>
+            <if test="linkTel1 != null  and linkTel1 != ''  ">link_tel1 = #{linkTel1},</if>
+            <if test="linkname2 != null  and linkname2 != ''  ">linkname2 = #{linkname2},</if>
+            <if test="position2 != null  and position2 != ''  ">position2 = #{position2},</if>
+            <if test="position2Remark != null  and position2Remark != ''  ">position2_remark = #{position2Remark},</if>
+            <if test="responsibility2 != null  and responsibility2 != ''  ">responsibility2 = #{responsibility2},</if>
+            <if test="linkTel2 != null  and linkTel2 != ''  ">link_tel2 = #{linkTel2},</if>
+            <if test="linkname3 != null  and linkname3 != ''  ">linkname3 = #{linkname3},</if>
+            <if test="position3 != null  and position3 != ''  ">position3 = #{position3},</if>
+            <if test="position3Remark != null  and position3Remark != ''  ">position3_remark = #{position3Remark},</if>
+            <if test="responsibility3 != null  and responsibility3 != ''  ">responsibility3 = #{responsibility3},</if>
+            <if test="linkTel3 != null  and linkTel3 != ''  ">link_tel3 = #{linkTel3},</if>
+            <if test="companyRemark1 != null  and companyRemark1 != ''  ">company_remark1 = #{companyRemark1},</if>
+            <if test="companyRemark2 != null  and companyRemark2 != ''  ">company_remark2 = #{companyRemark2},</if>
+            <if test="companyRemark3 != null  and companyRemark3 != ''  ">company_remark3 = #{companyRemark3},</if>
+            <if test="companyRemark4 != null  and companyRemark4 != ''  ">company_remark4 = #{companyRemark4},</if>
+            <if test="companyRemark5 != null  and companyRemark5 != ''  ">company_remark5 = #{companyRemark5},</if>
+            <if test="companyRemark6 != null  and companyRemark6 != ''  ">company_remark6 = #{companyRemark6},</if>
+            <if test="companyRemark7 != null  and companyRemark7 != ''  ">company_remark7 = #{companyRemark7},</if>
+            <if test="companyRemark8 != null  and companyRemark8 != ''  ">company_remark8 = #{companyRemark8},</if>
+            <if test="companyRemark9 != null  and companyRemark9 != ''  ">company_remark9 = #{companyRemark9},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="createBy != null  and createBy != ''  ">create_by = #{createBy},</if>
+            <if test="updateTime != null  ">update_time = #{updateTime},</if>
+            <if test="updateBy != null  and updateBy != ''  ">update_by = #{*/-},</if>
+            <if test="businessGrade != null  and businessGrade != ''  ">business_grade = #{businessGrade},</if>
+            <if test="businessStatus != null  and businessStatus != ''  ">business_status = #{businessStatus},</if>
+            <if test="businessUser != null ">business_user = #{businessUser},</if>
+            <if test="businessCard1 != null  and businessCard1 != ''  "> business_card1 = #{businessCard1},</if>
+			<if test="businessCard2 != null  and businessCard2 != ''  "> business_card2 = #{businessCard2},</if>
+			<if test="businessCard3 != null  and businessCard3 != ''  "> business_card3 = #{businessCard3},</if>
+			
+			<if test="responsibility1Remark != null  and responsibility1Remark != ''  ">responsibility1_remark = #{responsibility1Remark},</if>
+			<if test="responsibility2Remark != null  and responsibility2Remark != ''  ">responsibility2_remark = #{responsibility2Remark},</if>
+			<if test="responsibility3Remark != null  and responsibility3Remark != ''  ">responsibility3_remark = #{responsibility3Remark},</if>
+			<if test="orderStatus != null  and orderStatus != ''  ">order_status = #{orderStatus},</if>
+			<if test="media != null "> media = #{media},</if>
+        </trim>
+        where business_id = #{businessId}
+    </update>
+
+	<delete id="deleteYwBusinessById" parameterType="Long">
+        delete from yw_business where business_id = #{businessId}
+    </delete>
+	
+    <delete id="deleteYwBusinessByIds" parameterType="String">
+        delete from yw_business where business_id in 
+        <foreach item="businessId" collection="array" open="(" separator="," close=")">
+            #{businessId}
+        </foreach>
+    </delete>
+    
+    <select id="getCompanyName" parameterType="YwBusiness" resultMap="YwBusinessResult">
+        <include refid="selectYwBusinessVo"/>
+        where company_name = #{companyName} and advertiser = #{advertiser} and business_status = 0 and business_user !=''
+    </select>
+    
+    
+    <select id="decideBusinessUser" parameterType="YwBusiness" resultMap="YwBusinessResult">
+        <include refid="selectYwBusinessVo"/>
+
+        where company_name = #{companyName} and advertiser = #{advertiser} and business_status = 2 and business_user =''
+   </select>
+    
+    
+     <select id="selectYwBusinessGroupList" parameterType="YwBusiness" resultMap="YwBusinessResult">
+        <include refid="selectYwBusinessVo"/>
+			where business_id  = (select max(business_id) business_id from yw_business where business_status = '0' and order_status='1' group  by company_name ,advertiser)
+    </select>
+    
+    <select id="selectYwBusinessByMediaList" parameterType="YwBusiness" resultMap="YwBusinessResult">
+		select  media from yw_business where company_name = #{companyName} and advertiser = #{advertiser} group by media
+    </select>
+    
+    
+    <update id="updateYwBusinessOrderStatusList" parameterType="YwBusiness">
+		
+		update yw_business set order_status = '0' where business_id in (select business_id  from yw_contract where SYSDATE() > endDate)
+		
+    </update>
+</mapper>

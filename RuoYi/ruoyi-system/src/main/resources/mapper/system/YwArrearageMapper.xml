@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.YwArrearageMapper">
+    
+    <resultMap type="YwArrearage" id="YwArrearageResult">
+        <result property="id"    column="id"    />
+        <result property="clientName"    column="client_name"    />
+        <result property="sales"    column="sales"    />
+        <result property="contractType"    column="contract_type"    />
+        <result property="money"    column="money"    />
+        <result property="appointedTime"    column="appointed_time"    />
+        <result property="overdueDay"    column="overdue_day"    />
+        <result property="overdueMedia"    column="overdue_media"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+	
+	<sql id="selectYwArrearageVo">
+        select id, client_name, sales, contract_type, money, appointed_time, overdue_day, overdue_media, create_by, create_time, update_by, update_time, remark from yw_arrearage
+    </sql>
+	
+    <select id="selectYwArrearageList" parameterType="YwArrearage" resultMap="YwArrearageResult">
+        <include refid="selectYwArrearageVo"/>
+        <where>  
+            <if test="id != null "> and id = #{id}</if>
+             <if test="clientName != null  and clientName != '' "> and client_name = #{clientName}</if>
+             <if test="sales != null  and sales != '' "> and sales = #{sales}</if>
+             <if test="contractType != null  and contractType != '' "> and contract_type = #{contractType}</if>
+             <if test="money != null "> and money = #{money}</if>
+             <if test="appointedTime != null "> and appointed_time = #{appointedTime}</if>
+             <if test="overdueDay != null "> and overdue_day = #{overdueDay}</if>
+             <if test="overdueMedia != null "> and overdue_media = #{overdueMedia}</if>
+             <if test="createBy != null  and createBy != '' "> and create_by = #{createBy}</if>
+             <if test="createTime != null "> and create_time = #{createTime}</if>
+             <if test="updateBy != null  and updateBy != '' "> and update_by = #{updateBy}</if>
+             <if test="updateTime != null "> and update_time = #{updateTime}</if>
+             <if test="remark != null  and remark != '' "> and remark = #{remark}</if>
+             
+              <if test="createBy1 != null "> and sales in  
+                  <foreach item="createBy1" collection="createBy1" open="(" separator="," close=")">
+           			 #{createBy1}
+       			 </foreach>   	
+             </if>
+             
+         </where>
+    </select>
+    
+    <select id="selectYwArrearageById" parameterType="Long" resultMap="YwArrearageResult">
+        <include refid="selectYwArrearageVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertYwArrearage" parameterType="YwArrearage" useGeneratedKeys="true" keyProperty="id">
+        insert into yw_arrearage
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="clientName != null  and clientName != ''  ">client_name,</if>
+			<if test="sales != null  and sales != ''  ">sales,</if>
+			<if test="contractType != null  and contractType != ''  ">contract_type,</if>
+			<if test="money != null  ">money,</if>
+			<if test="appointedTime != null  ">appointed_time,</if>
+			<if test="overdueDay != null  ">overdue_day,</if>
+			<if test="overdueMedia != null  ">overdue_media,</if>
+			<if test="createBy != null  and createBy != ''  ">create_by,</if>
+			<if test="createTime != null  ">create_time,</if>
+			<if test="updateBy != null  and updateBy != ''  ">update_by,</if>
+			<if test="updateTime != null  ">update_time,</if>
+			<if test="remark != null  and remark != ''  ">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="clientName != null  and clientName != ''  ">#{clientName},</if>
+			<if test="sales != null  and sales != ''  ">#{sales},</if>
+			<if test="contractType != null  and contractType != ''  ">#{contractType},</if>
+			<if test="money != null  ">#{money},</if>
+			<if test="appointedTime != null  ">#{appointedTime},</if>
+			<if test="overdueDay != null  ">#{overdueDay},</if>
+			<if test="overdueMedia != null  ">#{overdueMedia},</if>
+			<if test="createBy != null  and createBy != ''  ">#{createBy},</if>
+			<if test="createTime != null  ">#{createTime},</if>
+			<if test="updateBy != null  and updateBy != ''  ">#{updateBy},</if>
+			<if test="updateTime != null  ">#{updateTime},</if>
+			<if test="remark != null  and remark != ''  ">#{remark},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateYwArrearage" parameterType="YwArrearage">
+        update yw_arrearage
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="clientName != null  and clientName != ''  ">client_name = #{clientName},</if>
+            <if test="sales != null  and sales != ''  ">sales = #{sales},</if>
+            <if test="contractType != null  and contractType != ''  ">contract_type = #{contractType},</if>
+            <if test="money != null  ">money = #{money},</if>
+            <if test="appointedTime != null  ">appointed_time = #{appointedTime},</if>
+            <if test="overdueDay != null  ">overdue_day = #{overdueDay},</if>
+            <if test="overdueMedia != null  ">overdue_media = #{overdueMedia},</if>
+            <if test="createBy != null  and createBy != ''  ">create_by = #{createBy},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''  ">update_by = #{updateBy},</if>
+            <if test="updateTime != null  ">update_time = #{updateTime},</if>
+            <if test="remark != null  and remark != ''  ">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+	<delete id="deleteYwArrearageById" parameterType="Long">
+        delete from yw_arrearage where id = #{id}
+    </delete>
+	
+    <delete id="deleteYwArrearageByIds" parameterType="String">
+        delete from yw_arrearage where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+    
+            <!-- 批量插入数据 -->
+    <insert id="batchInsert" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO yw_arrearage (client_name,sales,contract_type,money,appointed_time,overdue_day,overdue_media,create_by,create_time,remark)
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.clientName}, #{item.sales},#{item.contractType},#{item.money},#{item.appointedTime},#{item.overdueDay},#{item.overdueMedia},#{item.createBy},SYSDATE(),#{item.remark})
+        </foreach>
+    </insert>
+    
+
+	<select id="selectSumList" parameterType="YwArrearage" resultMap="YwArrearageResult">
+		select '部门欠款总数' sales, a.dept_name deptname,sum(a.money) money  from  (select y.* ,d.dept_name  from yw_arrearage y,sys_user u, sys_dept d where y.sales = u.user_name and u.dept_id = d.dept_id) a GROUP BY a.dept_name
+
+			UNION ALL
+
+ 		select * from (  select  a.sales,max(a.dept_name) deptname, sum(a.money) money from  (select y.* ,d.dept_name  from yw_arrearage y,sys_user u, sys_dept d where y.sales = u.user_name and u.dept_id = d.dept_id) a GROUP BY a.sales ORDER BY a.dept_name) b
+	</select>
+    
+    
+</mapper>
