@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.YwTaskMapper">
+    
+    <resultMap type="YwTask" id="YwTaskResult">
+        <result property="id"    column="id"    />
+        <result property="saleManager"    column="sale_manager"    />
+        <result property="media"    column="media"    />
+        <result property="type"    column="type"    />
+        <result property="quotas"    column="quotas"    />
+        <result property="quarter"    column="quarter"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+	
+	<sql id="selectYwTaskVo">
+        select id, sale_manager, media, type, quotas, quarter, create_by, create_time, update_by, update_time, remark from yw_task
+    </sql>
+	
+    <select id="selectYwTaskList" parameterType="YwTask" resultMap="YwTaskResult">
+        <include refid="selectYwTaskVo"/>
+        <where>  
+            <if test="id != null "> and id = #{id}</if>
+             <if test="saleManager != null  and saleManager != '' "> and sale_manager = #{saleManager}</if>
+             <if test="media != null  and media != '' "> and media = #{media}</if>
+             <if test="type != null  and type != '' "> and type = #{type}</if>
+             <if test="quotas != null "> and quotas = #{quotas}</if>
+             <if test="quarter != null  and quarter != '' "> and quarter = #{quarter}</if>
+             <if test="createBy != null  and createBy != '' "> and create_by = #{createBy}</if>
+             <if test="createTime != null "> and create_time = #{createTime}</if>
+             <if test="updateBy != null  and updateBy != '' "> and update_by = #{updateBy}</if>
+             <if test="updateTime != null "> and update_time = #{updateTime}</if>
+             <if test="remark != null  and remark != '' "> and remark = #{remark}</if>
+         </where>
+    </select>
+    
+    <select id="selectYwTaskById" parameterType="Long" resultMap="YwTaskResult">
+        <include refid="selectYwTaskVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertYwTask" parameterType="YwTask" useGeneratedKeys="true" keyProperty="id">
+        insert into yw_task
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="saleManager != null  and saleManager != ''  ">sale_manager,</if>
+			<if test="media != null  and media != ''  ">media,</if>
+			<if test="type != null  and type != ''  ">type,</if>
+			<if test="quotas != null  ">quotas,</if>
+			<if test="quarter != null  and quarter != ''  ">quarter,</if>
+			<if test="createBy != null  and createBy != ''  ">create_by,</if>
+			<if test="createTime != null  ">create_time,</if>
+			<if test="updateBy != null  and updateBy != ''  ">update_by,</if>
+			<if test="updateTime != null  ">update_time,</if>
+			<if test="remark != null  and remark != ''  ">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="saleManager != null  and saleManager != ''  ">#{saleManager},</if>
+			<if test="media != null  and media != ''  ">#{media},</if>
+			<if test="type != null  and type != ''  ">#{type},</if>
+			<if test="quotas != null  ">#{quotas},</if>
+			<if test="quarter != null  and quarter != ''  ">#{quarter},</if>
+			<if test="createBy != null  and createBy != ''  ">#{createBy},</if>
+			<if test="createTime != null  ">#{createTime},</if>
+			<if test="updateBy != null  and updateBy != ''  ">#{updateBy},</if>
+			<if test="updateTime != null  ">#{updateTime},</if>
+			<if test="remark != null  and remark != ''  ">#{remark},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateYwTask" parameterType="YwTask">
+        update yw_task
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="saleManager != null  and saleManager != ''  ">sale_manager = #{saleManager},</if>
+            <if test="media != null  and media != ''  ">media = #{media},</if>
+            <if test="type != null  and type != ''  ">type = #{type},</if>
+            <if test="quotas != null  ">quotas = #{quotas},</if>
+            <if test="quarter != null  and quarter != ''  ">quarter = #{quarter},</if>
+            <if test="createBy != null  and createBy != ''  ">create_by = #{createBy},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''  ">update_by = #{updateBy},</if>
+            <if test="updateTime != null  ">update_time = #{updateTime},</if>
+            <if test="remark != null  and remark != ''  ">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+	<delete id="deleteYwTaskById" parameterType="Long">
+        delete from yw_task where id = #{id}
+    </delete>
+	
+    <delete id="deleteYwTaskByIds" parameterType="String">
+        delete from yw_task where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>
