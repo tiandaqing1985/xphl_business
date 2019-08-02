@@ -1,5 +1,7 @@
 package com.ruoyi.system.domain;
 
+import com.ruoyi.common.annotation.Excel;
+
 import java.math.BigDecimal;
 
 /**
@@ -8,14 +10,19 @@ import java.math.BigDecimal;
 public class YwGatherGrossMargin {
 
     /** 毛利排名 */
+    @Excel(name = "毛利排名",type = Excel.Type.EXPORT)
     private Integer rownum;
     /** 销售经理 */
+    @Excel(name = "销售经理",type = Excel.Type.EXPORT)
     private String saleManager;
     /** 毛利任务 */
+    @Excel(name = "毛利任务",type = Excel.Type.EXPORT)
     private BigDecimal quotas;
     /** 毛利实际完成 */
+    @Excel(name = "毛利实际完成",type = Excel.Type.EXPORT)
     private BigDecimal grossMargin;
     /** 毛利完成率 */
+    @Excel(name = "毛利完成率",type = Excel.Type.EXPORT)
     private String rate;
 
     public Integer getRownum() {

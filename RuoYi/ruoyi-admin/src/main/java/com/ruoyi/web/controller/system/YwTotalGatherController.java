@@ -78,11 +78,37 @@ public class YwTotalGatherController extends BaseController
      */
     @PostMapping("/export")
     @ResponseBody
-    public AjaxResult export(Gather gather)
+    public AjaxResult export(YwTotalGather ywTotalGather)
     {
         List<YwTotalGather> list = totalGatherService.selectTotalGather();
         ExcelUtil<YwTotalGather> util = new ExcelUtil<YwTotalGather>(YwTotalGather.class);
         return util.exportExcel(list, "totalGather");
+    }
+
+
+    /**
+     * 导出消耗排名表
+     */
+    @PostMapping("/exportRankConsumption")
+    @ResponseBody
+    public AjaxResult exportRankConsumption(YwTotalGather ywTotalGather)
+    {
+        List<YwGatherConsumption> list = totalGatherService.selectRankConsumptionlist();
+        ExcelUtil<YwGatherConsumption> util = new ExcelUtil<YwGatherConsumption>(YwGatherConsumption.class);
+        return util.exportExcel(list, "ywGatherConsumption");
+    }
+
+
+    /**
+     * 导出毛利排名表
+     */
+    @PostMapping("/exportRankGrossMargin")
+    @ResponseBody
+    public AjaxResult exportRankGrossMargin(YwTotalGather ywTotalGather)
+    {
+        List<YwGatherGrossMargin> list = totalGatherService.selectRankGrossMarginList();
+        ExcelUtil<YwGatherGrossMargin> util = new ExcelUtil<YwGatherGrossMargin>(YwGatherGrossMargin.class);
+        return util.exportExcel(list, "ywGatherGrossMargin");
     }
 
 }
