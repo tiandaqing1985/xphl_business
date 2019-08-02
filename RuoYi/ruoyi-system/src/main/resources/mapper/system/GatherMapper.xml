@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.GatherMapper">
+
+    <resultMap type="Gather" id="GatherResult">
+        <result property="id" column="id"/>
+        <result property="type" column="type"/>
+        <result property="quarter" column="quarter"/>
+        <result property="area" column="area"/>
+        <result property="deptName" column="dept_name"/>
+        <result property="salesManager" column="sales_manager"/>
+        <result property="media" column="media"/>
+        <result property="quotas" column="quotas"/>
+        <result property="summation" column="summation"/>
+        <result property="xhptAmt" column="xhptAmt"/>
+        <result property="timeSchedule" column="timeSchedule"/>
+        <result property="xhwcRate" column="xhwcRate"/>
+    </resultMap>
+
+    <select id="selectGatherList" parameterType="Gather" resultMap="GatherResult">
+        SELECT type,QUARTER,area,dept_name,sales_manager,media,quotas,summation from (
+        SELECT
+        tb1.type,
+        tb1.QUARTER,
+        tb1.area,
+        tb1.dept_name,
+        tb1.sale_manager sales_manager,
+        tb1.media,
+        tb1.quotas,
+        IFNULL( tb2.summation, '0' ) summation
+        FROM
+        (
+        SELECT
+            c.type,
+            c.QUARTER,
+            a.area,
+            b.dept_name,
+            c.sale_manager,
+            c.media,
+            IFNULL( sum( c.quotas ), '0' ) quotas
+        FROM
+            yw_task c
+            LEFT JOIN sys_user a ON c.sale_manager = a.user_name
+            LEFT JOIN sys_dept b ON a.dept_id = b.dept_id
+        GROUP BY
+            c.sale_manager,
+            c.media,
+            c.QUARTER
+        HAVING
+            c.type = '毛利'
+            <if test="quarter != null and quarter != ''">and c.quarter= #{quarter}</if>
+        ) tb1
+        LEFT JOIN (
+        SELECT
+            d.sales_manager,
+            d.media,
+            d.quarter,
+            sum( d.gross_margin ) summation
+        FROM
+            yw_gross_margins d
+        GROUP BY
+            d.sales_manager,
+            d.media,
+            d.quarter
+        ) tb2 ON tb1.sale_manager = tb2.sales_manager
+        AND tb1.media = tb2.media AND tb1.quarter = tb2.quarter
+        union
+        SELECT
+        tb1.type,
+        tb1.QUARTER,
+        tb1.area,
+        tb1.dept_name,
+        tb1.sale_manager sales_manager,
+        tb1.media,
+        tb1.quotas,
+        IFNULL( tb2.summation, '0' ) summation
+        FROM
+        (
+        SELECT
+            c.type,
+            c.quarter,
+            a.area,
+            b.dept_name,
+            c.sale_manager,
+            c.media,
+            IFNULL( sum( c.quotas ), '0' ) quotas
+        FROM
+            yw_task c
+            LEFT JOIN sys_user a ON c.sale_manager = a.user_name
+            LEFT JOIN sys_dept b ON a.dept_id = b.dept_id
+        GROUP BY
+            c.sale_manager,
+            c.media,
+            c.quarter
+        HAVING
+            c.type = '消耗'
+            <if test="quarter != null and quarter != ''">and c.quarter= #{quarter}</if>
+        ) tb1
+        LEFT JOIN (
+        SELECT
+            d.sale_manager,
+            d.media,
+            d.quarter,
+            sum( d.summation ) summation
+        FROM
+            yw_consumption d
+        GROUP BY
+            d.sale_manager,
+            d.media,
+            d.quarter
+        ) tb2 ON tb1.sale_manager = tb2.sale_manager
+        AND tb1.media = tb2.media AND tb1.quarter = tb2.quarter
+        ) tb3
+        <where>
+            <if test="type != null and type != ''">tb3.type = #{type}</if>
+        </where>
+    </select>
+
+    <resultMap id="YwGatherGrossMarginResult" type="YwGatherGrossMargin">
+        <result column="rownum" property="rownum"/>
+        <result column="sale_manager" property="saleManager"/>
+        <result column="quotas" property="quotas"/>
+        <result column="gross_margin" property="grossMargin"/>
+        <result column="rate" property="rate"/>
+    </resultMap>
+
+    <select id="selectRankGrossMarginList" resultMap="YwGatherGrossMarginResult">
+
+        select rownum,sale_manager,quotas,gross_margin,rate from (
+        select a.sale_manager,a.quotas,a.gross_margin,a.rate,@rownum := @rownum + 1 rownum from (
+        select tb1.sale_manager,tb1.quotas,tb2.gross_margin,concat(round(tb2.gross_margin/tb1.quotas*100,2),'%') rate from
+        (select ta.sale_manager,ifnull(sum(ta.quotas),'0') quotas from yw_task ta group by ta.sale_manager,ta.type having ta.type = '毛利' ) tb1
+        left join
+        (select gm.sales_manager,sum(gm.gross_margin) gross_margin from yw_gross_margins gm group by gm.sales_manager) tb2
+        on tb1.sale_manager = tb2.sales_manager order by rate
+        ) a,(SELECT @rownum := 0) b) c
+
+    </select>
+
+    <resultMap id="YwGatherConsumptionResult" type="YwGatherConsumption">
+        <result column="rownum" property="rownum"/>
+        <result column="sale_manager" property="saleManager"/>
+        <result column="quotas" property="quotas"/>
+        <result column="summation" property="summation"/>
+        <result column="rate" property="rate"/>
+    </resultMap>
+
+    <select id="selectRankConsumptionList" resultMap="YwGatherConsumptionResult">
+
+        select rownum,sale_manager,quotas,summation,rate from (
+        select a.sale_manager,a.quotas,a.summation,a.rate,@rownum := @rownum + 1 rownum from (
+        select tb1.sale_manager,tb1.quotas,tb2.summation,concat(round(tb2.summation/tb1.quotas*100,2),'%') rate from
+        (select ta.sale_manager,ifnull(sum(ta.quotas),'0') quotas from yw_task ta group by ta.sale_manager,ta.type having ta.type = '消耗' ) tb1
+        left join
+        (select con.sale_manager,sum(con.summation) summation from yw_consumption con group by con.sale_manager) tb2
+        on tb1.sale_manager = tb2.sale_manager order by rate
+        ) a,(SELECT @rownum := 0) b) c
+
+    </select>
+    
+</mapper>

@@ -1,0 +1,88 @@
+package com.ruoyi.web.controller.system;
+
+import com.ruoyi.common.core.controller.BaseController;
+import com.ruoyi.common.core.domain.AjaxResult;
+import com.ruoyi.common.core.page.TableDataInfo;
+import com.ruoyi.common.utils.poi.ExcelUtil;
+import com.ruoyi.system.domain.Gather;
+import com.ruoyi.system.domain.YwGatherConsumption;
+import com.ruoyi.system.domain.YwGatherGrossMargin;
+import com.ruoyi.system.domain.YwTotalGather;
+import com.ruoyi.system.service.IGatherService;
+import com.ruoyi.system.service.TotalGatherService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.List;
+@Controller
+@RequestMapping("/system/totalGather")
+public class YwTotalGatherController extends BaseController
+{
+
+    private String prefix = "system/totalGather";
+
+    @Autowired
+    private TotalGatherService totalGatherService;
+
+    @RequiresPermissions("system:gather:view")
+    @GetMapping()
+    public String totalGather()
+    {
+        return prefix + "/totalGather";
+    }
+
+    /**
+     * 查询部门毛利消耗汇总情况
+     */
+    @PostMapping("/list")
+    @ResponseBody
+    public TableDataInfo selectTotalGather()
+    {
+        startPage();
+        List<YwTotalGather> list = totalGatherService.selectTotalGather();
+        return getDataTable(list);
+    }
+
+    /**
+     * 查询毛利排名
+     */
+    @PostMapping("/rankGrossMarginList")
+    @ResponseBody
+    public TableDataInfo rankGrossMarginList()
+    {
+        startPage();
+        List<YwGatherGrossMargin> list = totalGatherService.selectRankGrossMarginList();
+        return getDataTable(list);
+    }
+
+    /**
+     * 查询消耗排名
+     */
+    @PostMapping("/rankConsumptionlist")
+    @ResponseBody
+    public TableDataInfo rankConsumptionlist()
+    {
+        startPage();
+        List<YwGatherConsumption> list = totalGatherService.selectRankConsumptionlist();
+        return getDataTable(list);
+    }
+
+
+    /**
+     * 导出消耗毛利汇总列表
+     */
+    @PostMapping("/export")
+    @ResponseBody
+    public AjaxResult export(Gather gather)
+    {
+        List<YwTotalGather> list = totalGatherService.selectTotalGather();
+        ExcelUtil<YwTotalGather> util = new ExcelUtil<YwTotalGather>(YwTotalGather.class);
+        return util.exportExcel(list, "totalGather");
+    }
+
+}

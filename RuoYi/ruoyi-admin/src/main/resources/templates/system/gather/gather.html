@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+	<th:block th:include="include :: header('消耗毛利汇总列表')" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+		<div class="row">
+			<div class="col-sm-12 search-collapse">
+				<form id="formId">
+					<div class="select-list">
+						<ul>
+							<li>
+								类型：<input type="text" name="type"/>
+							</li>
+
+							<li>
+								期间：<input type="text" name="quarter"/>
+							</li>
+
+							<li>
+								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+								<a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+							</li>
+						</ul>
+					</div>
+				</form>
+			</div>
+			
+	        <div class="btn-group-sm" id="toolbar" role="group">
+				<a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="system:gather:export">
+						<i class="fa fa-download"></i> 导出
+				 </a>
+			</div>
+			<div class="col-sm-12 select-table table-striped">
+				<table id="bootstrap-table" data-mobile-responsive="true"></table>
+			</div>
+		</div>
+	</div>
+    <div th:include="include :: footer"></div>
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('system:gather:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('system:gather:remove')}]];
+        var prefix = ctx + "system/gather";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+				exportUrl: prefix + "/export",
+                modalName: "消耗毛利汇总",
+		        showExport: true,
+				showFooter: true,
+                columns: [{
+		            checkbox: true
+		        },
+				{
+					field : 'id', 
+					title : '主键',
+					visible: false
+				},
+				{
+					field : 'type', 
+					title : '类型',
+					sortable: true
+				},
+				{
+					field : 'quarter', 
+					title : '期间',
+					sortable: true
+				},
+				{
+					field : 'area', 
+					title : '区域',
+					sortable: true
+				},
+				{
+					field : 'deptName', 
+					title : '部门',
+					sortable: true
+				},
+				{
+					field : 'salesManager', 
+					title : '销售经理',
+					sortable: true
+				},
+				{
+					field : 'media', 
+					title : '购买媒体',
+					sortable: true
+				},
+				{
+					field : 'quotas', 
+					title : '季度任务',
+					sortable: true,
+					footerFormatter:function (value) {
+						var sumBalance = 0;
+						for (var i in value) {
+							sumBalance += parseFloat(value[i].quotas);
+						}
+						return "总计：" + sumBalance;
+					}
+				},
+				{
+					field : 'summation', 
+					title : '完成消耗金额',
+					sortable: true,
+					footerFormatter:function (value) {
+						var sumBalance = 0;
+						for (var i in value) {
+							sumBalance += parseFloat(value[i].summation);
+						}
+						return "总计：" + sumBalance;
+					}
+				},
+				{
+					field : 'xhptAmt', 
+					title : '消耗平推完成金额',
+					sortable: true
+				},
+				{
+					field : 'timeSchedule', 
+					title : '时间进度',
+					sortable: true
+				},
+				{
+					field : 'xhwcRate', 
+					title : '完成率',
+					sortable: true
+				}]
+            };
+            $.table.init(options);
+        });
+	</script>
+</body>
+</html>

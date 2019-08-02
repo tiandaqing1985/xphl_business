@@ -30,9 +30,12 @@ public class YwGrossMargins extends BaseEntity
 	/** 签约方 */
 	@Excel(name = "签约方", type = Excel.Type.IMPORT)
 	private String signatory;
-	/** Q2毛利 */
+	/** 毛利 */
 	@Excel(name = "毛利", type = Excel.Type.IMPORT)
-	private BigDecimal q2GrossMargin;
+	private BigDecimal grossMargin;
+	/** 期间 */
+	@Excel(name = "期间", type = Excel.Type.IMPORT)
+	private String quarter;
 
 	public void setId(Long id) 
 	{
@@ -79,28 +82,37 @@ public class YwGrossMargins extends BaseEntity
 	{
 		return signatory;
 	}
-	public void setQ2GrossMargin(BigDecimal q2GrossMargin) 
-	{
-		this.q2GrossMargin = q2GrossMargin;
+
+    public BigDecimal getGrossMargin() {
+        return grossMargin;
+    }
+
+    public void setGrossMargin(BigDecimal grossMargin) {
+        this.grossMargin = grossMargin;
+    }
+
+	public String getQuarter() {
+		return quarter;
 	}
 
-	public BigDecimal getQ2GrossMargin() 
-	{
-		return q2GrossMargin;
+	public void setQuarter(String quarter) {
+		this.quarter = quarter;
 	}
 
-    public String toString() {
+	public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("id", getId())
-            .append("salesManager", getSalesManager())
-            .append("media", getMedia())
-            .append("advertiser", getAdvertiser())
-            .append("signatory", getSignatory())
-            .append("q2GrossMargin", getQ2GrossMargin())
-            .append("createBy", getCreateBy())
-            .append("createTime", getCreateTime())
-            .append("updateBy", getUpdateBy())
-            .append("updateTime", getUpdateTime())
-            .toString();
+                .append("id", getId())
+                .append("salesManager", getSalesManager())
+                .append("media", getMedia())
+                .append("advertiser", getAdvertiser())
+                .append("signatory", getSignatory())
+                .append("grossMargin", getGrossMargin())
+				.append("quarter",getQuarter())
+                .append("createBy", getCreateBy())
+                .append("createTime", getCreateTime())
+                .append("updateBy", getUpdateBy())
+                .append("updateTime", getUpdateTime())
+                .append("remark", getRemark())
+                .toString();
     }
 }

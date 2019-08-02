@@ -27,8 +27,28 @@
 							</li>
 
 							<li>
-								Q2毛利：<input type="text" name="q2GrossMargin"/>
+								期间：<input type="text" name="quarter"/>
 							</li>
+
+							<li>
+								创建者：<input type="text" name="createBy"/>
+							</li>
+
+<!--							<li>-->
+<!--								创建时间：<input type="text" name="createTime"/>-->
+<!--							</li>-->
+
+<!--							<li>-->
+<!--								更新者：<input type="text" name="updateBy"/>-->
+<!--							</li>-->
+
+<!--							<li>-->
+<!--								更新时间：<input type="text" name="updateTime"/>-->
+<!--							</li>-->
+
+<!--							<li>-->
+<!--								备注：<input type="text" name="remark"/>-->
+<!--							</li>-->
 
 							<li>
 								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
@@ -107,8 +127,13 @@
 					sortable: true
 				},
 				{
-					field : 'q2GrossMargin', 
-					title : 'Q2毛利',
+					field : 'grossMargin', 
+					title : '毛利',
+					sortable: true
+				},
+				{
+					field : 'quarter',
+					title : '期间',
 					sortable: true
 				},
 				{
@@ -129,6 +154,11 @@
 				{
 					field : 'updateTime', 
 					title : '更新时间',
+					sortable: true
+				},
+				{
+					field : 'remark', 
+					title : '备注',
 					sortable: true
 				},
 		        {

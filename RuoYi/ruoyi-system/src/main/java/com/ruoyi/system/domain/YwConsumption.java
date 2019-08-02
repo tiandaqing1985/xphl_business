@@ -39,8 +39,19 @@ public class YwConsumption extends BaseEntity
 	/** 合计 */
 	@Excel(name="合计",type = Excel.Type.IMPORT)
 	private BigDecimal summation;
+	/** 期间 */
+	@Excel(name = "期间", type = Excel.Type.IMPORT)
+	private String quarter;
 
-	public void setId(Long id) 
+	public String getQuarter() {
+		return quarter;
+	}
+
+	public void setQuarter(String quarter) {
+		this.quarter = quarter;
+	}
+
+	public void setId(Long id)
 	{
 		this.id = id;
 	}
@@ -120,6 +131,7 @@ public class YwConsumption extends BaseEntity
 				.append("discounts", getDiscounts())
 				.append("ysbd", getYsbd())
 				.append("summation", getSummation())
+				.append("quarter",getQuarter())
 				.append("createBy", getCreateBy())
 				.append("createTime", getCreateTime())
 				.append("updateBy", getUpdateBy())

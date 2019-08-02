@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+	<th:block th:include="include :: header('整体汇总列表')" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+<!--		<div class="row">-->
+<!--			<div class="col-sm-12 search-collapse">-->
+<!--				<form id="formId">-->
+<!--					<div class="select-list">-->
+<!--						<ul>-->
+<!--							<li>-->
+<!--								类型：<input type="text" name="type"/>-->
+<!--							</li>-->
+
+<!--							<li>-->
+<!--								期间：<input type="text" name="quarter"/>-->
+<!--							</li>-->
+
+<!--							<li>-->
+<!--								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>-->
+<!--								<a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>-->
+<!--							</li>-->
+<!--						</ul>-->
+<!--					</div>-->
+<!--				</form>-->
+<!--			</div>-->
+			
+<!--	        <div class="btn-group-sm" id="toolbar" role="group">-->
+<!--				<a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="system:gather:export">-->
+<!--						<i class="fa fa-download"></i> 导出-->
+<!--				 </a>-->
+<!--			</div>-->
+<!--			<div class="col-sm-12 select-table table-striped">-->
+<!--				<table id="bootstrap-table" data-mobile-responsive="true"></table>-->
+<!--			</div>-->
+<!--		</div>-->
+		 <div class="row">
+			 <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="system:totalGather:export">
+				 <i class="fa fa-download"></i> 导出
+			 </a>
+			 <div class="col-sm-12 select-table table-striped">
+				 <table id="bootstrap-table-3" data-mobile-responsive="true"></table>
+			 </div>
+		 </div>
+		 <div class="row">
+			 <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="system:totalGather:export">
+				 <i class="fa fa-download"></i> 导出
+			 </a>
+			 <div class="col-sm-12 select-table table-striped">
+				 <table id="bootstrap-table-1" data-mobile-responsive="true"></table>
+			 </div>
+		 </div>
+		 <div class="row">
+			 <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="system:totalGather:export">
+				 <i class="fa fa-download"></i> 导出
+			 </a>
+			 <div class="col-sm-12 select-table table-striped">
+				 <table id="bootstrap-table-2" data-mobile-responsive="true"></table>
+			 </div>
+		 </div>
+	</div>
+    <div th:include="include :: footer"></div>
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('system:gather:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('system:gather:remove')}]];
+        var prefix = ctx + "system/totalGather";
+
+		$(function() {
+			var options = {
+				id: "bootstrap-table-3",
+				url: prefix + "/list",
+				showSearch: false,
+				showRefresh: false,
+				showToggle: false,
+				showColumns: false,
+				columns: [
+					[
+						{
+							title : '华东、华北整体完成率',
+							align : 'center',
+							colspan : 8
+						}
+					],
+					[{
+						checkbox: true
+					},
+						{
+							field : 'deptName',
+							title : '部门'
+						},
+						{
+							field : 'quotasGrossMargin',
+							title : '毛利任务'
+						},
+						{
+							field : 'quotasConsumption',
+							title : '消耗任务'
+						},
+						{
+							field : 'totalSummation',
+							title : '消耗完成金额'
+						},
+						{
+							field : 'totalGrossMargin',
+							title : '毛利完成金额'
+						},
+						{
+							field : 'consumptionRate',
+							title : '消耗完成率'
+						},
+						{
+							field : 'grossMarginRate',
+							title : '毛利完成率'
+						}]
+				]
+			};
+			$.table.init(options);
+		});
+
+		$(function() {
+			var options = {
+				id: "bootstrap-table-1",
+				url: prefix + "/rankGrossMarginList",
+				showSearch: false,
+				showRefresh: false,
+				showToggle: false,
+				showColumns: false,
+				columns: [
+						[
+							{
+								title : '毛利排名列表',
+								align : 'center',
+								colspan : 6
+							}
+						],
+						[{
+					checkbox: true
+				},
+					{
+						field : 'rownum',
+						title : '毛利排名'
+					},
+					{
+						field : 'saleManager',
+						title : '销售经理'
+					},
+					{
+						field : 'quotas',
+						title : '毛利任务'
+					},
+					{
+						field : 'grossMargin',
+						title : '毛利实际完成'
+					},
+					{
+						field : 'rate',
+						title : '毛利完成率'
+					}]
+						]
+			};
+			$.table.init(options);
+		});
+
+		$(function() {
+			var options = {
+				id: "bootstrap-table-2",
+				url: prefix + "/rankConsumptionlist",
+				showSearch: false,
+				showRefresh: false,
+				showToggle: false,
+				showColumns: false,
+				columns: [
+						[
+							{
+								title : '业绩排名列表',
+								align : 'center',
+								colspan : 6
+							}
+						],
+						[{
+					checkbox: true
+				},
+					{
+						field : 'rownum',
+						title : '业绩消耗排名'
+					},
+					{
+						field : 'saleManager',
+						title : '销售经理'
+					},
+					{
+						field : 'quotas',
+						title : '业绩消耗总任务'
+					},
+					{
+						field : 'summation',
+						title : '业绩消耗完成'
+					},
+					{
+						field : 'rate',
+						title : '业绩消耗完成率'
+					}]
+						]
+			};
+			$.table.init(options);
+		});
+
+	</script>
+</body>
+</html>

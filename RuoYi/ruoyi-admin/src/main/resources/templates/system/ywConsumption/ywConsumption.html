@@ -23,40 +23,28 @@
 							</li>
 
 							<li>
-								运营收入：<input type="text" name="operatingIncome"/>
-							</li>
-
-							<li>
-								补优惠：<input type="text" name="discounts"/>
-							</li>
-
-							<li>
-								原生包段：<input type="text" name="ysbd"/>
-							</li>
-
-							<li>
-								合计：<input type="text" name="summation"/>
+								期间：<input type="text" name="quarter"/>
 							</li>
 
 							<li>
 								创建者：<input type="text" name="createBy"/>
 							</li>
 
-							<li>
-								创建时间：<input type="text" name="createTime"/>
-							</li>
+<!--							<li>-->
+<!--								创建时间：<input type="text" name="createTime"/>-->
+<!--							</li>-->
 
-							<li>
-								更新者：<input type="text" name="updateBy"/>
-							</li>
+<!--							<li>-->
+<!--								更新者：<input type="text" name="updateBy"/>-->
+<!--							</li>-->
 
-							<li>
-								更新时间：<input type="text" name="updateTime"/>
-							</li>
+<!--							<li>-->
+<!--								更新时间：<input type="text" name="updateTime"/>-->
+<!--							</li>-->
 
-							<li>
-								备注：<input type="text" name="remark"/>
-							</li>
+<!--							<li>-->
+<!--								备注：<input type="text" name="remark"/>-->
+<!--							</li>-->
 
 							<li>
 								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
@@ -147,6 +135,11 @@
 				{
 					field : 'summation', 
 					title : '合计',
+					sortable: true
+				},
+				{
+					field : 'quarter',
+					title : '期间',
 					sortable: true
 				},
 				{

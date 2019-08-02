@@ -114,7 +114,7 @@ public class YwGrossMarginsServiceImpl implements IYwGrossMarginsService {
                     List<YwGrossMargins> ywGrossMarginsList = selectYwGrossMarginsList(selectYwGrossMargins);
                     if (ywGrossMarginsList.size() != 0) {
                         YwGrossMargins updateYwGrossMarginsVO = ywGrossMarginsList.get(0);
-                        updateYwGrossMarginsVO.setQ2GrossMargin(ywGrossMargins.getQ2GrossMargin());
+                        updateYwGrossMarginsVO.setGrossMargin(ywGrossMargins.getGrossMargin());
                         successMsg.append("<br/>" + successNum + "、销售经理 " + ywGrossMargins.getSalesManager() + " 更新成功");
                         updateYwGrossMargins(updateYwGrossMarginsVO);
                         continue;

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.TotalGatherMapper">
+
+    <resultMap id="YwTotalGatherResult" type="YwTotalGather">
+        <result column="dept_name" property="deptName"/>
+        <result column="quotasGrossMargin" property="quotasGrossMargin"/>
+        <result column="quotasConsumption" property="quotasConsumption"/>
+        <result column="totalSummation" property="totalSummation"/>
+        <result column="totalGrossMargin" property="totalGrossMargin"/>
+        <result column="consumptionRate" property="consumptionRate"/>
+        <result column="grossMarginRate" property="grossMarginRate"/>
+    </resultMap>
+
+    <select id="selectTotalGather" resultMap="YwTotalGatherResult">
+        SELECT
+            tb1.dept_name,
+            tb1.quotasConsumption,
+            tb2.quotasGrossMargin,
+            tb3.totalSummation,
+            tb4.totalGrossMargin,
+            concat( round( tb3.totalSummation / tb1.quotasConsumption * 100, 2 ), '%' ) consumptionRate,
+            concat( round( tb4.totalGrossMargin / tb2.quotasGrossMargin * 100, 2 ), '%' ) grossMarginRate
+        FROM
+            (
+            SELECT
+                de.dept_id,
+                de.dept_name,
+                sum( ta.quotas ) quotasConsumption
+            FROM
+                yw_task ta
+                LEFT JOIN sys_user us ON ta.sale_manager = us.user_name
+                LEFT JOIN sys_dept de ON us.dept_id = de.dept_id
+            WHERE
+                ta.type = '消耗'
+            GROUP BY
+                de.dept_id
+            ) tb1
+            LEFT JOIN (
+            SELECT
+                de.dept_id,
+                de.dept_name,
+                sum( ta.quotas ) quotasGrossMargin
+            FROM
+                yw_task ta
+                LEFT JOIN sys_user us ON ta.sale_manager = us.user_name
+                LEFT JOIN sys_dept de ON us.dept_id = de.dept_id
+            WHERE
+                ta.type = '毛利'
+            GROUP BY
+                de.dept_id
+            ) tb2 ON tb1.dept_id = tb2.dept_id
+            LEFT JOIN (
+            SELECT
+                us1.dept_id,
+                ifnull( sum( con.summation ), '0' ) totalSummation
+            FROM
+                yw_consumption con
+                LEFT JOIN sys_user us1 ON con.sale_manager = us1.user_name
+            GROUP BY
+                us1.dept_id
+            ) tb3 ON tb1.dept_id = tb3.dept_id
+            LEFT JOIN (
+            SELECT
+                us2.dept_id,
+                ifnull( sum( gro.gross_margin ), '0' ) totalGrossMargin
+            FROM
+                yw_gross_margins gro
+                LEFT JOIN sys_user us2 ON gro.sales_manager = us2.user_name
+            GROUP BY
+            us2.dept_id
+            ) tb4 ON tb4.dept_id = tb1.dept_id
+    </select>
+
+    <resultMap id="YwGatherGrossMarginResult" type="YwGatherGrossMargin">
+        <result column="rownum" property="rownum"/>
+        <result column="sale_manager" property="saleManager"/>
+        <result column="quotas" property="quotas"/>
+        <result column="gross_margin" property="grossMargin"/>
+        <result column="rate" property="rate"/>
+    </resultMap>
+
+    <select id="selectRankGrossMarginList" resultMap="YwGatherGrossMarginResult">
+
+        select rownum,sale_manager,quotas,gross_margin,rate from (
+        select a.sale_manager,a.quotas,a.gross_margin,a.rate,@rownum := @rownum + 1 rownum from (
+        select tb1.sale_manager,tb1.quotas,tb2.gross_margin,concat(round(tb2.gross_margin/tb1.quotas*100,2),'%') rate from
+        (select ta.sale_manager,ifnull(sum(ta.quotas),'0') quotas from yw_task ta group by ta.sale_manager,ta.type having ta.type = '毛利' ) tb1
+        left join
+        (select gm.sales_manager,sum(gm.gross_margin) gross_margin from yw_gross_margins gm group by gm.sales_manager) tb2
+        on tb1.sale_manager = tb2.sales_manager order by rate
+        ) a,(SELECT @rownum := 0) b) c
+
+    </select>
+
+    <resultMap id="YwGatherConsumptionResult" type="YwGatherConsumption">
+        <result column="rownum" property="rownum"/>
+        <result column="sale_manager" property="saleManager"/>
+        <result column="quotas" property="quotas"/>
+        <result column="summation" property="summation"/>
+        <result column="rate" property="rate"/>
+    </resultMap>
+
+    <select id="selectRankConsumptionList" resultMap="YwGatherConsumptionResult">
+
+        select rownum,sale_manager,quotas,summation,rate from (
+        select a.sale_manager,a.quotas,a.summation,a.rate,@rownum := @rownum + 1 rownum from (
+        select tb1.sale_manager,tb1.quotas,tb2.summation,concat(round(tb2.summation/tb1.quotas*100,2),'%') rate from
+        (select ta.sale_manager,ifnull(sum(ta.quotas),'0') quotas from yw_task ta group by ta.sale_manager,ta.type having ta.type = '消耗' ) tb1
+        left join
+        (select con.sale_manager,sum(con.summation) summation from yw_consumption con group by con.sale_manager) tb2
+        on tb1.sale_manager = tb2.sale_manager order by rate
+        ) a,(SELECT @rownum := 0) b) c
+
+    </select>
+    
+</mapper>
