@@ -33,11 +33,21 @@ public class YwGrossMargins extends BaseEntity
 	/** 毛利 */
 	@Excel(name = "毛利", type = Excel.Type.ALL)
 	private BigDecimal grossMargin;
+	/** 考核期间 */
+	@Excel(name = "考核期间", type = Excel.Type.ALL)
+	private String term;
 	/** 期间 */
-	@Excel(name = "期间", type = Excel.Type.ALL)
 	private String quarter;
 
-	public void setId(Long id) 
+	public String getTerm() {
+		return term;
+	}
+
+	public void setTerm(String term) {
+		this.term = term;
+	}
+
+	public void setId(Long id)
 	{
 		this.id = id;
 	}

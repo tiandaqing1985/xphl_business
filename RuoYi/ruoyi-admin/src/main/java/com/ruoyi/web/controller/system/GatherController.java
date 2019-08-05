@@ -68,12 +68,7 @@ public class GatherController extends BaseController {
         Gather sumGather = null;
         String name = null;
         for (Gather g : list) {
-            exportlist.add(g);
-            if (name == null || !name.equals(g.getSalesManager())) {
-                //若总计VO存在则插入导出list
-                if (sumGather != null) {
-                    exportlist.add(sumGather);
-                }
+            if (name == null) {
                 //初始化合计记录的VO
                 name = g.getSalesManager();
                 sumGather = new Gather();
@@ -81,12 +76,27 @@ public class GatherController extends BaseController {
                 sumGather.setDeptName("合计");
                 sumGather.setQuotas(g.getQuotas());
                 sumGather.setSummation(g.getSummation());
+                sumGather.setXhptAmt(g.getXhptAmt());
             } else if (name.equals(g.getSalesManager())) {
                 //统计每人的总计
                 sumGather.setQuotas(g.getQuotas().add(sumGather.getQuotas()));
                 sumGather.setSummation(g.getSummation().add(sumGather.getSummation()));
+                sumGather.setXhptAmt(g.getXhptAmt().add(sumGather.getXhptAmt()));
+            } else if (!name.equals(g.getSalesManager())) {
+                //将计算的总计放入导出list中
+                sumGather.setXhwcRate(sumGather.getSummation().divide(sumGather.getQuotas(),2,BigDecimal.ROUND_HALF_UP).toString()+"%");
+                exportlist.add(sumGather);
+                name = g.getSalesManager();
+                sumGather = new Gather();
+                sumGather.setArea(name);
+                sumGather.setDeptName("合计");
+                sumGather.setQuotas(g.getQuotas());
+                sumGather.setSummation(g.getSummation());
+                sumGather.setXhptAmt(g.getXhptAmt());
             }
+            exportlist.add(g);
         }
+        sumGather.setXhwcRate(sumGather.getSummation().divide(sumGather.getQuotas(),2,BigDecimal.ROUND_HALF_UP).toString()+"%");
         exportlist.add(sumGather);
 
         ExcelUtil<Gather> util = new ExcelUtil<Gather>(Gather.class);

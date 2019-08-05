@@ -17,10 +17,11 @@
         <result property="updateTime" column="update_time"/>
         <result property="remark" column="remark"/>
         <result property="quarter" column="quarter"/>
+        <result property="term" column="term"/>
     </resultMap>
 
     <sql id="selectYwGrossMarginsVo">
-        select id, sales_manager, media, advertiser, signatory, gross_margin, quarter, create_by, create_time, update_by, update_time, remark from yw_gross_margins
+        select id, sales_manager, media, advertiser, signatory, gross_margin, quarter, term, create_by, create_time, update_by, update_time, remark from yw_gross_margins
     </sql>
 
     <select id="selectYwGrossMarginsList" parameterType="YwGrossMargins" resultMap="YwGrossMarginsResult">
@@ -33,6 +34,7 @@
             <if test="signatory != null  and signatory != '' ">and signatory = #{signatory}</if>
             <if test="grossMargin != null ">and gross_margin = #{grossMargin}</if>
             <if test="quarter != null  and quarter != '' ">and quarter = #{quarter}</if>
+            <if test="term != null  and term != '' ">and term = #{term}</if>
             <if test="createBy != null  and createBy != '' ">and create_by = #{createBy}</if>
             <if test="createTime != null ">and create_time = #{createTime}</if>
             <if test="updateBy != null  and updateBy != '' ">and update_by = #{updateBy}</if>
@@ -60,6 +62,7 @@
             <if test="updateTime != null  ">update_time,</if>
             <if test="remark != null  and remark != ''  ">remark,</if>
             <if test="quarter != null  and quarter != ''  ">quarter,</if>
+            <if test="term != null  and term != ''  ">term,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="salesManager != null  and salesManager != ''  ">#{salesManager},</if>
@@ -73,6 +76,7 @@
             <if test="updateTime != null  ">#{updateTime},</if>
             <if test="remark != null  and remark != ''  ">#{remark},</if>
             <if test="quarter != null  and quarter != ''  ">#{quarter},</if>
+            <if test="term != null  and term != ''  ">#{term},</if>
         </trim>
     </insert>
 
@@ -90,6 +94,7 @@
             <if test="updateTime != null  ">update_time = #{updateTime},</if>
             <if test="remark != null  and remark != ''  ">remark = #{remark},</if>
             <if test="quarter != null  and quarter != ''  ">quarter = #{quarter},</if>
+            <if test="term != null  and term != ''  ">term = #{term},</if>
         </trim>
         where id = #{id}
     </update>

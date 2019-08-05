@@ -106,6 +106,7 @@ public class YwGrossMarginsServiceImpl implements IYwGrossMarginsService {
         YwGrossMargins selectYwGrossMargins = new YwGrossMargins();
         for (YwGrossMargins ywGrossMargins : grossMarginList) {
             try {
+                ywGrossMargins.setQuarter(getQuarter(ywGrossMargins.getTerm()));
                 if (updateSupport) {
                     selectYwGrossMargins.setSalesManager(ywGrossMargins.getSalesManager());
                     selectYwGrossMargins.setSignatory(ywGrossMargins.getSignatory());
@@ -142,4 +143,29 @@ public class YwGrossMarginsServiceImpl implements IYwGrossMarginsService {
         return successMsg.toString();
 
     }
+
+    private String getQuarter(String term) {
+        String quarter = null;
+        if (term == null || term.equals("")) {
+            return null;
+        }
+        String[] terms = term.split("-");
+        String[] dateStr = terms[0].split("\\.");
+        if (dateStr[1].equals("1")) {
+            //第一季度
+            quarter = "Q1";
+        } else if (dateStr[1].equals("4")) {
+            //第二季度
+            quarter = "Q2";
+        } else if (dateStr[1].equals("7")) {
+            //第三季度
+            quarter = "Q3";
+        } else if (dateStr[1].equals("10")) {
+            //第四度
+            quarter = "Q4";
+        }
+        quarter = dateStr[0].substring(2) + "年" + quarter;
+        return quarter;
+    }
+
 }

@@ -18,6 +18,8 @@ public class Gather extends BaseEntity
 	
 	/** 主键 */
 	private Long id;
+	/** 考核期间 */
+	private String term;
 	/** 类型 */
 	@Excel(name="类型",type = Excel.Type.EXPORT)
 	private String type;
@@ -52,7 +54,15 @@ public class Gather extends BaseEntity
 	@Excel(name="完成率",type = Excel.Type.EXPORT)
 	private String xhwcRate;
 
-	public void setId(Long id) 
+	public String getTerm() {
+		return term;
+	}
+
+	public void setTerm(String term) {
+		this.term = term;
+	}
+
+	public void setId(Long id)
 	{
 		this.id = id;
 	}

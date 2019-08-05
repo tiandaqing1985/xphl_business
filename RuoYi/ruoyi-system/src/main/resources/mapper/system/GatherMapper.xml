@@ -17,10 +17,11 @@
         <result property="xhptAmt" column="xhptAmt"/>
         <result property="timeSchedule" column="timeSchedule"/>
         <result property="xhwcRate" column="xhwcRate"/>
+        <result property="term" column="term"/>
     </resultMap>
 
     <select id="selectGatherList" parameterType="Gather" resultMap="GatherResult">
-        SELECT type,quarter,area,dept_name,sales_manager,media,quotas,summation,xhwcRate from (
+        SELECT type,quarter,area,dept_name,sales_manager,media,quotas,summation,xhwcRate,term from (
         SELECT
         tb1.type,
         tb1.quarter,
@@ -30,6 +31,7 @@
         tb1.media,
         tb1.quotas,
         IFNULL( tb2.summation, '0' ) summation,
+        tb2.term,
         concat( round( IFNULL( tb2.summation, '0' ) / tb1.quotas * 100, 2 ), '%' ) xhwcRate
         FROM
         (
@@ -58,6 +60,7 @@
             d.sales_manager,
             d.media,
             d.quarter,
+            d.term,
             sum( d.gross_margin ) summation
         FROM
             yw_gross_margins d
@@ -77,6 +80,7 @@
         tb1.media,
         tb1.quotas,
         IFNULL( tb2.summation, '0' ) summation,
+        tb2.term,
         concat( round( IFNULL( tb2.summation, '0' ) / tb1.quotas * 100, 2 ), '%' ) xhwcRate
         FROM
         (
@@ -105,7 +109,8 @@
             d.sale_manager,
             d.media,
             d.quarter,
-            sum( d.summation ) summation
+            sum( d.summation ) summation,
+            d.term
         FROM
             yw_consumption d
         GROUP BY
