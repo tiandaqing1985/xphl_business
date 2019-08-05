@@ -1,89 +1,93 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.system.mapper.YwConsumptionMapper">
-    
+
     <resultMap type="YwConsumption" id="YwConsumptionResult">
-        <result property="id"    column="id"    />
-        <result property="saleManager"    column="sale_manager"    />
-        <result property="advertiser"    column="advertiser"    />
-        <result property="media"    column="media"    />
-        <result property="operatingIncome"    column="operating_income"    />
-        <result property="discounts"    column="discounts"    />
-        <result property="ysbd"    column="ysbd"    />
-        <result property="summation"    column="summation"    />
-        <result property="createBy"    column="create_by"    />
-        <result property="createTime"    column="create_time"    />
-        <result property="updateBy"    column="update_by"    />
-        <result property="updateTime"    column="update_time"    />
-        <result property="remark"    column="remark"    />
-        <result property="quarter"    column="quarter"    />
+        <result property="id" column="id"/>
+        <result property="saleManager" column="sale_manager"/>
+        <result property="advertiser" column="advertiser"/>
+        <result property="media" column="media"/>
+        <result property="operatingIncome" column="operating_income"/>
+        <result property="discounts" column="discounts"/>
+        <result property="ysbd" column="ysbd"/>
+        <result property="summation" column="summation"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+        <result property="quarter" column="quarter"/>
+        <result property="term" column="term"/>
     </resultMap>
-	
-	<sql id="selectYwConsumptionVo">
-        select id, sale_manager, advertiser, media, operating_income, discounts, ysbd, summation, quarter, create_by, create_time, update_by, update_time, remark from yw_consumption
+
+    <sql id="selectYwConsumptionVo">
+        select id, sale_manager, advertiser, media, operating_income, discounts, ysbd, summation, quarter, term, create_by, create_time, update_by, update_time, remark from yw_consumption
     </sql>
 
     <select id="selectYwConsumptionList" parameterType="YwConsumption" resultMap="YwConsumptionResult">
         <include refid="selectYwConsumptionVo"/>
-        <where>  
-            <if test="id != null "> and id = #{id}</if>
-             <if test="saleManager != null  and saleManager != '' "> and sale_manager = #{saleManager}</if>
-             <if test="advertiser != null  and advertiser != '' "> and advertiser = #{advertiser}</if>
-             <if test="media != null  and media != '' "> and media = #{media}</if>
-             <if test="operatingIncome != null "> and operating_income = #{operatingIncome}</if>
-             <if test="discounts != null "> and discounts = #{discounts}</if>
-             <if test="ysbd != null "> and ysbd = #{ysbd}</if>
-             <if test="summation != null "> and summation = #{summation}</if>
-             <if test="createBy != null  and createBy != '' "> and create_by = #{createBy}</if>
-             <if test="createTime != null "> and create_time = #{createTime}</if>
-             <if test="updateBy != null  and updateBy != '' "> and update_by = #{updateBy}</if>
-             <if test="updateTime != null "> and update_time = #{updateTime}</if>
-             <if test="remark != null  and remark != '' "> and remark = #{remark}</if>
-             <if test="quarter != null  and quarter != '' "> and quarter = #{quarter}</if>
-         </where>
+        <where>
+            <if test="id != null ">and id = #{id}</if>
+            <if test="saleManager != null  and saleManager != '' ">and sale_manager = #{saleManager}</if>
+            <if test="advertiser != null  and advertiser != '' ">and advertiser = #{advertiser}</if>
+            <if test="media != null  and media != '' ">and media = #{media}</if>
+            <if test="operatingIncome != null ">and operating_income = #{operatingIncome}</if>
+            <if test="discounts != null ">and discounts = #{discounts}</if>
+            <if test="ysbd != null ">and ysbd = #{ysbd}</if>
+            <if test="summation != null ">and summation = #{summation}</if>
+            <if test="createBy != null  and createBy != '' ">and create_by = #{createBy}</if>
+            <if test="createTime != null ">and create_time = #{createTime}</if>
+            <if test="updateBy != null  and updateBy != '' ">and update_by = #{updateBy}</if>
+            <if test="updateTime != null ">and update_time = #{updateTime}</if>
+            <if test="remark != null  and remark != '' ">and remark = #{remark}</if>
+            <if test="quarter != null  and quarter != '' ">and quarter = #{quarter}</if>
+            <if test="term != null  and term != '' ">and term = #{term}</if>
+        </where>
     </select>
-    
+
     <select id="selectYwConsumptionById" parameterType="Long" resultMap="YwConsumptionResult">
         <include refid="selectYwConsumptionVo"/>
         where id = #{id}
     </select>
-        
+
     <insert id="insertYwConsumption" parameterType="YwConsumption" useGeneratedKeys="true" keyProperty="id">
         insert into yw_consumption
-		<trim prefix="(" suffix=")" suffixOverrides=",">
-			<if test="saleManager != null  and saleManager != ''  ">sale_manager,</if>
-			<if test="advertiser != null  and advertiser != ''  ">advertiser,</if>
-			<if test="media != null  and media != ''  ">media,</if>
-			<if test="operatingIncome != null  ">operating_income,</if>
-			<if test="discounts != null  ">discounts,</if>
-			<if test="ysbd != null  ">ysbd,</if>
-			<if test="summation != null  ">summation,</if>
-			<if test="createBy != null  and createBy != ''  ">create_by,</if>
-			<if test="createTime != null  ">create_time,</if>
-			<if test="updateBy != null  and updateBy != ''  ">update_by,</if>
-			<if test="updateTime != null  ">update_time,</if>
-			<if test="remark != null  and remark != ''  ">remark,</if>
-			<if test="quarter != null  and quarter != ''  ">quarter,</if>
-         </trim>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="saleManager != null  and saleManager != ''  ">sale_manager,</if>
+            <if test="advertiser != null  and advertiser != ''  ">advertiser,</if>
+            <if test="media != null  and media != ''  ">media,</if>
+            <if test="operatingIncome != null  ">operating_income,</if>
+            <if test="discounts != null  ">discounts,</if>
+            <if test="ysbd != null  ">ysbd,</if>
+            <if test="summation != null  ">summation,</if>
+            <if test="createBy != null  and createBy != ''  ">create_by,</if>
+            <if test="createTime != null  ">create_time,</if>
+            <if test="updateBy != null  and updateBy != ''  ">update_by,</if>
+            <if test="updateTime != null  ">update_time,</if>
+            <if test="remark != null  and remark != ''  ">remark,</if>
+            <if test="quarter != null  and quarter != ''  ">quarter,</if>
+            <if test="term != null  and term != ''  ">term,</if>
+        </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-			<if test="saleManager != null  and saleManager != ''  ">#{saleManager},</if>
-			<if test="advertiser != null  and advertiser != ''  ">#{advertiser},</if>
-			<if test="media != null  and media != ''  ">#{media},</if>
-			<if test="operatingIncome != null  ">#{operatingIncome},</if>
-			<if test="discounts != null  ">#{discounts},</if>
-			<if test="ysbd != null  ">#{ysbd},</if>
-			<if test="summation != null  ">#{summation},</if>
-			<if test="createBy != null  and createBy != ''  ">#{createBy},</if>
-			<if test="createTime != null  ">#{createTime},</if>
-			<if test="updateBy != null  and updateBy != ''  ">#{updateBy},</if>
-			<if test="updateTime != null  ">#{updateTime},</if>
-			<if test="remark != null  and remark != ''  ">#{remark},</if>
-			<if test="quarter != null  and quarter != ''  ">#{quarter},</if>
-         </trim>
+            <if test="saleManager != null  and saleManager != ''  ">#{saleManager},</if>
+            <if test="advertiser != null  and advertiser != ''  ">#{advertiser},</if>
+            <if test="media != null  and media != ''  ">#{media},</if>
+            <if test="operatingIncome != null  ">#{operatingIncome},</if>
+            <if test="discounts != null  ">#{discounts},</if>
+            <if test="ysbd != null  ">#{ysbd},</if>
+            <if test="summation != null  ">#{summation},</if>
+            <if test="createBy != null  and createBy != ''  ">#{createBy},</if>
+            <if test="createTime != null  ">#{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''  ">#{updateBy},</if>
+            <if test="updateTime != null  ">#{updateTime},</if>
+            <if test="remark != null  and remark != ''  ">#{remark},</if>
+            <if test="quarter != null  and quarter != ''  ">#{quarter},</if>
+            <if test="term != null  and term != ''  ">#{term},</if>
+        </trim>
     </insert>
-	 
+
     <update id="updateYwConsumption" parameterType="YwConsumption">
         update yw_consumption
         <trim prefix="SET" suffixOverrides=",">
@@ -100,19 +104,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateTime != null  ">update_time = #{updateTime},</if>
             <if test="remark != null  and remark != ''  ">remark = #{remark},</if>
             <if test="quarter != null  and quarter != ''  ">quarter = #{quarter},</if>
+            <if test="term != null  and term != ''  ">term = #{term},</if>
         </trim>
         where id = #{id}
     </update>
 
-	<delete id="deleteYwConsumptionById" parameterType="Long">
+    <delete id="deleteYwConsumptionById" parameterType="Long">
         delete from yw_consumption where id = #{id}
     </delete>
-	
+
     <delete id="deleteYwConsumptionByIds" parameterType="String">
-        delete from yw_consumption where id in 
+        delete from yw_consumption where id in
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>
     </delete>
-    
+
 </mapper>

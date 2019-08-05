@@ -2,6 +2,7 @@ package com.ruoyi.web.controller.system;
 
 import java.util.List;
 
+import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.framework.util.ShiroUtils;
 import com.ruoyi.system.domain.SysUser;
 import com.ruoyi.system.domain.YwGrossMargins;
@@ -49,7 +50,6 @@ public class YwTaskController extends BaseController
 	/**
 	 * 查询任务列表
 	 */
-	@RequiresPermissions("system:ywTask:list")
 	@PostMapping("/list")
 	@ResponseBody
 	public TableDataInfo list(YwTask ywTask)
@@ -63,7 +63,6 @@ public class YwTaskController extends BaseController
 	/**
 	 * 导出任务列表
 	 */
-	@RequiresPermissions("system:ywTask:export")
     @PostMapping("/export")
     @ResponseBody
     public AjaxResult export(YwTask ywTask)
@@ -85,12 +84,14 @@ public class YwTaskController extends BaseController
 	/**
 	 * 新增保存任务
 	 */
-	@RequiresPermissions("system:ywTask:add")
 	@Log(title = "任务", businessType = BusinessType.INSERT)
 	@PostMapping("/add")
 	@ResponseBody
 	public AjaxResult addSave(YwTask ywTask)
-	{		
+	{
+		ywTask.setCreateTime(DateUtils.getNowDate());
+		String operName = ShiroUtils.getSysUser().getLoginName();
+		ywTask.setCreateBy(operName);
 		return toAjax(ywTaskService.insertYwTask(ywTask));
 	}
 
@@ -113,14 +114,16 @@ public class YwTaskController extends BaseController
 	@PostMapping("/edit")
 	@ResponseBody
 	public AjaxResult editSave(YwTask ywTask)
-	{		
+	{
+		ywTask.setUpdateTime(DateUtils.getNowDate());
+		String operName = ShiroUtils.getSysUser().getLoginName();
+		ywTask.setUpdateBy(operName);
 		return toAjax(ywTaskService.updateYwTask(ywTask));
 	}
 	
 	/**
 	 * 删除任务
 	 */
-	@RequiresPermissions("system:ywTask:remove")
 	@Log(title = "任务", businessType = BusinessType.DELETE)
 	@PostMapping( "/remove")
 	@ResponseBody
@@ -152,7 +155,6 @@ public class YwTaskController extends BaseController
 	 * 导入模板
 	 * @return
 	 */
-	@RequiresPermissions("system:user:view")
 	@GetMapping("/importTemplate")
 	@ResponseBody
 	public AjaxResult importTemplate()

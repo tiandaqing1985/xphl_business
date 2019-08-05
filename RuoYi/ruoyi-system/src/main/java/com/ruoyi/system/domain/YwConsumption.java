@@ -39,9 +39,19 @@ public class YwConsumption extends BaseEntity
 	/** 合计 */
 	@Excel(name="合计",type = Excel.Type.ALL)
 	private BigDecimal summation;
+	/** 考核期间 */
+	@Excel(name = "考核期间", type = Excel.Type.ALL)
+	private String term;
 	/** 期间 */
-	@Excel(name = "期间", type = Excel.Type.ALL)
 	private String quarter;
+
+	public String getTerm() {
+		return term;
+	}
+
+	public void setTerm(String term) {
+		this.term = term;
+	}
 
 	public String getQuarter() {
 		return quarter;

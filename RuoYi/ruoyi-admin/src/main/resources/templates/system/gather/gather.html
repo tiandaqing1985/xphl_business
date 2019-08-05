@@ -97,24 +97,24 @@
 						for (var i in value) {
 							sumBalance += parseFloat(value[i].quotas);
 						}
-						return "总计：" + sumBalance;
+						return "总计：" + sumBalance.toFixed(2);
 					}
 				},
 				{
 					field : 'summation', 
-					title : '完成消耗金额',
+					title : '完成金额',
 					sortable: true,
 					footerFormatter:function (value) {
 						var sumBalance = 0;
 						for (var i in value) {
 							sumBalance += parseFloat(value[i].summation);
 						}
-						return "总计：" + sumBalance;
+						return "总计：" + sumBalance.toFixed(2);
 					}
 				},
 				{
 					field : 'xhptAmt', 
-					title : '消耗平推完成金额',
+					title : '平推完成金额',
 					sortable: true
 				},
 				{

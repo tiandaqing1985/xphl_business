@@ -2,6 +2,7 @@ package com.ruoyi.web.controller.system;
 
 import java.util.List;
 
+import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.framework.util.ShiroUtils;
 import com.ruoyi.system.domain.SysUser;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -86,7 +87,11 @@ public class YwGrossMarginsController extends BaseController
 	@PostMapping("/add")
 	@ResponseBody
 	public AjaxResult addSave(YwGrossMargins ywGrossMargins)
-	{		
+	{
+		ywGrossMargins.setCreateTime(DateUtils.getNowDate());
+		String operName = ShiroUtils.getSysUser().getLoginName();
+		ywGrossMargins.setCreateBy(operName);
+		ywGrossMargins.setQuarter(getQuarter(ywGrossMargins.getTerm()));
 		return toAjax(ywGrossMarginsService.insertYwGrossMargins(ywGrossMargins));
 	}
 
@@ -108,7 +113,10 @@ public class YwGrossMarginsController extends BaseController
 	@PostMapping("/edit")
 	@ResponseBody
 	public AjaxResult editSave(YwGrossMargins ywGrossMargins)
-	{		
+	{
+		ywGrossMargins.setUpdateTime(DateUtils.getNowDate());
+		String operName = ShiroUtils.getSysUser().getLoginName();
+		ywGrossMargins.setUpdateBy(operName);
 		return toAjax(ywGrossMarginsService.updateYwGrossMargins(ywGrossMargins));
 	}
 	
@@ -153,6 +161,30 @@ public class YwGrossMarginsController extends BaseController
 	{
 		ExcelUtil<YwGrossMargins> util = new ExcelUtil<YwGrossMargins>(YwGrossMargins.class);
 		return util.importTemplateExcel("毛利情况");
+	}
+	//根据考核期间获取季度
+	private String getQuarter(String term) {
+		String quarter = null;
+		if (term == null || term.equals("")) {
+			return null;
+		}
+		String[] terms = term.split("-");
+		String[] dateStr = terms[0].split("\\.");
+		if (dateStr[1].equals("1")) {
+			//第一季度
+			quarter = "Q1";
+		} else if (dateStr[1].equals("4")) {
+			//第二季度
+			quarter = "Q2";
+		} else if (dateStr[1].equals("7")) {
+			//第三季度
+			quarter = "Q3";
+		} else if (dateStr[1].equals("10")) {
+			//第四度
+			quarter = "Q4";
+		}
+		quarter = dateStr[0].substring(2) + "年" + quarter;
+		return quarter;
 	}
 
 }

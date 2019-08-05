@@ -90,7 +90,7 @@
         (select ta.sale_manager,ifnull(sum(ta.quotas),'0') quotas from yw_task ta group by ta.sale_manager,ta.type having ta.type = '毛利' ) tb1
         left join
         (select gm.sales_manager,sum(gm.gross_margin) gross_margin from yw_gross_margins gm group by gm.sales_manager) tb2
-        on tb1.sale_manager = tb2.sales_manager order by rate
+        on tb1.sale_manager = tb2.sales_manager order by rate desc
         ) a,(SELECT @rownum := 0) b) c
 
     </select>
@@ -111,7 +111,7 @@
         (select ta.sale_manager,ifnull(sum(ta.quotas),'0') quotas from yw_task ta group by ta.sale_manager,ta.type having ta.type = '消耗' ) tb1
         left join
         (select con.sale_manager,sum(con.summation) summation from yw_consumption con group by con.sale_manager) tb2
-        on tb1.sale_manager = tb2.sale_manager order by rate
+        on tb1.sale_manager = tb2.sale_manager order by rate desc
         ) a,(SELECT @rownum := 0) b) c
 
     </select>
