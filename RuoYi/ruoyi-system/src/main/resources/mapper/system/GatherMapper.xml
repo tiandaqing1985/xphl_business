@@ -20,21 +20,22 @@
     </resultMap>
 
     <select id="selectGatherList" parameterType="Gather" resultMap="GatherResult">
-        SELECT type,QUARTER,area,dept_name,sales_manager,media,quotas,summation from (
+        SELECT type,quarter,area,dept_name,sales_manager,media,quotas,summation,xhwcRate from (
         SELECT
         tb1.type,
-        tb1.QUARTER,
+        tb1.quarter,
         tb1.area,
         tb1.dept_name,
         tb1.sale_manager sales_manager,
         tb1.media,
         tb1.quotas,
-        IFNULL( tb2.summation, '0' ) summation
+        IFNULL( tb2.summation, '0' ) summation,
+        concat( round( IFNULL( tb2.summation, '0' ) / tb1.quotas * 100, 2 ), '%' ) xhwcRate
         FROM
         (
         SELECT
             c.type,
-            c.QUARTER,
+            c.quarter,
             a.area,
             b.dept_name,
             c.sale_manager,
@@ -47,7 +48,7 @@
         GROUP BY
             c.sale_manager,
             c.media,
-            c.QUARTER
+            c.quarter
         HAVING
             c.type = '毛利'
             <if test="quarter != null and quarter != ''">and c.quarter= #{quarter}</if>
@@ -69,13 +70,14 @@
         union
         SELECT
         tb1.type,
-        tb1.QUARTER,
+        tb1.quarter,
         tb1.area,
         tb1.dept_name,
         tb1.sale_manager sales_manager,
         tb1.media,
         tb1.quotas,
-        IFNULL( tb2.summation, '0' ) summation
+        IFNULL( tb2.summation, '0' ) summation,
+        concat( round( IFNULL( tb2.summation, '0' ) / tb1.quotas * 100, 2 ), '%' ) xhwcRate
         FROM
         (
         SELECT

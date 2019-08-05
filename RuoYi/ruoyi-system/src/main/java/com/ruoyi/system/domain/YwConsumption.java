@@ -19,28 +19,28 @@ public class YwConsumption extends BaseEntity
 	/** 主键id */
 	private Long id;
 	/** 销售经理 */
-	@Excel(name="销售经理",type = Excel.Type.IMPORT)
+	@Excel(name="销售经理",type = Excel.Type.ALL)
 	private String saleManager;
 	/** 广告主名称 */
-	@Excel(name="广告主名称",type = Excel.Type.IMPORT)
+	@Excel(name="广告主名称",type = Excel.Type.ALL)
 	private String advertiser;
 	/** 购买资源 */
-	@Excel(name="购买资源",type = Excel.Type.IMPORT)
+	@Excel(name="购买资源",type = Excel.Type.ALL)
 	private String media;
 	/** 运营收入 */
-	@Excel(name="运营收入",type = Excel.Type.IMPORT)
+	@Excel(name="运营收入",type = Excel.Type.ALL)
 	private BigDecimal operatingIncome;
 	/** 补优惠 */
-	@Excel(name="补优惠",type = Excel.Type.IMPORT)
+	@Excel(name="补优惠",type = Excel.Type.ALL)
 	private BigDecimal discounts;
 	/** 原生包段 */
-	@Excel(name="原生包段",type = Excel.Type.IMPORT)
+	@Excel(name="原生包段",type = Excel.Type.ALL)
 	private BigDecimal ysbd;
 	/** 合计 */
-	@Excel(name="合计",type = Excel.Type.IMPORT)
+	@Excel(name="合计",type = Excel.Type.ALL)
 	private BigDecimal summation;
 	/** 期间 */
-	@Excel(name = "期间", type = Excel.Type.IMPORT)
+	@Excel(name = "期间", type = Excel.Type.ALL)
 	private String quarter;
 
 	public String getQuarter() {

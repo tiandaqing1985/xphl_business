@@ -8,33 +8,33 @@ import java.math.BigDecimal;
 
 /**
  * 毛利情况表 yw_gross_margins
- * 
+ *
  * @author ruoyi
  * @date 2019-08-01
  */
 public class YwGrossMargins extends BaseEntity
 {
 	private static final long serialVersionUID = 1L;
-	
+
 	/** 主键id */
 	private Long id;
 	/** 销售经理 */
-	@Excel(name = "销售经理", type = Excel.Type.IMPORT)
+	@Excel(name = "销售经理", type = Excel.Type.ALL)
 	private String salesManager;
 	/** 媒体 */
-	@Excel(name = "购买媒体", type = Excel.Type.IMPORT)
+	@Excel(name = "购买媒体", type = Excel.Type.ALL)
 	private String media;
 	/** 广告主 */
-	@Excel(name = "广告主", type = Excel.Type.IMPORT)
+	@Excel(name = "广告主", type = Excel.Type.ALL)
 	private String advertiser;
 	/** 签约方 */
-	@Excel(name = "签约方", type = Excel.Type.IMPORT)
+	@Excel(name = "签约方", type = Excel.Type.ALL)
 	private String signatory;
 	/** 毛利 */
-	@Excel(name = "毛利", type = Excel.Type.IMPORT)
+	@Excel(name = "毛利", type = Excel.Type.ALL)
 	private BigDecimal grossMargin;
 	/** 期间 */
-	@Excel(name = "期间", type = Excel.Type.IMPORT)
+	@Excel(name = "期间", type = Excel.Type.ALL)
 	private String quarter;
 
 	public void setId(Long id) 

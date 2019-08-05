@@ -19,6 +19,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
+
+/**
+ * 整体情况汇总
+ */
 @Controller
 @RequestMapping("/system/totalGather")
 public class YwTotalGatherController extends BaseController
@@ -82,7 +86,7 @@ public class YwTotalGatherController extends BaseController
     {
         List<YwTotalGather> list = totalGatherService.selectTotalGather();
         ExcelUtil<YwTotalGather> util = new ExcelUtil<YwTotalGather>(YwTotalGather.class);
-        return util.exportExcel(list, "totalGather");
+        return util.exportExcel(list, "区域消耗毛利汇总");
     }
 
 
@@ -95,7 +99,7 @@ public class YwTotalGatherController extends BaseController
     {
         List<YwGatherConsumption> list = totalGatherService.selectRankConsumptionlist();
         ExcelUtil<YwGatherConsumption> util = new ExcelUtil<YwGatherConsumption>(YwGatherConsumption.class);
-        return util.exportExcel(list, "ywGatherConsumption");
+        return util.exportExcel(list, "消耗排名");
     }
 
 
@@ -108,7 +112,7 @@ public class YwTotalGatherController extends BaseController
     {
         List<YwGatherGrossMargin> list = totalGatherService.selectRankGrossMarginList();
         ExcelUtil<YwGatherGrossMargin> util = new ExcelUtil<YwGatherGrossMargin>(YwGatherGrossMargin.class);
-        return util.exportExcel(list, "ywGatherGrossMargin");
+        return util.exportExcel(list, "毛利排名");
     }
 
 }

@@ -5,39 +5,8 @@
 </head>
 <body class="gray-bg">
      <div class="container-div">
-<!--		<div class="row">-->
-<!--			<div class="col-sm-12 search-collapse">-->
-<!--				<form id="formId">-->
-<!--					<div class="select-list">-->
-<!--						<ul>-->
-<!--							<li>-->
-<!--								类型：<input type="text" name="type"/>-->
-<!--							</li>-->
-
-<!--							<li>-->
-<!--								期间：<input type="text" name="quarter"/>-->
-<!--							</li>-->
-
-<!--							<li>-->
-<!--								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>-->
-<!--								<a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>-->
-<!--							</li>-->
-<!--						</ul>-->
-<!--					</div>-->
-<!--				</form>-->
-<!--			</div>-->
-			
-<!--	        <div class="btn-group-sm" id="toolbar" role="group">-->
-<!--				<a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="system:gather:export">-->
-<!--						<i class="fa fa-download"></i> 导出-->
-<!--				 </a>-->
-<!--			</div>-->
-<!--			<div class="col-sm-12 select-table table-striped">-->
-<!--				<table id="bootstrap-table" data-mobile-responsive="true"></table>-->
-<!--			</div>-->
-<!--		</div>-->
 		 <div class="row">
-			 <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="system:totalGather:export">
+			 <a class="btn btn-warning" onclick="myExportExcel('3')" shiro:hasPermission="system:totalGather:export">
 				 <i class="fa fa-download"></i> 导出
 			 </a>
 			 <div class="col-sm-12 select-table table-striped">
@@ -45,7 +14,7 @@
 			 </div>
 		 </div>
 		 <div class="row">
-			 <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="system:totalGather:export">
+			 <a class="btn btn-warning" onclick="myExportExcel('1')" shiro:hasPermission="system:totalGather:export">
 				 <i class="fa fa-download"></i> 导出
 			 </a>
 			 <div class="col-sm-12 select-table table-striped">
@@ -53,7 +22,7 @@
 			 </div>
 		 </div>
 		 <div class="row">
-			 <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="system:totalGather:export">
+			 <a class="btn btn-warning" onclick="myExportExcel('2')" shiro:hasPermission="system:totalGather:export">
 				 <i class="fa fa-download"></i> 导出
 			 </a>
 			 <div class="col-sm-12 select-table table-striped">
@@ -67,10 +36,28 @@
         var removeFlag = [[${@permission.hasPermi('system:gather:remove')}]];
         var prefix = ctx + "system/totalGather";
 
+        function myExportExcel(id){
+        	if(id == '1'){
+				$.table._option.exportUrl = "毛利排名列表";
+				$.table._option.modalName = prefix + "/exportRankGrossMargin";
+			}
+        	else if(id == '2'){
+				$.table._option.exportUrl = "业绩消耗排名";
+				$.table._option.modalName = prefix + "/exportRankConsumption";
+			}
+        	else if(id == '3'){
+				$.table._option.exportUrl = prefix + "/export";
+				$.table._option.modalName = "华东、华北整体完成率";
+			}
+			$.table.exportExcel();
+		}
+
 		$(function() {
 			var options = {
 				id: "bootstrap-table-3",
 				url: prefix + "/list",
+				exportUrl: prefix + "/export",
+				modalName: "华东、华北整体完成率",
 				showSearch: false,
 				showRefresh: false,
 				showToggle: false,
@@ -123,6 +110,8 @@
 			var options = {
 				id: "bootstrap-table-1",
 				url: prefix + "/rankGrossMarginList",
+				exportUrl: prefix + "/exportRankGrossMargin",
+				modalName: "毛利排名列表",
 				showSearch: false,
 				showRefresh: false,
 				showToggle: false,
@@ -167,6 +156,8 @@
 			var options = {
 				id: "bootstrap-table-2",
 				url: prefix + "/rankConsumptionlist",
+				exportUrl: prefix + "/exportRankConsumption",
+				modalName: "业绩消耗排名",
 				showSearch: false,
 				showRefresh: false,
 				showToggle: false,
@@ -174,7 +165,7 @@
 				columns: [
 						[
 							{
-								title : '业绩排名列表',
+								title : '业绩消耗排名列表',
 								align : 'center',
 								colspan : 6
 							}

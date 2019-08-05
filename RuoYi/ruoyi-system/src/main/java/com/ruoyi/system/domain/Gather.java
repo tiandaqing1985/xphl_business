@@ -1,5 +1,6 @@
 package com.ruoyi.system.domain;
 
+import com.ruoyi.common.annotation.Excel;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.core.domain.BaseEntity;
@@ -18,26 +19,37 @@ public class Gather extends BaseEntity
 	/** 主键 */
 	private Long id;
 	/** 类型 */
+	@Excel(name="类型",type = Excel.Type.EXPORT)
 	private String type;
 	/** 期间 */
+	@Excel(name="期间",type = Excel.Type.EXPORT)
 	private String quarter;
 	/** 区域 */
+	@Excel(name="区域",type = Excel.Type.EXPORT)
 	private String area;
 	/** 部门 */
+	@Excel(name="部门",type = Excel.Type.EXPORT)
 	private String deptName;
 	/** 销售经理 */
+	@Excel(name="销售经理",type = Excel.Type.EXPORT)
 	private String salesManager;
 	/** 购买媒体 */
+	@Excel(name="购买媒体",type = Excel.Type.EXPORT)
 	private String media;
 	/** 季度任务 */
+	@Excel(name="季度任务",type = Excel.Type.EXPORT)
 	private BigDecimal quotas;
-	/** 完成消耗金额 */
+	/** 完成金额 */
+	@Excel(name="完成金额",type = Excel.Type.EXPORT)
 	private BigDecimal summation;
-	/** 消耗平推完成金额 */
+	/** 平推完成金额 */
+	@Excel(name="平推完成金额",type = Excel.Type.EXPORT)
 	private BigDecimal xhptAmt;
 	/** 时间进度 */
+	@Excel(name="时间进度",type = Excel.Type.EXPORT)
 	private String timeSchedule;
 	/** 完成率 */
+	@Excel(name="完成率",type = Excel.Type.EXPORT)
 	private String xhwcRate;
 
 	public void setId(Long id) 
