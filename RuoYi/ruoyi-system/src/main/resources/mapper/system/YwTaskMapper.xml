@@ -16,10 +16,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
         <result property="remark"    column="remark"    />
+        <result property="area"    column="area"    />
+        <result property="deptName"    column="dept_name"    />
     </resultMap>
 	
 	<sql id="selectYwTaskVo">
-        select id, sale_manager, media, type, quotas, quarter, create_by, create_time, update_by, update_time, remark from yw_task
+        select id, area, dept_name, sale_manager, media, type, quotas, quarter, create_by, create_time, update_by, update_time, remark from yw_task
     </sql>
 	
     <select id="selectYwTaskList" parameterType="YwTask" resultMap="YwTaskResult">
@@ -36,6 +38,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="updateBy != null  and updateBy != '' "> and update_by = #{updateBy}</if>
              <if test="updateTime != null "> and update_time = #{updateTime}</if>
              <if test="remark != null  and remark != '' "> and remark = #{remark}</if>
+             <if test="area != null  and area != '' "> and area = #{area}</if>
+             <if test="deptName != null  and deptName != '' "> and dept_name = #{deptName}</if>
          </where>
     </select>
     
@@ -57,6 +61,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="updateBy != null  and updateBy != ''  ">update_by,</if>
 			<if test="updateTime != null  ">update_time,</if>
 			<if test="remark != null  and remark != ''  ">remark,</if>
+            <if test="area != null  and area != ''  ">area,</if>
+            <if test="deptName != null  and deptName != ''  ">dept_name,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="saleManager != null  and saleManager != ''  ">#{saleManager},</if>
@@ -69,6 +75,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="updateBy != null  and updateBy != ''  ">#{updateBy},</if>
 			<if test="updateTime != null  ">#{updateTime},</if>
 			<if test="remark != null  and remark != ''  ">#{remark},</if>
+			<if test="area != null  and area != ''  ">#{area},</if>
+			<if test="deptName != null  and deptName != ''  ">#{deptName},</if>
          </trim>
     </insert>
 	 
@@ -85,6 +93,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateBy != null  and updateBy != ''  ">update_by = #{updateBy},</if>
             <if test="updateTime != null  ">update_time = #{updateTime},</if>
             <if test="remark != null  and remark != ''  ">remark = #{remark},</if>
+            <if test="area != null  and area != ''  ">area = #{area},</if>
+            <if test="deptName != null  and deptName != ''  ">dept_name = #{deptName},</if>
         </trim>
         where id = #{id}
     </update>

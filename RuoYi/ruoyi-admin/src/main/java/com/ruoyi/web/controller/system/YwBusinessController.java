@@ -184,8 +184,6 @@ public class YwBusinessController extends BaseController
 	
 	/**
 	 * 查询系统是否已经有 签约方，广告主
-	 * @param companyName
-	 * @param advertiser
 	 * @return
 	 */
 	@PostMapping( "/getCompanyName")

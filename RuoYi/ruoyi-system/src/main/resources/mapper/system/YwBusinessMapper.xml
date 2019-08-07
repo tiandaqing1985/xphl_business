@@ -305,4 +305,5 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		update yw_business set order_status = '0' where business_id in (select business_id  from yw_contract where SYSDATE() > endDate)
 		
     </update>
+
 </mapper>

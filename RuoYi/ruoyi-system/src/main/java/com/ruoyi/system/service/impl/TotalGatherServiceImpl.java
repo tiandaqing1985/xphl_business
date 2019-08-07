@@ -28,9 +28,9 @@ public class TotalGatherServiceImpl implements TotalGatherService
 	 * @return 消耗毛利汇总集合
 	 */
 	@Override
-	public List<YwTotalGather> selectTotalGather()
+	public List<YwTotalGather> selectTotalGather(YwTotalGather ywTotalGather)
 	{
-		return totalGatherMapper.selectTotalGather();
+		return totalGatherMapper.selectTotalGather(ywTotalGather);
 	}
 
 	/**

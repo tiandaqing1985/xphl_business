@@ -6,9 +6,23 @@
 <body class="gray-bg">
      <div class="container-div">
 		 <div class="row">
-			 <a class="btn btn-warning" onclick="myExportExcel('3')" shiro:hasPermission="system:totalGather:export">
-				 <i class="fa fa-download"></i> 导出
-			 </a>
+			 <div class="col-sm-12 search-collapse">
+				 <form id="formId3">
+					 <div class="select-list">
+						 <ul>
+							 <li>
+								 期间：<input type="text" name="quarter"/>
+							 </li>
+
+							 <li>
+								 <a class="btn btn-primary btn-rounded btn-sm" onclick="mySearch(3)"><i class="fa fa-search"></i>&nbsp;搜索</a>
+								 <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+								 <a class="btn btn-primary btn-rounded btn-sm" onclick="myExportExcel('3')"><i class="fa fa-download"></i> 导出</a>
+							 </li>
+						 </ul>
+					 </div>
+				 </form>
+			 </div>
 			 <div class="col-sm-12 select-table table-striped">
 				 <table id="bootstrap-table-3" data-mobile-responsive="true"></table>
 			 </div>
@@ -36,20 +50,35 @@
         var removeFlag = [[${@permission.hasPermi('system:gather:remove')}]];
         var prefix = ctx + "system/totalGather";
 
+        function mySearch(id) {
+			if(id == '1'){
+				$.table._option.id = 'bootstrap-table-1';
+			}
+			else if(id == '2'){
+				$.table._option.id = 'bootstrap-table-2';
+			}
+			else if(id == '3'){
+				$.table._option.id = 'bootstrap-table-3';
+			}
+			$.table.search();
+		}
+
         function myExportExcel(id){
+        	var fromId = '';
         	if(id == '1'){
-				$.table._option.exportUrl = "毛利排名列表";
-				$.table._option.modalName = prefix + "/exportRankGrossMargin";
+				$.table._option.exportUrl = prefix + "/exportRankGrossMargin";
+				$.table._option.modalName = "毛利排名列表";
 			}
         	else if(id == '2'){
-				$.table._option.exportUrl = "业绩消耗排名";
-				$.table._option.modalName = prefix + "/exportRankConsumption";
+				$.table._option.exportUrl = prefix + "/exportRankConsumption";
+				$.table._option.modalName = "业绩消耗排名";
 			}
         	else if(id == '3'){
 				$.table._option.exportUrl = prefix + "/export";
 				$.table._option.modalName = "华东、华北整体完成率";
+				fromId = 'formId3';
 			}
-			$.table.exportExcel();
+			$.table.exportExcel(fromId);
 		}
 
 		$(function() {

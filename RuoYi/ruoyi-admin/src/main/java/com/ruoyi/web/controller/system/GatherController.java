@@ -1,8 +1,7 @@
 package com.ruoyi.web.controller.system;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import com.ruoyi.system.domain.YwGatherConsumption;
 import com.ruoyi.system.domain.YwGatherGrossMargin;
@@ -61,46 +60,10 @@ public class GatherController extends BaseController {
     @PostMapping("/export")
     @ResponseBody
     public AjaxResult export(Gather gather) {
-        List<Gather> list = gatherService.selectGatherList(gather);
-        //导出的list数据
-        List<Gather> exportlist = new ArrayList<>(list.size());
-        //为每个人计算总计
-        Gather sumGather = null;
-        String name = null;
-        for (Gather g : list) {
-            if (name == null) {
-                //初始化合计记录的VO
-                name = g.getSalesManager();
-                sumGather = new Gather();
-                sumGather.setArea(name);
-                sumGather.setDeptName("合计");
-                sumGather.setQuotas(g.getQuotas());
-                sumGather.setSummation(g.getSummation());
-                sumGather.setXhptAmt(g.getXhptAmt());
-            } else if (name.equals(g.getSalesManager())) {
-                //统计每人的总计
-                sumGather.setQuotas(g.getQuotas().add(sumGather.getQuotas()));
-                sumGather.setSummation(g.getSummation().add(sumGather.getSummation()));
-                sumGather.setXhptAmt(g.getXhptAmt().add(sumGather.getXhptAmt()));
-            } else if (!name.equals(g.getSalesManager())) {
-                //将计算的总计放入导出list中
-                sumGather.setXhwcRate(sumGather.getSummation().divide(sumGather.getQuotas(),2,BigDecimal.ROUND_HALF_UP).toString()+"%");
-                exportlist.add(sumGather);
-                name = g.getSalesManager();
-                sumGather = new Gather();
-                sumGather.setArea(name);
-                sumGather.setDeptName("合计");
-                sumGather.setQuotas(g.getQuotas());
-                sumGather.setSummation(g.getSummation());
-                sumGather.setXhptAmt(g.getXhptAmt());
-            }
-            exportlist.add(g);
-        }
-        sumGather.setXhwcRate(sumGather.getSummation().divide(sumGather.getQuotas(),2,BigDecimal.ROUND_HALF_UP).toString()+"%");
-        exportlist.add(sumGather);
-
+        List<Gather> gathers = gatherService.selectGatherList(gather);
+        List<Gather> gatherList = gatherService.exportList(gathers);
         ExcelUtil<Gather> util = new ExcelUtil<Gather>(Gather.class);
-        return util.exportExcel(exportlist, "个人消耗毛利汇总");
+        return util.exportExcel(gatherList, "个人消耗毛利汇总");
     }
 
 }

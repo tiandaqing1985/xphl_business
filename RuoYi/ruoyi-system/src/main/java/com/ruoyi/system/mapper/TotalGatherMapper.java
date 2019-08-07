@@ -12,7 +12,7 @@ public interface TotalGatherMapper {
      * 根据部门汇总所有消耗毛利情况
      * @return
      */
-    public List<YwTotalGather> selectTotalGather();
+    public List<YwTotalGather> selectTotalGather(YwTotalGather ywTotalGather);
     /**
      * 查询消耗排名
      *

@@ -9,6 +9,8 @@ import java.math.BigDecimal;
  */
 public class YwTotalGather {
 
+    /** 期间 */
+    private String quarter;
     /** 部门 */
     @Excel(name = "部门",type = Excel.Type.EXPORT)
     private String deptName;
@@ -30,6 +32,14 @@ public class YwTotalGather {
     /** 毛利完成率 */
     @Excel(name = "毛利完成率",type = Excel.Type.EXPORT)
     private String grossMarginRate;
+
+    public String getQuarter() {
+        return quarter;
+    }
+
+    public void setQuarter(String quarter) {
+        this.quarter = quarter;
+    }
 
     public String getDeptName() {
         return deptName;

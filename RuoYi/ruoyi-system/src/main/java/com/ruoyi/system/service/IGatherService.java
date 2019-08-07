@@ -23,4 +23,12 @@ public interface IGatherService
 	 */
 	public List<Gather> selectGatherList(Gather gather);
 
+	/**
+	 *	处理得到导出的list列表
+	 *
+	 * @param gathers 消耗毛利汇总list
+	 * @return 消耗毛利汇总集合
+	 */
+	public List<Gather> exportList(List<Gather> gathers);
+
 }

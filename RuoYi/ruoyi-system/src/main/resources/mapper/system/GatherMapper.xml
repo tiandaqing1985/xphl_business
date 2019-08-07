@@ -36,38 +36,83 @@
         FROM
         (
         SELECT
-            c.type,
-            c.quarter,
-            a.area,
-            b.dept_name,
-            c.sale_manager,
-            c.media,
-            IFNULL( sum( c.quotas ), '0' ) quotas
+        c.type,
+        c.quarter,
+        c.area,
+        c.dept_name,
+        c.sale_manager,
+        c.media,
+        IFNULL( sum( c.quotas ), '0' ) quotas
         FROM
-            yw_task c
-            LEFT JOIN sys_user a ON c.sale_manager = a.user_name
-            LEFT JOIN sys_dept b ON a.dept_id = b.dept_id
+        yw_task c
         GROUP BY
-            c.sale_manager,
-            c.media,
-            c.quarter
+        c.sale_manager,
+        c.media,
+        c.quarter
         HAVING
-            c.type = '毛利'
-            <if test="quarter != null and quarter != ''">and c.quarter= #{quarter}</if>
+        c.type = '毛利'
+        <if test="quarter != null and quarter != ''">and c.quarter= #{quarter}</if>
         ) tb1
         LEFT JOIN (
         SELECT
-            d.sales_manager,
-            d.media,
-            d.quarter,
-            d.term,
-            sum( d.gross_margin ) summation
+        d.sales_manager,
+        d.media,
+        d.quarter,
+        d.term,
+        sum( d.gross_margin ) summation
         FROM
-            yw_gross_margins d
+        yw_gross_margins d
         GROUP BY
-            d.sales_manager,
-            d.media,
-            d.quarter
+        d.sales_manager,
+        d.media,
+        d.quarter
+        ) tb2 ON tb1.sale_manager = tb2.sales_manager
+        AND tb1.media = tb2.media AND tb1.quarter = tb2.quarter
+        union
+        SELECT
+        '毛利' type,
+        tb2.quarter,
+        tb1.area,
+        tb1.dept_name,
+        tb2.sales_manager,
+        tb2.media,
+        tb1.quotas,
+        IFNULL( tb2.summation, '0' ) summation,
+        tb2.term,
+        concat( round( IFNULL( tb2.summation, '0' ) / tb1.quotas * 100, 2 ), '%' ) xhwcRate
+        FROM
+        (
+        SELECT
+        c.type,
+        c.quarter,
+        c.area,
+        c.dept_name,
+        c.sale_manager,
+        c.media,
+        IFNULL( sum( c.quotas ), '0' ) quotas
+        FROM
+        yw_task c
+        GROUP BY
+        c.sale_manager,
+        c.media,
+        c.quarter
+        HAVING
+        c.type = '毛利'
+        ) tb1
+        RIGHT JOIN (
+        SELECT
+        d.sales_manager,
+        d.media,
+        d.quarter,
+        d.term,
+        sum( d.gross_margin ) summation
+        FROM
+        yw_gross_margins d
+        GROUP BY
+        d.sales_manager,
+        d.media,
+        d.quarter
+        <if test="quarter != null and quarter != ''">HAVING d.quarter= #{quarter}</if>
         ) tb2 ON tb1.sale_manager = tb2.sales_manager
         AND tb1.media = tb2.media AND tb1.quarter = tb2.quarter
         union
@@ -85,38 +130,83 @@
         FROM
         (
         SELECT
-            c.type,
-            c.quarter,
-            a.area,
-            b.dept_name,
-            c.sale_manager,
-            c.media,
-            IFNULL( sum( c.quotas ), '0' ) quotas
+        c.type,
+        c.quarter,
+        c.area,
+        c.dept_name,
+        c.sale_manager,
+        c.media,
+        IFNULL( sum( c.quotas ), '0' ) quotas
         FROM
-            yw_task c
-            LEFT JOIN sys_user a ON c.sale_manager = a.user_name
-            LEFT JOIN sys_dept b ON a.dept_id = b.dept_id
+        yw_task c
         GROUP BY
-            c.sale_manager,
-            c.media,
-            c.quarter
+        c.sale_manager,
+        c.media,
+        c.quarter
         HAVING
-            c.type = '消耗'
-            <if test="quarter != null and quarter != ''">and c.quarter= #{quarter}</if>
+        c.type = '消耗'
+        <if test="quarter != null and quarter != ''">and c.quarter= #{quarter}</if>
         ) tb1
         LEFT JOIN (
         SELECT
-            d.sale_manager,
-            d.media,
-            d.quarter,
-            sum( d.summation ) summation,
-            d.term
+        d.sale_manager,
+        d.media,
+        d.quarter,
+        sum( d.summation ) summation,
+        d.term
         FROM
-            yw_consumption d
+        yw_consumption d
         GROUP BY
-            d.sale_manager,
-            d.media,
-            d.quarter
+        d.sale_manager,
+        d.media,
+        d.quarter
+        ) tb2 ON tb1.sale_manager = tb2.sale_manager
+        AND tb1.media = tb2.media AND tb1.quarter = tb2.quarter
+        union
+        SELECT
+        '消耗',
+        tb2.quarter,
+        tb1.area,
+        tb1.dept_name,
+        tb2.sale_manager sales_manager,
+        tb2.media,
+        tb1.quotas,
+        IFNULL( tb2.summation, '0' ) summation,
+        tb2.term,
+        concat( round( IFNULL( tb2.summation, '0' ) / tb1.quotas * 100, 2 ), '%' ) xhwcRate
+        FROM
+        (
+        SELECT
+        c.type,
+        c.quarter,
+        c.area,
+        c.dept_name,
+        c.sale_manager,
+        c.media,
+        IFNULL( sum( c.quotas ), '0' ) quotas
+        FROM
+        yw_task c
+        GROUP BY
+        c.sale_manager,
+        c.media,
+        c.quarter
+        HAVING
+        c.type = '消耗'
+        ) tb1
+        RIGHT JOIN (
+        SELECT
+        d.sale_manager,
+        d.media,
+        d.quarter,
+        sum( d.summation ) summation,
+        d.term
+        FROM
+        yw_consumption d
+        GROUP BY
+        d.sale_manager,
+        d.media,
+        d.quarter
+        <if test="quarter != null and quarter != ''">HAVING d.quarter= #{quarter}</if>
         ) tb2 ON tb1.sale_manager = tb2.sale_manager
         AND tb1.media = tb2.media AND tb1.quarter = tb2.quarter
         ) tb3

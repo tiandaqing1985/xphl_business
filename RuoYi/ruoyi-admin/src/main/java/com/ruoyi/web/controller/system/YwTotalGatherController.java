@@ -4,11 +4,9 @@ import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.utils.poi.ExcelUtil;
-import com.ruoyi.system.domain.Gather;
 import com.ruoyi.system.domain.YwGatherConsumption;
 import com.ruoyi.system.domain.YwGatherGrossMargin;
 import com.ruoyi.system.domain.YwTotalGather;
-import com.ruoyi.system.service.IGatherService;
 import com.ruoyi.system.service.TotalGatherService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,10 +43,10 @@ public class YwTotalGatherController extends BaseController
      */
     @PostMapping("/list")
     @ResponseBody
-    public TableDataInfo selectTotalGather()
+    public TableDataInfo selectTotalGather(YwTotalGather ywTotalGather)
     {
         startPage();
-        List<YwTotalGather> list = totalGatherService.selectTotalGather();
+        List<YwTotalGather> list = totalGatherService.selectTotalGather(ywTotalGather);
         return getDataTable(list);
     }
 
@@ -84,7 +82,7 @@ public class YwTotalGatherController extends BaseController
     @ResponseBody
     public AjaxResult export(YwTotalGather ywTotalGather)
     {
-        List<YwTotalGather> list = totalGatherService.selectTotalGather();
+        List<YwTotalGather> list = totalGatherService.selectTotalGather(ywTotalGather);
         ExcelUtil<YwTotalGather> util = new ExcelUtil<YwTotalGather>(YwTotalGather.class);
         return util.exportExcel(list, "区域消耗毛利汇总");
     }

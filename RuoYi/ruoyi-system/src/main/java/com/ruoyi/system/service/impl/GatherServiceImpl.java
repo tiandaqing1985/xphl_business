@@ -3,8 +3,7 @@ package com.ruoyi.system.service.impl;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.List;
+import java.util.*;
 
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.system.domain.YwGatherConsumption;
@@ -42,24 +41,118 @@ public class GatherServiceImpl implements IGatherService {
         List<Gather> gathers = null;
         gathers = gatherMapper.selectGatherList(gather);
         BigDecimal xhptAmt = null;
+        String saleManager = null;
         for (Gather g : gathers) {
             try {
+                //某些特定的销售经理固定区域和部门
+                saleManager = g.getSalesManager();
+                if (saleManager.equals("anqi01")) {
+                    g.setArea("北京");
+                    g.setDeptName("媒介");
+                } else if (saleManager.equals("任总")) {
+                    g.setArea("北京");
+                } else if (saleManager.equals("刘鹏")) {
+                    g.setArea("SEM其他");
+                } else if (saleManager.equals("系统中未关联")) {
+                    g.setArea("系统中未关联");
+                } else if (saleManager.equals("不录入系统")) {
+                    g.setArea("不录入系统");
+                }
                 //计算平推完成金额
                 if (g.getTerm() == null || g.getTerm().equals("")) {
                     xhptAmt = BigDecimal.ZERO;
                 } else {
-                    xhptAmt = g.getSummation().divide(BigDecimal.valueOf(getTermDayNum(g.getTerm())),2,BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(getQuarterDayNum(g.getQuarter())));
+                    xhptAmt = g.getSummation().divide(BigDecimal.valueOf(getTermDayNum(g.getTerm())), 6, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(getQuarterDayNum(g.getQuarter())));
                 }
-                g.setXhptAmt(xhptAmt.setScale(2));
+                g.setXhptAmt(xhptAmt.setScale(2, BigDecimal.ROUND_HALF_UP));
                 //计算时间进度
                 double timeSchedule = Double.valueOf(getTermDayNum(g.getTerm())) / getQuarterDayNum(g.getQuarter());
                 timeSchedule = timeSchedule * 100;
-                g.setTimeSchedule(BigDecimal.valueOf(timeSchedule).setScale(2,BigDecimal.ROUND_HALF_UP).toString() + "%");
+                g.setTimeSchedule(BigDecimal.valueOf(timeSchedule).setScale(2, BigDecimal.ROUND_HALF_UP).toString() + "%");
             } catch (Exception e) {
                 log.error("计算平推完成金额和时间进度时出现未知异常：", e);
             }
         }
         return gathers;
+    }
+
+    /**
+     * 处理得到导出的list列表
+     *
+     * @param list 消耗毛利汇总list
+     * @return 消耗毛利汇总集合
+     */
+    @Override
+    public List<Gather> exportList(List<Gather> list) {
+
+        List<Gather> singleGathers = new ArrayList<>();
+        String timeSchedule = null;
+        Gather sumGather = null;
+        //导出的list数据
+        List<Gather> exportlist = new ArrayList<>(list.size());
+        //每个键值对表示一个人的所有记录
+        Map<String, ArrayList<Gather>> exportMap = new HashMap<String, ArrayList<Gather>>();
+        //表示一个人的所有记录
+        ArrayList<Gather> gathers = null;
+        //按照销售经理姓名分组
+        for (Gather gat : list) {
+            gathers = exportMap.get(gat.getSalesManager());
+            if (gathers == null) {
+                gathers = new ArrayList<>();
+                exportMap.put(gat.getSalesManager(), gathers);
+            }
+            gathers.add(gat);
+            if (timeSchedule == null) {
+                if (gat.getTimeSchedule() != null && !gat.getTimeSchedule().equals("0.00%")) {
+                    timeSchedule = gat.getTimeSchedule();
+                }
+            }
+            if (gat.getTimeSchedule() == null || gat.getTimeSchedule().equals("0.00%")) {
+                gat.setTimeSchedule(timeSchedule);
+            }
+        }
+        //计算每个销售经理的合计，并且构建导出的list
+        Set<Map.Entry<String, ArrayList<Gather>>> entries = exportMap.entrySet();
+        String name = null;
+        ArrayList<Gather> gatherList = null;
+        for (Map.Entry<String, ArrayList<Gather>> entry : exportMap.entrySet()) {
+            name = entry.getKey();
+            gatherList = entry.getValue();
+            if (gatherList.size() == 1) {
+                singleGathers.add(gatherList.get(0));
+                continue;
+            }
+            sumGather = new Gather();
+            sumGather.setArea(name);
+            sumGather.setDeptName("合计");
+            sumGather.setQuotas(BigDecimal.ZERO);
+            sumGather.setSummation(BigDecimal.ZERO);
+            sumGather.setXhptAmt(BigDecimal.ZERO);
+            //遍历每个人的记录
+            for (Gather g : gatherList) {
+                //去除科学计数法
+                g.setQuotas(g.getQuotas() != null ? new BigDecimal(g.getQuotas().toPlainString()) : null);
+                g.setSummation(g.getSummation() != null ? new BigDecimal(g.getSummation().toPlainString()) : null);
+                exportlist.add(g);
+                //统计每人的总计
+                if (g.getQuotas() != null) {
+                    sumGather.setQuotas(g.getQuotas().add(sumGather.getQuotas()));
+                }
+                if (g.getSummation() != null) {
+                    sumGather.setSummation(g.getSummation().add(sumGather.getSummation()));
+                }
+                if (g.getXhptAmt() != null) {
+                    sumGather.setXhptAmt(g.getXhptAmt().add(sumGather.getXhptAmt()));
+                }
+            }
+            if (sumGather.getQuotas().compareTo(BigDecimal.ZERO) == 0) {
+                sumGather.setXhwcRate(sumGather.getSummation().divide(sumGather.getQuotas(), 4, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100L)).toString() + "%");
+            }
+            exportlist.add(sumGather);
+        }
+        exportlist.addAll(singleGathers);
+
+        return exportlist;
     }
 
     //获取每个季度天数
@@ -111,7 +204,7 @@ public class GatherServiceImpl implements IGatherService {
         //得到两个日期相差的天数
         int days = ((int) (caled.getTime().getTime() / 1000) - (int) (calst.getTime().getTime() / 1000)) / 3600 / 24;
 
-        return days;
+        return days + 1;
     }
 
 }
