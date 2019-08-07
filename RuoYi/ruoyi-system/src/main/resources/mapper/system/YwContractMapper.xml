@@ -29,9 +29,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectYwContractList" parameterType="YwContract" resultMap="YwContractResult">
         <!-- <include refid="selectYwContractVo"/> -->
         select a.id, a.business_id, a.media, startDate, endDate, contract_money, a.create_by, a.create_time, a.update_by, a.update_time, a.remark,company_name,advertiser,short_name 
-        
         from yw_contract a
-        LEFT JOIN yw_business b  on a.business_id = b.business_id  
+        LEFT JOIN yw_business b  on a.business_id = b.business_id
         <where>  
             <if test="id != null "> and a.id = #{id}</if>
              <if test="businessId != null "> and business_id = #{businessId}</if>
@@ -40,6 +39,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="endDate != null "> and endDate = #{endDate}</if>
              <if test="contractMoney != null "> and contract_money = #{contractMoney}</if>
              <if test="createBy != null  and createBy != '' "> and a.create_by = #{createBy}</if>
+             <if test="companyName != null  and companyName != '' "> and company_name LIKE concat(concat('%',#{companyName}),'%')</if>
              <if test="createTime != null "> and a.create_time  BETWEEN #{createTime} AND SYSDATE()</if>
              <if test="updateBy != null  and updateBy != '' "> and a.update_by = #{updateBy}</if>
              
@@ -48,7 +48,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
            			 #{createBy1}
        			 </foreach>   	
              </if>
-             
              <if test="updateTime != null "> and a.update_time = #{updateTime}</if>
              <if test="remark != null  and remark != '' "> and a.remark = #{remark}</if>
          </where>

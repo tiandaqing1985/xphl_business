@@ -67,7 +67,7 @@ public class YwBusinessServiceImpl implements IYwBusinessService
 		 */
 		ywBusiness.setBusinessGrade(getGrade(ywBusiness));
 		ywBusiness.setBusinessStatus("0");
-		
+		ywBusiness.setOrderStatus("0");//0-未下单 1-已下单
 		YwBusiness yb = ywBusinessMapper.getCompanyName(ywBusiness);
 		
 		if(yb!=null){
