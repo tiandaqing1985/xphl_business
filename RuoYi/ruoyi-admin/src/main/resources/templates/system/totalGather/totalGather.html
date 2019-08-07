@@ -28,17 +28,45 @@
 			 </div>
 		 </div>
 		 <div class="row">
-			 <a class="btn btn-warning" onclick="myExportExcel('1')" shiro:hasPermission="system:totalGather:export">
-				 <i class="fa fa-download"></i> 导出
-			 </a>
+			 <div class="col-sm-12 search-collapse">
+				 <form id="formId1">
+					 <div class="select-list">
+						 <ul>
+							 <li>
+								 期间：<input type="text" name="quarter"/>
+							 </li>
+
+							 <li>
+								 <a class="btn btn-primary btn-rounded btn-sm" onclick="mySearch(1)"><i class="fa fa-search"></i>&nbsp;搜索</a>
+								 <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+								 <a class="btn btn-primary btn-rounded btn-sm" onclick="myExportExcel('1')"><i class="fa fa-download"></i> 导出</a>
+							 </li>
+						 </ul>
+					 </div>
+				 </form>
+			 </div>
 			 <div class="col-sm-12 select-table table-striped">
 				 <table id="bootstrap-table-1" data-mobile-responsive="true"></table>
 			 </div>
 		 </div>
 		 <div class="row">
-			 <a class="btn btn-warning" onclick="myExportExcel('2')" shiro:hasPermission="system:totalGather:export">
-				 <i class="fa fa-download"></i> 导出
-			 </a>
+			 <div class="col-sm-12 search-collapse">
+				 <form id="formId2">
+					 <div class="select-list">
+						 <ul>
+							 <li>
+								 期间：<input type="text" name="quarter"/>
+							 </li>
+
+							 <li>
+								 <a class="btn btn-primary btn-rounded btn-sm" onclick="mySearch(2)"><i class="fa fa-search"></i>&nbsp;搜索</a>
+								 <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+								 <a class="btn btn-primary btn-rounded btn-sm" onclick="myExportExcel('2')"><i class="fa fa-download"></i> 导出</a>
+							 </li>
+						 </ul>
+					 </div>
+				 </form>
+			 </div>
 			 <div class="col-sm-12 select-table table-striped">
 				 <table id="bootstrap-table-2" data-mobile-responsive="true"></table>
 			 </div>
@@ -60,7 +88,7 @@
 			else if(id == '3'){
 				$.table._option.id = 'bootstrap-table-3';
 			}
-			$.table.search();
+			$.table.search('formId'+id);
 		}
 
         function myExportExcel(id){

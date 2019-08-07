@@ -55,10 +55,10 @@ public class YwTotalGatherController extends BaseController
      */
     @PostMapping("/rankGrossMarginList")
     @ResponseBody
-    public TableDataInfo rankGrossMarginList()
+    public TableDataInfo rankGrossMarginList(YwGatherGrossMargin ywGatherGrossMargin)
     {
         startPage();
-        List<YwGatherGrossMargin> list = totalGatherService.selectRankGrossMarginList();
+        List<YwGatherGrossMargin> list = totalGatherService.selectRankGrossMarginList(ywGatherGrossMargin);
         return getDataTable(list);
     }
 
@@ -67,10 +67,10 @@ public class YwTotalGatherController extends BaseController
      */
     @PostMapping("/rankConsumptionlist")
     @ResponseBody
-    public TableDataInfo rankConsumptionlist()
+    public TableDataInfo rankConsumptionlist(YwGatherConsumption ywGatherConsumption)
     {
         startPage();
-        List<YwGatherConsumption> list = totalGatherService.selectRankConsumptionlist();
+        List<YwGatherConsumption> list = totalGatherService.selectRankConsumptionlist(ywGatherConsumption);
         return getDataTable(list);
     }
 
@@ -93,9 +93,9 @@ public class YwTotalGatherController extends BaseController
      */
     @PostMapping("/exportRankConsumption")
     @ResponseBody
-    public AjaxResult exportRankConsumption(YwTotalGather ywTotalGather)
+    public AjaxResult exportRankConsumption(YwGatherConsumption ywTotalGather)
     {
-        List<YwGatherConsumption> list = totalGatherService.selectRankConsumptionlist();
+        List<YwGatherConsumption> list = totalGatherService.selectRankConsumptionlist(ywTotalGather);
         ExcelUtil<YwGatherConsumption> util = new ExcelUtil<YwGatherConsumption>(YwGatherConsumption.class);
         return util.exportExcel(list, "消耗排名");
     }
@@ -106,9 +106,9 @@ public class YwTotalGatherController extends BaseController
      */
     @PostMapping("/exportRankGrossMargin")
     @ResponseBody
-    public AjaxResult exportRankGrossMargin(YwTotalGather ywTotalGather)
+    public AjaxResult exportRankGrossMargin(YwGatherGrossMargin ywTotalGather)
     {
-        List<YwGatherGrossMargin> list = totalGatherService.selectRankGrossMarginList();
+        List<YwGatherGrossMargin> list = totalGatherService.selectRankGrossMarginList(ywTotalGather);
         ExcelUtil<YwGatherGrossMargin> util = new ExcelUtil<YwGatherGrossMargin>(YwGatherGrossMargin.class);
         return util.exportExcel(list, "毛利排名");
     }

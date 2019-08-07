@@ -63,7 +63,7 @@ public class GatherController extends BaseController {
         List<Gather> gathers = gatherService.selectGatherList(gather);
         List<Gather> gatherList = gatherService.exportList(gathers);
         ExcelUtil<Gather> util = new ExcelUtil<Gather>(Gather.class);
-        return util.exportExcel(gatherList, "个人消耗毛利汇总");
+        return util.exportExcel(gatherList, "个人"+gather.getType()+"汇总");
     }
 
 }

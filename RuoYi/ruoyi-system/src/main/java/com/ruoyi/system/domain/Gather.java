@@ -5,6 +5,8 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.core.domain.BaseEntity;
 import java.math.BigDecimal;
+import java.text.CollationKey;
+import java.text.Collator;
 
 /**
  * 消耗毛利汇总表 Gather
@@ -12,7 +14,7 @@ import java.math.BigDecimal;
  * @author ruoyi
  * @date 2019-08-02
  */
-public class Gather extends BaseEntity
+public class Gather extends BaseEntity implements Comparable<Gather>
 {
 	private static final long serialVersionUID = 1L;
 	
@@ -187,4 +189,14 @@ public class Gather extends BaseEntity
             .append("xhwcRate", getXhwcRate())
             .toString();
     }
+	private Collator collator = Collator.getInstance();//点击查看中文api详解
+	@Override
+	public int compareTo(Gather gather) {
+
+		//把字符串转换为一系列比特，它们可以以比特形式与 CollationKeys 相比较
+		CollationKey key1=collator.getCollationKey(this.getMedia());//要想不区分大小写进行比较用o1.toString().toLowerCase()
+		CollationKey key2=collator.getCollationKey(gather.getMedia());
+
+		return key1.compareTo(key2);
+	}
 }

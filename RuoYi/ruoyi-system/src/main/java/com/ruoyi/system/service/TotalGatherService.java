@@ -12,7 +12,7 @@ import java.util.List;
 public interface TotalGatherService {
     public List<YwTotalGather> selectTotalGather(YwTotalGather ywTotalGather);
 
-    public List<YwGatherGrossMargin> selectRankGrossMarginList();
+    public List<YwGatherGrossMargin> selectRankGrossMarginList(YwGatherGrossMargin ywGatherGrossMargin);
 
-    public List<YwGatherConsumption> selectRankConsumptionlist();
+    public List<YwGatherConsumption> selectRankConsumptionlist(YwGatherConsumption ywGatherConsumption);
 }

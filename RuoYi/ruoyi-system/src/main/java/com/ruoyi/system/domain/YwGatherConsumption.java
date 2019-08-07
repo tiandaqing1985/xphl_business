@@ -23,6 +23,16 @@ public class YwGatherConsumption {
     /** 业绩消耗完成率 */
     @Excel(name="业绩消耗完成率",type = Excel.Type.EXPORT)
     private String rate;
+    /** 期间 */
+    private String quarter;
+
+    public String getQuarter() {
+        return quarter;
+    }
+
+    public void setQuarter(String quarter) {
+        this.quarter = quarter;
+    }
 
     public Integer getRownum() {
         return rownum;

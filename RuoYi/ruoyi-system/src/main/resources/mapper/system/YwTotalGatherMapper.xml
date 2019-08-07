@@ -116,15 +116,17 @@
         <result column="rate" property="rate"/>
     </resultMap>
 
-    <select id="selectRankGrossMarginList" resultMap="YwGatherGrossMarginResult">
+    <select id="selectRankGrossMarginList" resultMap="YwGatherGrossMarginResult" parameterType="YwGatherGrossMargin">
 
-        select rownum,sale_manager,quotas,gross_margin,rate from (
+        select rownum,sale_manager,ifnull(quotas,0.0) quotas,ifnull(gross_margin,0.0) gross_margin,rate from (
         select a.sale_manager,a.quotas,a.gross_margin,a.rate,@rownum := @rownum + 1 rownum from (
         select tb1.sale_manager,tb1.quotas,tb2.gross_margin,concat(round(tb2.gross_margin/tb1.quotas*100,2),'%') rate from
-        (select ta.sale_manager,ifnull(sum(ta.quotas),'0') quotas from yw_task ta group by ta.sale_manager,ta.type having ta.type = '毛利' ) tb1
+        (select ta.quarter,ta.sale_manager,ifnull(sum(ta.quotas),'0') quotas from yw_task ta group by ta.sale_manager,ta.type,ta.quarter having ta.type = '毛利' <if
+            test="quarter != null and quarter != ''">AND ta.quarter = #{quarter}</if>) tb1
         left join
-        (select gm.sales_manager,sum(gm.gross_margin) gross_margin from yw_gross_margins gm group by gm.sales_manager) tb2
-        on tb1.sale_manager = tb2.sales_manager order by rate desc
+        (select gm.quarter,gm.sales_manager,sum(gm.gross_margin) gross_margin from yw_gross_margins gm group by gm.sales_manager,gm.quarter<if
+            test="quarter != null and quarter != ''"> having gm.quarter = #{quarter}</if>) tb2
+        on tb1.sale_manager = tb2.sales_manager and tb1.quarter = tb2.quarter order by rate desc
         ) a,(SELECT @rownum := 0) b) c
 
     </select>
@@ -137,15 +139,17 @@
         <result column="rate" property="rate"/>
     </resultMap>
 
-    <select id="selectRankConsumptionList" resultMap="YwGatherConsumptionResult">
+    <select id="selectRankConsumptionList" resultMap="YwGatherConsumptionResult" parameterType="YwGatherConsumption">
 
-        select rownum,sale_manager,quotas,summation,rate from (
+        select rownum,sale_manager,ifnull(quotas,0.0) quotas,ifnull(summation,0.0) summation,rate from (
         select a.sale_manager,a.quotas,a.summation,a.rate,@rownum := @rownum + 1 rownum from (
         select tb1.sale_manager,tb1.quotas,tb2.summation,concat(round(tb2.summation/tb1.quotas*100,2),'%') rate from
-        (select ta.sale_manager,ifnull(sum(ta.quotas),'0') quotas from yw_task ta group by ta.sale_manager,ta.type having ta.type = '消耗' ) tb1
+        (select ta.quarter,ta.sale_manager,ifnull(sum(ta.quotas),'0') quotas from yw_task ta group by ta.sale_manager,ta.type having ta.type = '消耗' <if
+            test="quarter != null and quarter != ''">AND ta.quarter = #{quarter}</if> ) tb1
         left join
-        (select con.sale_manager,sum(con.summation) summation from yw_consumption con group by con.sale_manager) tb2
-        on tb1.sale_manager = tb2.sale_manager order by rate desc
+        (select con.quarter,con.sale_manager,sum(con.summation) summation from yw_consumption con group by con.sale_manager,con.quarter <if
+            test="quarter != null and quarter != ''"> having con.quarter = #{quarter}</if>) tb2
+        on tb1.sale_manager = tb2.sale_manager and tb1.quarter = tb2.quarter order by rate desc
         ) a,(SELECT @rownum := 0) b) c
 
     </select>

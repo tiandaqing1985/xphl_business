@@ -18,13 +18,13 @@ public interface TotalGatherMapper {
      *
      * @return 消耗排名
      */
-    public List<YwGatherConsumption> selectRankConsumptionList();
+    public List<YwGatherConsumption> selectRankConsumptionList(YwGatherConsumption ywGatherConsumption);
 
     /**
      * 查询毛利排名
      *
      * @return 毛利排名
      */
-    public List<YwGatherGrossMargin> selectRankGrossMarginList();
+    public List<YwGatherGrossMargin> selectRankGrossMarginList(YwGatherGrossMargin ywGatherGrossMargin);
 
 }

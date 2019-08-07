@@ -57,6 +57,9 @@ public class GatherServiceImpl implements IGatherService {
                     g.setArea("系统中未关联");
                 } else if (saleManager.equals("不录入系统")) {
                     g.setArea("不录入系统");
+                } else if (saleManager.equals("签约方悦维") || saleManager.equals("直签")) {
+                    g.setArea("北京");
+                    g.setDeptName("悦维");
                 }
                 //计算平推完成金额
                 if (g.getTerm() == null || g.getTerm().equals("")) {
@@ -85,15 +88,18 @@ public class GatherServiceImpl implements IGatherService {
     @Override
     public List<Gather> exportList(List<Gather> list) {
 
+        //只有一条的数据
         List<Gather> singleGathers = new ArrayList<>();
+        //需要放一起的只有一条的数据
+        LinkedList<Gather> specialGathers = new LinkedList<>();
         String timeSchedule = null;
         Gather sumGather = null;
         //导出的list数据
         List<Gather> exportlist = new ArrayList<>(list.size());
         //每个键值对表示一个人的所有记录
-        Map<String, ArrayList<Gather>> exportMap = new HashMap<String, ArrayList<Gather>>();
+        Map<String, List<Gather>> exportMap = new HashMap<String, List<Gather>>();
         //表示一个人的所有记录
-        ArrayList<Gather> gathers = null;
+        List<Gather> gathers = null;
         //按照销售经理姓名分组
         for (Gather gat : list) {
             gathers = exportMap.get(gat.getSalesManager());
@@ -112,14 +118,21 @@ public class GatherServiceImpl implements IGatherService {
             }
         }
         //计算每个销售经理的合计，并且构建导出的list
-        Set<Map.Entry<String, ArrayList<Gather>>> entries = exportMap.entrySet();
+        Set<Map.Entry<String, List<Gather>>> entries = exportMap.entrySet();
         String name = null;
-        ArrayList<Gather> gatherList = null;
-        for (Map.Entry<String, ArrayList<Gather>> entry : exportMap.entrySet()) {
+        List<Gather> gatherList = null;
+        for (Map.Entry<String, List<Gather>> entry : exportMap.entrySet()) {
             name = entry.getKey();
             gatherList = entry.getValue();
             if (gatherList.size() == 1) {
-                singleGathers.add(gatherList.get(0));
+                Gather gather = gatherList.get(0);
+                if (gather.getSalesManager().equals("直签") || gather.getSalesManager().equals("签约方悦维")) {
+                    specialGathers.addFirst(gather);
+                } else if (gather.getSalesManager().equals("anqi01")) {
+                    specialGathers.addLast(gather);
+                } else {
+                    singleGathers.add(gatherList.get(0));
+                }
                 continue;
             }
             sumGather = new Gather();
@@ -128,8 +141,10 @@ public class GatherServiceImpl implements IGatherService {
             sumGather.setQuotas(BigDecimal.ZERO);
             sumGather.setSummation(BigDecimal.ZERO);
             sumGather.setXhptAmt(BigDecimal.ZERO);
+            Collections.sort(gatherList);
             //遍历每个人的记录
             for (Gather g : gatherList) {
+
                 //去除科学计数法
                 g.setQuotas(g.getQuotas() != null ? new BigDecimal(g.getQuotas().toPlainString()) : null);
                 g.setSummation(g.getSummation() != null ? new BigDecimal(g.getSummation().toPlainString()) : null);
@@ -145,10 +160,14 @@ public class GatherServiceImpl implements IGatherService {
                     sumGather.setXhptAmt(g.getXhptAmt().add(sumGather.getXhptAmt()));
                 }
             }
-            if (sumGather.getQuotas().compareTo(BigDecimal.ZERO) == 0) {
-                sumGather.setXhwcRate(sumGather.getSummation().divide(sumGather.getQuotas(), 4, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100L)).toString() + "%");
+            if (sumGather.getQuotas().compareTo(BigDecimal.ZERO) != 0) {
+                sumGather.setXhwcRate(sumGather.getSummation().divide(sumGather.getQuotas(), 4, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100L)).setScale(2, BigDecimal.ROUND_HALF_UP).toString() + "%");
             }
+            sumGather.setTimeSchedule(timeSchedule);
             exportlist.add(sumGather);
+        }
+        while (specialGathers.size() > 0) {
+            exportlist.add(specialGathers.removeFirst());
         }
         exportlist.addAll(singleGathers);
 
