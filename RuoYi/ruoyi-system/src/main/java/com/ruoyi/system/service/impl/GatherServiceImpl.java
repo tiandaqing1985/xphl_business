@@ -57,9 +57,9 @@ public class GatherServiceImpl implements IGatherService {
                     g.setArea("系统中未关联");
                 } else if (saleManager.equals("不录入系统")) {
                     g.setArea("不录入系统");
-                } else if (saleManager.equals("签约方悦维") || saleManager.equals("直签")) {
+                } else if (saleManager.equals("代理客户") || saleManager.equals("直签客户")) {
                     g.setArea("北京");
-                    g.setDeptName("悦维");
+                    g.setDeptName("客户");
                 }
                 //计算平推完成金额
                 if (g.getTerm() == null || g.getTerm().equals("")) {
@@ -132,7 +132,7 @@ public class GatherServiceImpl implements IGatherService {
             gatherList = entry.getValue();
             if (gatherList.size() == 1) {
                 Gather gather = gatherList.get(0);
-                if (gather.getSalesManager().equals("直签") || gather.getSalesManager().equals("签约方悦维")) {
+                if (gather.getSalesManager().equals("直签客户") || gather.getSalesManager().equals("代理客户")) {
                     specialGathers.addFirst(gather);
                 } else if (gather.getSalesManager().equals("anqi01")) {
                     specialGathers.addLast(gather);

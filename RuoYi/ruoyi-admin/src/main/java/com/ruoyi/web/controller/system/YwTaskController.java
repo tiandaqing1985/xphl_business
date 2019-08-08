@@ -109,7 +109,6 @@ public class YwTaskController extends BaseController
 	/**
 	 * 修改保存任务
 	 */
-	@RequiresPermissions("system:ywTask:edit")
 	@Log(title = "任务", businessType = BusinessType.UPDATE)
 	@PostMapping("/edit")
 	@ResponseBody

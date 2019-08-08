@@ -154,7 +154,6 @@ public class YwGrossMarginsController extends BaseController
 	 * 导入模板
 	 * @return
 	 */
-	@RequiresPermissions("system:user:view")
 	@GetMapping("/importTemplate")
 	@ResponseBody
 	public AjaxResult importTemplate()
