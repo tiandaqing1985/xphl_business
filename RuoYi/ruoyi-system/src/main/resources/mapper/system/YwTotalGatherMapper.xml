@@ -144,7 +144,7 @@
         select rownum,sale_manager,ifnull(quotas,0.0) quotas,ifnull(summation,0.0) summation,rate from (
         select a.sale_manager,a.quotas,a.summation,a.rate,@rownum := @rownum + 1 rownum from (
         select tb1.sale_manager,tb1.quotas,tb2.summation,concat(round(tb2.summation/tb1.quotas*100,2),'%') rate from
-        (select ta.quarter,ta.sale_manager,ifnull(sum(ta.quotas),'0') quotas from yw_task ta group by ta.sale_manager,ta.type having ta.type = '消耗' <if
+        (select ta.quarter,ta.sale_manager,ifnull(sum(ta.quotas),'0') quotas from yw_task ta group by ta.sale_manager,ta.type,ta.quarter having ta.type = '消耗' <if
             test="quarter != null and quarter != ''">AND ta.quarter = #{quarter}</if> ) tb1
         left join
         (select con.quarter,con.sale_manager,sum(con.summation) summation from yw_consumption con group by con.sale_manager,con.quarter <if

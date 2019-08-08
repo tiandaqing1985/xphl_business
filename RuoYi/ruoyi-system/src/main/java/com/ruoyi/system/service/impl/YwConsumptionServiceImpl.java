@@ -107,6 +107,7 @@ public class YwConsumptionServiceImpl implements IYwConsumptionService {
                     consumption.setSaleManager(ywConsumption.getSaleManager());
                     consumption.setAdvertiser(ywConsumption.getAdvertiser());
                     consumption.setMedia(ywConsumption.getMedia());
+                    consumption.setQuarter(ywConsumption.getQuarter());
                     List<YwConsumption> ywConsumptionList = selectYwConsumptionList(consumption);
                     if (ywConsumptionList.size() != 0) {
                         YwConsumption updateYwConsumption = ywConsumptionList.get(0);

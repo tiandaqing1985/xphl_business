@@ -88,6 +88,12 @@ public class GatherServiceImpl implements IGatherService {
     @Override
     public List<Gather> exportList(List<Gather> list) {
 
+        //总计
+        Gather totalGather = new Gather();
+        totalGather.setDeptName("总计");
+        totalGather.setQuotas(BigDecimal.ZERO);
+        totalGather.setSummation(BigDecimal.ZERO);
+        totalGather.setXhptAmt(BigDecimal.ZERO);
         //只有一条的数据
         List<Gather> singleGathers = new ArrayList<>();
         //需要放一起的只有一条的数据
@@ -148,8 +154,9 @@ public class GatherServiceImpl implements IGatherService {
                 //去除科学计数法
                 g.setQuotas(g.getQuotas() != null ? new BigDecimal(g.getQuotas().toPlainString()) : null);
                 g.setSummation(g.getSummation() != null ? new BigDecimal(g.getSummation().toPlainString()) : null);
+                g.setTimeSchedule(timeSchedule);
                 exportlist.add(g);
-                //统计每人的总计
+                //统计每人的总计和所有总计
                 if (g.getQuotas() != null) {
                     sumGather.setQuotas(g.getQuotas().add(sumGather.getQuotas()));
                 }
@@ -164,13 +171,45 @@ public class GatherServiceImpl implements IGatherService {
                 sumGather.setXhwcRate(sumGather.getSummation().divide(sumGather.getQuotas(), 4, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100L)).setScale(2, BigDecimal.ROUND_HALF_UP).toString() + "%");
             }
             sumGather.setTimeSchedule(timeSchedule);
+            //计算总计
+            totalGather.setQuotas(totalGather.getQuotas().add(sumGather.getQuotas()));
+            totalGather.setSummation(totalGather.getSummation().add(sumGather.getSummation()));
+            totalGather.setXhptAmt(totalGather.getXhptAmt().add(sumGather.getXhptAmt()));
+
             exportlist.add(sumGather);
         }
+        //向导出列表中插入特殊处理的记录，同时计算总计
         while (specialGathers.size() > 0) {
-            exportlist.add(specialGathers.removeFirst());
+            Gather specialGath = specialGathers.removeFirst();
+            exportlist.add(specialGath);
+            if (specialGath.getQuotas() != null) {
+                totalGather.setQuotas(specialGath.getQuotas().add(totalGather.getQuotas()));
+            }
+            if (specialGath.getSummation() != null) {
+                totalGather.setSummation(specialGath.getSummation().add(totalGather.getSummation()));
+            }
+            if (specialGath.getXhptAmt() != null) {
+                totalGather.setXhptAmt(specialGath.getXhptAmt().add(totalGather.getXhptAmt()));
+            }
+        }
+        //将只有一条记录的金额加入总计
+        for (Gather singleGather : singleGathers) {
+            if (singleGather.getQuotas() != null) {
+                totalGather.setQuotas(singleGather.getQuotas().add(totalGather.getQuotas()));
+            }
+            if (singleGather.getSummation() != null) {
+                totalGather.setSummation(singleGather.getSummation().add(totalGather.getSummation()));
+            }
+            if (singleGather.getXhptAmt() != null) {
+                totalGather.setXhptAmt(singleGather.getXhptAmt().add(totalGather.getXhptAmt()));
+            }
         }
         exportlist.addAll(singleGathers);
-
+        if (totalGather.getQuotas().compareTo(BigDecimal.ZERO) != 0) {
+            totalGather.setXhwcRate(totalGather.getSummation().divide(totalGather.getQuotas(), 4, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100L)).setScale(2, BigDecimal.ROUND_HALF_UP).toString() + "%");
+        }
+        totalGather.setTimeSchedule(timeSchedule);
+        exportlist.add(totalGather);
         return exportlist;
     }
 

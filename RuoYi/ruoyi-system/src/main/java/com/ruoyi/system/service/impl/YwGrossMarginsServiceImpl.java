@@ -112,6 +112,7 @@ public class YwGrossMarginsServiceImpl implements IYwGrossMarginsService {
                     selectYwGrossMargins.setSignatory(ywGrossMargins.getSignatory());
                     selectYwGrossMargins.setAdvertiser(ywGrossMargins.getAdvertiser());
                     selectYwGrossMargins.setMedia(ywGrossMargins.getMedia());
+                    selectYwGrossMargins.setQuarter(ywGrossMargins.getQuarter());
                     List<YwGrossMargins> ywGrossMarginsList = selectYwGrossMarginsList(selectYwGrossMargins);
                     if (ywGrossMarginsList.size() != 0) {
                         YwGrossMargins updateYwGrossMarginsVO = ywGrossMarginsList.get(0);

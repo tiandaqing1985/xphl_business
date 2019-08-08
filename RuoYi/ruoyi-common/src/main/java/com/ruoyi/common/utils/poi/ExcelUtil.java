@@ -171,11 +171,11 @@ public class ExcelUtil<T>
                     fieldsMap.put(column, field);
                 }
             }
-            
+
             if(dataNo!=1){
             	rows+=1;
             }
-            
+
             for (int i = dataNo; i < rows; i++) //1
             {
                 // 从第2行开始取数据,默认第一行是表头.
@@ -468,7 +468,7 @@ public class ExcelUtil<T>
 
     /**
      * 设置 POI XSSFSheet 单元格提示
-     * 
+     *
      * @param sheet 表单
      * @param promptTitle 提示标题
      * @param promptContent 提示内容
@@ -749,7 +749,7 @@ public class ExcelUtil<T>
                     }
                     else
                     {
-                        if ((Double) val % 1 > 0)
+                        if ((Double) val % 1 != 0)
                         {
                             val = new DecimalFormat("0.00").format(val);
                         }
