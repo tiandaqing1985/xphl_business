@@ -163,6 +163,7 @@ public class GatherExcelUtil<T> {
                     fillExcelData(index, row, cell);
                 }
             }
+            sheet.createFreezePane( 0, 1, 0, 1 );
             String filename = encodingFilename(sheetName);
             out = new FileOutputStream(getAbsoluteFile(filename));
             wb.write(out);
