@@ -133,7 +133,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 			UNION ALL
 
- 		select * from (  select  a.sales,max(a.dept_name) deptname, sum(a.money) money from  (select y.* ,d.dept_name  from yw_arrearage y,sys_user u, sys_dept d where y.sales = u.user_name and u.dept_id = d.dept_id) a GROUP BY a.sales ORDER BY a.dept_name) b
+ 		select * from (  select  a.sales,max(a.dept_name) deptname, sum(a.money) money from  (select y.* ,d.dept_name  from yw_arrearage y,sys_user u, sys_dept d where y.sales = u.user_name and u.dept_id = d.dept_id) a GROUP BY a.sales ) b ORDER BY deptname
 	</select>
     
     

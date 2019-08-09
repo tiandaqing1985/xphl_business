@@ -82,12 +82,22 @@ public class GatherServiceImpl implements IGatherService {
     /**
      * 处理得到导出的list列表
      *
-     * @param list 消耗毛利汇总list
+     * @param gatherList 消耗毛利汇总list
      * @return 消耗毛利汇总集合
      */
     @Override
-    public List<Gather> exportList(List<Gather> list) {
+    public List<Gather> exportList(List<Gather> gathersList) {
 
+        //任务和完成金额都为0的记录过滤掉
+        List<Gather> list = new ArrayList<>();
+        for (Gather gather : gathersList) {
+            if ((gather.getSummation() == null || gather.getSummation().compareTo(BigDecimal.ZERO) == 0) &&
+                    (gather.getQuotas() == null || gather.getQuotas().compareTo(BigDecimal.ZERO) == 0)) {
+                continue;
+            } else {
+                list.add(gather);
+            }
+        }
         //总计
         Gather totalGather = new Gather();
         totalGather.setDeptName("总计");
