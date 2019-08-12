@@ -5,9 +5,9 @@ import com.ruoyi.common.annotation.Excel;
 import java.math.BigDecimal;
 
 /**
- * 各个部门消耗毛利情况汇总
+ * 各个部门消耗情况汇总
  */
-public class YwTotalGrossGather {
+public class YwTotalConsumGather {
 
     /** 期间 */
     private String quarter;
@@ -17,18 +17,18 @@ public class YwTotalGrossGather {
     /** 媒体 */
     @Excel(name = "购买媒体",type = Excel.Type.EXPORT)
     private String media;
-    /** 毛利任务 */
-    @Excel(name = "毛利任务",type = Excel.Type.EXPORT)
+    /** 实际任务 */
+    @Excel(name = "实际任务",type = Excel.Type.EXPORT)
     private BigDecimal quotas;
-    /** 毛利完成金额 */
-    @Excel(name = "毛利完成金额",type = Excel.Type.EXPORT)
-    private BigDecimal grossMargin;
-    /** 平推毛利任务完成金额 */
-    @Excel(name = "平推毛利任务完成金额",type = Excel.Type.EXPORT)
-    private BigDecimal mlptAmt;
-    /** 实际毛利完成老率 */
-    @Excel(name = "实际毛利完成老率",type = Excel.Type.EXPORT)
-    private String mlwcRate;
+    /** 消耗完成金额 */
+    @Excel(name = "消耗完成金额",type = Excel.Type.EXPORT)
+    private BigDecimal summation;
+    /** 平推任务完成金额 */
+    @Excel(name = "平推任务完成金额",type = Excel.Type.EXPORT)
+    private BigDecimal xhptAmt;
+    /** 消耗完成率 */
+    @Excel(name = "消耗完成率",type = Excel.Type.EXPORT)
+    private String xhwcRate;
     /** 时间进度 */
     @Excel(name = "时间进度",type = Excel.Type.EXPORT)
     private String timeSchedule;
@@ -65,28 +65,28 @@ public class YwTotalGrossGather {
         this.quotas = quotas;
     }
 
-    public BigDecimal getGrossMargin() {
-        return grossMargin;
+    public BigDecimal getSummation() {
+        return summation;
     }
 
-    public void setGrossMargin(BigDecimal grossMargin) {
-        this.grossMargin = grossMargin;
+    public void setSummation(BigDecimal summation) {
+        this.summation = summation;
     }
 
-    public BigDecimal getMlptAmt() {
-        return mlptAmt;
+    public BigDecimal getXhptAmt() {
+        return xhptAmt;
     }
 
-    public void setMlptAmt(BigDecimal mlptAmt) {
-        this.mlptAmt = mlptAmt;
+    public void setXhptAmt(BigDecimal xhptAmt) {
+        this.xhptAmt = xhptAmt;
     }
 
-    public String getMlwcRate() {
-        return mlwcRate;
+    public String getXhwcRate() {
+        return xhwcRate;
     }
 
-    public void setMlwcRate(String mlwcRate) {
-        this.mlwcRate = mlwcRate;
+    public void setXhwcRate(String xhwcRate) {
+        this.xhwcRate = xhwcRate;
     }
 
     public String getTimeSchedule() {

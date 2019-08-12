@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.system.mapper.TotalGatherMapper">
 
-    <resultMap id="YwTotalGatherResult" type="YwTotalGather">
+    <resultMap id="YwTotalConsumGatherResult" type="YwTotalConsumGather">
         <result column="dept_name" property="deptName"/>
         <result column="quotasGrossMargin" property="quotasGrossMargin"/>
         <result column="quotasConsumption" property="quotasConsumption"/>
@@ -14,6 +14,36 @@
         <result column="grossMarginRate" property="grossMarginRate"/>
     </resultMap>
 
+    <resultMap id="YwTotalGrossGatherResult" type="YwTotalGrossGather">
+        <result column="dept_name" property="deptName"/>
+        <result column="quotasGrossMargin" property="quotasGrossMargin"/>
+        <result column="quotasConsumption" property="quotasConsumption"/>
+        <result column="totalSummation" property="totalSummation"/>
+        <result column="totalGrossMargin" property="totalGrossMargin"/>
+        <result column="consumptionRate" property="consumptionRate"/>
+        <result column="grossMarginRate" property="grossMarginRate"/>
+    </resultMap>
+
+    <select id="selectTotalGatherGross" parameterType="YwTotalGrossGather" resultMap="YwTotalGrossGatherResult">
+        select tb1.dept_name,tb1.media,tb1.quarter,ifnull(sum(con.gross_margin),0) gross_margin from (select ta.sale_manager,ta.dept_name,ta.media,ta.quarter from yw_task ta where ta.type = '毛利'
+         <if test="quarter != null and quarter != ''"> and ta.quarter = #{quarter}</if>) tb1 left join yw_gross_margins con on tb1.sale_manager = con.sales_manager
+         <if test="media != '全媒体'"> and tb1.media = con.media </if>  and tb1.quarter = con.quarter group by tb1.dept_name,tb1.media having tb1.dept_name = #{deptName} and tb1.media = #{media}
+    </select>
+    
+    <select id="selectTotalGatherTask" parameterType="YwTotalGrossGather" resultMap="YwTotalGrossGatherResult">
+        select ta.dept_name,ta.media,ta.quarter,ifnull(sum(ta.quotas),0) quotas from yw_task ta group by ta.dept_name,ta.media,ta.quarter,ta.type having ta.type = '毛利'
+        <if test="quarter != null and quarter != ''">and ta.quarter = #{quarter}</if>
+    </select>
+    
+    <select id="selectTotalGatherConsum" resultMap="YwTotalConsumGatherResult" parameterType="YwTotalConsumGather">
+        select tb3.dept_name,tb3.media,tb3.quotas,tb2.summation  from (select ta.dept_name,ta.media,ta.quarter,ifnull(sum(ta.quotas),0) quotas from yw_task ta group by ta.dept_name,ta.media,ta.quarter,ta.type having ta.type = '消耗'
+        <if test="quarter != null and quarter != ''">and ta.quarter = #{quarter}</if>) tb3
+        left join
+        (select tb1.dept_name,tb1.media,tb1.quarter,ifnull(sum(con.summation),0) summation from (select ta.sale_manager,ta.dept_name,ta.media,ta.quarter from yw_task ta where ta.type = '消耗'
+        <if test="quarter != null and quarter != ''"> and ta.quarter = #{quarter}</if>) tb1 left join yw_consumption con on tb1.sale_manager = con.sale_manager and tb1.media = con.media and tb1.quarter = con.quarter group by tb1.dept_name,tb1.media) tb2
+        on tb3.dept_name = tb2.dept_name and tb3.media = tb2.media
+    </select>
+    
     <select id="selectTotalGather" resultMap="YwTotalGatherResult" parameterType="YwTotalGather">
         SELECT
         dept_name,
@@ -108,7 +138,7 @@
         ) T
     </select>
 
-    <resultMap id="YwGatherGrossMarginResult" type="YwGatherGrossMargin">
+    <resultMap id="YwGatherGrossMarginResult" type="YwRankGrossMargin">
         <result column="rownum" property="rownum"/>
         <result column="sale_manager" property="saleManager"/>
         <result column="quotas" property="quotas"/>
@@ -116,11 +146,11 @@
         <result column="rate" property="rate"/>
     </resultMap>
 
-    <select id="selectRankGrossMarginList" resultMap="YwGatherGrossMarginResult" parameterType="YwGatherGrossMargin">
+    <select id="selectRankGrossMarginList" resultMap="YwGatherGrossMarginResult" parameterType="YwRankGrossMargin">
 
-        select rownum,sale_manager,ifnull(quotas,0.0) quotas,ifnull(gross_margin,0.0) gross_margin,rate from (
+        select rownum,sale_manager,ifnull(quotas,0.0) quotas,ifnull(gross_margin,0.0) gross_margin,concat(rate,'%') rate from (
         select a.sale_manager,a.quotas,a.gross_margin,a.rate,@rownum := @rownum + 1 rownum from (
-        select tb1.sale_manager,tb1.quotas,tb2.gross_margin,concat(round(tb2.gross_margin/tb1.quotas*100,2),'%') rate from
+        select tb1.sale_manager,tb1.quotas,tb2.gross_margin,round(tb2.gross_margin/tb1.quotas*100,2) rate from
         (select ta.quarter,ta.sale_manager,ifnull(sum(ta.quotas),'0') quotas from yw_task ta group by ta.sale_manager,ta.type,ta.quarter having ta.type = '毛利' <if
             test="quarter != null and quarter != ''">AND ta.quarter = #{quarter}</if>) tb1
         left join
@@ -141,9 +171,9 @@
 
     <select id="selectRankConsumptionList" resultMap="YwGatherConsumptionResult" parameterType="YwGatherConsumption">
 
-        select rownum,sale_manager,ifnull(quotas,0.0) quotas,ifnull(summation,0.0) summation,rate from (
+        select rownum,sale_manager,ifnull(quotas,0.0) quotas,ifnull(summation,0.0) summation,concat(rate,'%') rate from (
         select a.sale_manager,a.quotas,a.summation,a.rate,@rownum := @rownum + 1 rownum from (
-        select tb1.sale_manager,tb1.quotas,tb2.summation,concat(round(tb2.summation/tb1.quotas*100,2),'%') rate from
+        select tb1.sale_manager,tb1.quotas,tb2.summation,round(tb2.summation/tb1.quotas*100,2) rate from
         (select ta.quarter,ta.sale_manager,ifnull(sum(ta.quotas),'0') quotas from yw_task ta group by ta.sale_manager,ta.type,ta.quarter having ta.type = '消耗' <if
             test="quarter != null and quarter != ''">AND ta.quarter = #{quarter}</if> ) tb1
         left join

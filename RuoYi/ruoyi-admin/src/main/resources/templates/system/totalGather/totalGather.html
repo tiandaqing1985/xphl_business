@@ -27,69 +27,12 @@
 				 <table id="bootstrap-table-3" data-mobile-responsive="true"></table>
 			 </div>
 		 </div>
-		 <div class="row">
-			 <div class="col-sm-12 search-collapse">
-				 <form id="formId1">
-					 <div class="select-list">
-						 <ul>
-							 <li>
-								 期间：<input type="text" name="quarter"/>
-							 </li>
-
-							 <li>
-								 <a class="btn btn-primary btn-rounded btn-sm" onclick="mySearch(1)"><i class="fa fa-search"></i>&nbsp;搜索</a>
-								 <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
-								 <a class="btn btn-primary btn-rounded btn-sm" onclick="myExportExcel('1')"><i class="fa fa-download"></i> 导出</a>
-							 </li>
-						 </ul>
-					 </div>
-				 </form>
-			 </div>
-			 <div class="col-sm-12 select-table table-striped">
-				 <table id="bootstrap-table-1" data-mobile-responsive="true"></table>
-			 </div>
-		 </div>
-		 <div class="row">
-			 <div class="col-sm-12 search-collapse">
-				 <form id="formId2">
-					 <div class="select-list">
-						 <ul>
-							 <li>
-								 期间：<input type="text" name="quarter"/>
-							 </li>
-
-							 <li>
-								 <a class="btn btn-primary btn-rounded btn-sm" onclick="mySearch(2)"><i class="fa fa-search"></i>&nbsp;搜索</a>
-								 <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
-								 <a class="btn btn-primary btn-rounded btn-sm" onclick="myExportExcel('2')"><i class="fa fa-download"></i> 导出</a>
-							 </li>
-						 </ul>
-					 </div>
-				 </form>
-			 </div>
-			 <div class="col-sm-12 select-table table-striped">
-				 <table id="bootstrap-table-2" data-mobile-responsive="true"></table>
-			 </div>
-		 </div>
 	</div>
     <div th:include="include :: footer"></div>
     <script th:inline="javascript">
         var editFlag = [[${@permission.hasPermi('system:gather:edit')}]];
         var removeFlag = [[${@permission.hasPermi('system:gather:remove')}]];
         var prefix = ctx + "system/totalGather";
-
-        function mySearch(id) {
-			if(id == '1'){
-				$.table._option.id = 'bootstrap-table-1';
-			}
-			else if(id == '2'){
-				$.table._option.id = 'bootstrap-table-2';
-			}
-			else if(id == '3'){
-				$.table._option.id = 'bootstrap-table-3';
-			}
-			$.table.search('formId'+id);
-		}
 
         function myExportExcel(id){
         	var fromId = '';
@@ -159,98 +102,6 @@
 							title : '毛利完成率'
 						}]
 				]
-			};
-			$.table.init(options);
-		});
-
-		$(function() {
-			var options = {
-				id: "bootstrap-table-1",
-				url: prefix + "/rankGrossMarginList",
-				exportUrl: prefix + "/exportRankGrossMargin",
-				modalName: "毛利排名列表",
-				showSearch: false,
-				showRefresh: false,
-				showToggle: false,
-				showColumns: false,
-				columns: [
-						[
-							{
-								title : '毛利排名列表',
-								align : 'center',
-								colspan : 6
-							}
-						],
-						[{
-					checkbox: true
-				},
-					{
-						field : 'rownum',
-						title : '毛利排名'
-					},
-					{
-						field : 'saleManager',
-						title : '销售经理'
-					},
-					{
-						field : 'quotas',
-						title : '毛利任务'
-					},
-					{
-						field : 'grossMargin',
-						title : '毛利实际完成'
-					},
-					{
-						field : 'rate',
-						title : '毛利完成率'
-					}]
-						]
-			};
-			$.table.init(options);
-		});
-
-		$(function() {
-			var options = {
-				id: "bootstrap-table-2",
-				url: prefix + "/rankConsumptionlist",
-				exportUrl: prefix + "/exportRankConsumption",
-				modalName: "业绩消耗排名",
-				showSearch: false,
-				showRefresh: false,
-				showToggle: false,
-				showColumns: false,
-				columns: [
-						[
-							{
-								title : '业绩消耗排名列表',
-								align : 'center',
-								colspan : 6
-							}
-						],
-						[{
-					checkbox: true
-				},
-					{
-						field : 'rownum',
-						title : '业绩消耗排名'
-					},
-					{
-						field : 'saleManager',
-						title : '销售经理'
-					},
-					{
-						field : 'quotas',
-						title : '业绩消耗总任务'
-					},
-					{
-						field : 'summation',
-						title : '业绩消耗完成'
-					},
-					{
-						field : 'rate',
-						title : '业绩消耗完成率'
-					}]
-						]
 			};
 			$.table.init(options);
 		});

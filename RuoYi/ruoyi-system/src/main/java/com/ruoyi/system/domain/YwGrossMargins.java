@@ -28,7 +28,7 @@ public class YwGrossMargins extends BaseEntity
 	@Excel(name = "广告主", type = Excel.Type.ALL)
 	private String advertiser;
 	/** 签约方 */
-	@Excel(name = "签约方", type = Excel.Type.ALL)
+	@Excel(name = "客户签约方", type = Excel.Type.ALL)
 	private String signatory;
 	/** 毛利 */
 	@Excel(name = "毛利", type = Excel.Type.ALL)

@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 /**
  * 毛利任务完成比例排名
  */
-public class YwGatherGrossMargin {
+public class YwRankGrossMargin {
 
     /** 毛利排名 */
     @Excel(name = "毛利排名",type = Excel.Type.EXPORT)

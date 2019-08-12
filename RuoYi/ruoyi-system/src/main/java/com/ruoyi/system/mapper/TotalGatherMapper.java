@@ -1,8 +1,8 @@
 package com.ruoyi.system.mapper;
 
 import com.ruoyi.system.domain.YwGatherConsumption;
-import com.ruoyi.system.domain.YwGatherGrossMargin;
-import com.ruoyi.system.domain.YwTotalGather;
+import com.ruoyi.system.domain.YwRankGrossMargin;
+import com.ruoyi.system.domain.YwTotalGrossGather;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ public interface TotalGatherMapper {
      * 根据部门汇总所有消耗毛利情况
      * @return
      */
-    public List<YwTotalGather> selectTotalGather(YwTotalGather ywTotalGather);
+    public List<YwTotalGrossGather> selectTotalGather(YwTotalGrossGather ywTotalGather);
     /**
      * 查询消耗排名
      *
@@ -25,6 +25,6 @@ public interface TotalGatherMapper {
      *
      * @return 毛利排名
      */
-    public List<YwGatherGrossMargin> selectRankGrossMarginList(YwGatherGrossMargin ywGatherGrossMargin);
+    public List<YwRankGrossMargin> selectRankGrossMarginList(YwRankGrossMargin ywRankGrossMargin);
 
 }

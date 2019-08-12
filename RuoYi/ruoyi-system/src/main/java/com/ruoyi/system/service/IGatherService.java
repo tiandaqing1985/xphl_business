@@ -1,8 +1,8 @@
 package com.ruoyi.system.service;
 
 import com.ruoyi.system.domain.Gather;
-import com.ruoyi.system.domain.YwGatherConsumption;
-import com.ruoyi.system.domain.YwGatherGrossMargin;
+import com.ruoyi.system.domain.YwGrossMarginGather;
+import com.ruoyi.system.domain.YwRankGrossMargin;
 
 import java.util.List;
 
@@ -31,4 +31,11 @@ public interface IGatherService
 	 */
 	public List<Gather> exportList(List<Gather> gathers);
 
+	/**
+	 *	查询毛利汇总列表
+	 *
+	 * @param gather 毛利汇总查询条件
+	 * @return 消耗毛利集合
+	 */
+    public List<YwGrossMarginGather> selectGrossMarginGatherList(YwGrossMarginGather gather);
 }

@@ -50,100 +50,6 @@
         c.media,
         c.quarter
         HAVING
-        c.type = '毛利'
-        <if test="quarter != null and quarter != ''">and c.quarter= #{quarter}</if>
-        ) tb1
-        LEFT JOIN (
-        SELECT
-        d.sales_manager,
-        d.media,
-        d.quarter,
-        d.term,
-        sum( d.gross_margin ) summation
-        FROM
-        yw_gross_margins d
-        GROUP BY
-        d.sales_manager,
-        d.media,
-        d.quarter
-        ) tb2 ON tb1.sale_manager = tb2.sales_manager
-        AND tb1.media = tb2.media AND tb1.quarter = tb2.quarter
-        union
-        SELECT
-        '毛利' type,
-        tb2.quarter,
-        tb1.area,
-        tb1.dept_name,
-        tb2.sales_manager,
-        tb2.media,
-        tb1.quotas,
-        IFNULL( tb2.summation, '0' ) summation,
-        tb2.term,
-        concat( round( IFNULL( tb2.summation, '0' ) / tb1.quotas * 100, 2 ), '%' ) xhwcRate
-        FROM
-        (
-        SELECT
-        c.type,
-        c.quarter,
-        c.area,
-        c.dept_name,
-        c.sale_manager,
-        c.media,
-        IFNULL( sum( c.quotas ), '0' ) quotas
-        FROM
-        yw_task c
-        GROUP BY
-        c.sale_manager,
-        c.media,
-        c.quarter
-        HAVING
-        c.type = '毛利'
-        ) tb1
-        RIGHT JOIN (
-        SELECT
-        d.sales_manager,
-        d.media,
-        d.quarter,
-        d.term,
-        sum( d.gross_margin ) summation
-        FROM
-        yw_gross_margins d
-        GROUP BY
-        d.sales_manager,
-        d.media,
-        d.quarter
-        <if test="quarter != null and quarter != ''">HAVING d.quarter= #{quarter}</if>
-        ) tb2 ON tb1.sale_manager = tb2.sales_manager
-        AND tb1.media = tb2.media AND tb1.quarter = tb2.quarter
-        union
-        SELECT
-        tb1.type,
-        tb1.quarter,
-        tb1.area,
-        tb1.dept_name,
-        tb1.sale_manager sales_manager,
-        tb1.media,
-        tb1.quotas,
-        IFNULL( tb2.summation, '0' ) summation,
-        tb2.term,
-        concat( round( IFNULL( tb2.summation, '0' ) / tb1.quotas * 100, 2 ), '%' ) xhwcRate
-        FROM
-        (
-        SELECT
-        c.type,
-        c.quarter,
-        c.area,
-        c.dept_name,
-        c.sale_manager,
-        c.media,
-        IFNULL( sum( c.quotas ), '0' ) quotas
-        FROM
-        yw_task c
-        GROUP BY
-        c.sale_manager,
-        c.media,
-        c.quarter
-        HAVING
         c.type = '消耗'
         <if test="quarter != null and quarter != ''">and c.quarter= #{quarter}</if>
         ) tb1
@@ -210,12 +116,9 @@
         ) tb2 ON tb1.sale_manager = tb2.sale_manager
         AND tb1.media = tb2.media AND tb1.quarter = tb2.quarter
         ) tb3
-        <where>
-            <if test="type != null and type != ''">tb3.type = #{type}</if>
-        </where>
     </select>
 
-    <resultMap id="YwGatherGrossMarginResult" type="YwGatherGrossMargin">
+    <resultMap id="YwGatherGrossMarginResult" type="YwRankGrossMargin">
         <result column="rownum" property="rownum"/>
         <result column="sale_manager" property="saleManager"/>
         <result column="quotas" property="quotas"/>
@@ -256,5 +159,31 @@
         ) a,(SELECT @rownum := 0) b) c
 
     </select>
-    
+
+    <resultMap id="grossMarginGatherResult" type="YwGrossMarginGather">
+        <result column="sale_manager" property="saleManager"/>
+        <result column="quarter" property="quarter"/>
+        <result column="gross_margin" property="grossMargin"/>
+        <result column="quotas" property="quotas"/>
+        <result column="term" property="term"/>
+    </resultMap>
+
+    <select id="selectGrossMarginGatherList" parameterType="YwGrossMarginGather" resultMap="grossMarginGatherResult">
+        select tb1.sales_manager sale_manager,tb1.quarter,ifnull(tb1.gross_margin,0) gross_margin,ifnull(tb2.quotas,0) quotas,tb1.term from
+        (select gm.sales_manager,ifnull(sum(gm.gross_margin),0) gross_margin,gm.quarter,gm.term from yw_gross_margins gm group by gm.quarter,gm.sales_manager<if
+            test="quarter != null and quarter != ''"> having gm.quarter = #{quarter}</if>) tb1
+        left join
+        (select ta.sale_manager,ifnull(sum(ta.quotas),0) quotas,ta.quarter from yw_task ta group by ta.type,ta.quarter,ta.sale_manager having ta.type = '毛利'<if
+            test="quarter != null and quarter != ''"> and ta.quarter = #{quarter}</if>) tb2
+        on tb1.quarter = tb2.quarter and tb1.sales_manager = tb2.sale_manager
+        union
+        select tb2.sale_manager,tb2.quarter,ifnull(tb1.gross_margin,0) gross_margin,ifnull(tb2.quotas,0) quotas,tb1.term from
+        (select gm.sales_manager,ifnull(sum(gm.gross_margin),0) gross_margin,gm.quarter,gm.term from yw_gross_margins gm group by gm.quarter,gm.sales_manager<if
+            test="quarter != null and quarter != ''"> having gm.quarter = #{quarter}</if>) tb1
+        right join
+        (select ta.sale_manager,ifnull(sum(ta.quotas),0) quotas,ta.quarter from yw_task ta group by ta.type,ta.quarter,ta.sale_manager having ta.type = '毛利' <if
+            test="quarter != null and quarter != ''"> and ta.quarter = #{quarter}</if>) tb2
+        on tb1.quarter = tb2.quarter and tb1.sales_manager = tb2.sale_manager
+    </select>
+
 </mapper>

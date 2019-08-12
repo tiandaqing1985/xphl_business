@@ -1,8 +1,9 @@
 package com.ruoyi.system.service.impl;
 
 import com.ruoyi.system.domain.YwGatherConsumption;
-import com.ruoyi.system.domain.YwGatherGrossMargin;
-import com.ruoyi.system.domain.YwTotalGather;
+import com.ruoyi.system.domain.YwRankGrossMargin;
+import com.ruoyi.system.domain.YwTotalConsumGather;
+import com.ruoyi.system.domain.YwTotalGrossGather;
 import com.ruoyi.system.mapper.TotalGatherMapper;
 import com.ruoyi.system.service.TotalGatherService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,15 +29,13 @@ public class TotalGatherServiceImpl implements TotalGatherService {
      * @return 消耗毛利汇总集合
      */
     @Override
-    public List<YwTotalGather> selectTotalGather(YwTotalGather ywTotalGather) {
+    public List<YwTotalConsumGather> selectTotalConsumGather(YwTotalConsumGather ywTotalGather) {
 
-        List<YwTotalGather> ywTotalGathers = totalGatherMapper.selectTotalGather(ywTotalGather);
+        List<YwTotalConsumGather> ywTotalGathers = totalGatherMapper.selectTotalGather(ywTotalGather);
         //消除科学计数法
-        for (YwTotalGather totalGather : ywTotalGathers) {
-            totalGather.setQuotasConsumption(new BigDecimal(totalGather.getQuotasConsumption().toPlainString()));
-            totalGather.setQuotasGrossMargin(new BigDecimal(totalGather.getQuotasGrossMargin().toPlainString()));
-            totalGather.setTotalGrossMargin(new BigDecimal(totalGather.getTotalGrossMargin().toPlainString()));
-            totalGather.setTotalSummation(new BigDecimal(totalGather.getTotalSummation().toPlainString()));
+        for (YwTotalConsumGather totalGather : ywTotalGathers) {
+            totalGather.setQuotas(new BigDecimal(totalGather.getQuotas().toPlainString()));
+            totalGather.setSummation(new BigDecimal(totalGather.getSummation().toPlainString()));
         }
 
         return ywTotalGathers;
@@ -48,13 +47,13 @@ public class TotalGatherServiceImpl implements TotalGatherService {
      * @return 毛利排名
      */
     @Override
-    public List<YwGatherGrossMargin> selectRankGrossMarginList(YwGatherGrossMargin yw) {
-        List<YwGatherGrossMargin> ywGatherGrossMargins = totalGatherMapper.selectRankGrossMarginList(yw);
-        for (YwGatherGrossMargin ywGatherGrossMargin : ywGatherGrossMargins) {
-            ywGatherGrossMargin.setGrossMargin(new BigDecimal(ywGatherGrossMargin.getGrossMargin().toPlainString()));
-            ywGatherGrossMargin.setQuotas(new BigDecimal(ywGatherGrossMargin.getQuotas().toPlainString()));
+    public List<YwRankGrossMargin> selectRankGrossMarginList(YwRankGrossMargin yw) {
+        List<YwRankGrossMargin> ywRankGrossMargins = totalGatherMapper.selectRankGrossMarginList(yw);
+        for (YwRankGrossMargin ywRankGrossMargin : ywRankGrossMargins) {
+            ywRankGrossMargin.setGrossMargin(new BigDecimal(ywRankGrossMargin.getGrossMargin().toPlainString()));
+            ywRankGrossMargin.setQuotas(new BigDecimal(ywRankGrossMargin.getQuotas().toPlainString()));
         }
-        return ywGatherGrossMargins;
+        return ywRankGrossMargins;
     }
 
     /**

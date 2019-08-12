@@ -5,8 +5,8 @@ import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.system.domain.YwGatherConsumption;
-import com.ruoyi.system.domain.YwGatherGrossMargin;
-import com.ruoyi.system.domain.YwTotalGather;
+import com.ruoyi.system.domain.YwRankGrossMargin;
+import com.ruoyi.system.domain.YwTotalGrossGather;
 import com.ruoyi.system.service.TotalGatherService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,10 +43,10 @@ public class YwTotalGatherController extends BaseController
      */
     @PostMapping("/list")
     @ResponseBody
-    public TableDataInfo selectTotalGather(YwTotalGather ywTotalGather)
+    public TableDataInfo selectTotalGather(YwTotalGrossGather ywTotalGather)
     {
         startPage();
-        List<YwTotalGather> list = totalGatherService.selectTotalGather(ywTotalGather);
+        List<YwTotalGrossGather> list = totalGatherService.selectTotalGather(ywTotalGather);
         return getDataTable(list);
     }
 
@@ -55,10 +55,10 @@ public class YwTotalGatherController extends BaseController
      */
     @PostMapping("/rankGrossMarginList")
     @ResponseBody
-    public TableDataInfo rankGrossMarginList(YwGatherGrossMargin ywGatherGrossMargin)
+    public TableDataInfo rankGrossMarginList(YwRankGrossMargin ywRankGrossMargin)
     {
         startPage();
-        List<YwGatherGrossMargin> list = totalGatherService.selectRankGrossMarginList(ywGatherGrossMargin);
+        List<YwRankGrossMargin> list = totalGatherService.selectRankGrossMarginList(ywRankGrossMargin);
         return getDataTable(list);
     }
 
@@ -80,10 +80,10 @@ public class YwTotalGatherController extends BaseController
      */
     @PostMapping("/export")
     @ResponseBody
-    public AjaxResult export(YwTotalGather ywTotalGather)
+    public AjaxResult export(YwTotalGrossGather ywTotalGather)
     {
-        List<YwTotalGather> list = totalGatherService.selectTotalGather(ywTotalGather);
-        ExcelUtil<YwTotalGather> util = new ExcelUtil<YwTotalGather>(YwTotalGather.class);
+        List<YwTotalGrossGather> list = totalGatherService.selectTotalGather(ywTotalGather);
+        ExcelUtil<YwTotalGrossGather> util = new ExcelUtil<YwTotalGrossGather>(YwTotalGrossGather.class);
         return util.exportExcel(list, "区域消耗毛利汇总");
     }
 
@@ -106,10 +106,10 @@ public class YwTotalGatherController extends BaseController
      */
     @PostMapping("/exportRankGrossMargin")
     @ResponseBody
-    public AjaxResult exportRankGrossMargin(YwGatherGrossMargin ywTotalGather)
+    public AjaxResult exportRankGrossMargin(YwRankGrossMargin ywTotalGather)
     {
-        List<YwGatherGrossMargin> list = totalGatherService.selectRankGrossMarginList(ywTotalGather);
-        ExcelUtil<YwGatherGrossMargin> util = new ExcelUtil<YwGatherGrossMargin>(YwGatherGrossMargin.class);
+        List<YwRankGrossMargin> list = totalGatherService.selectRankGrossMarginList(ywTotalGather);
+        ExcelUtil<YwRankGrossMargin> util = new ExcelUtil<YwRankGrossMargin>(YwRankGrossMargin.class);
         return util.exportExcel(list, "毛利排名");
     }
 

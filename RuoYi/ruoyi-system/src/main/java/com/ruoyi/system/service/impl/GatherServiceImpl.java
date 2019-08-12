@@ -5,9 +5,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import com.ruoyi.common.utils.DateUtils;
-import com.ruoyi.system.domain.YwGatherConsumption;
-import com.ruoyi.system.domain.YwGatherGrossMargin;
+import com.ruoyi.system.domain.YwGrossMarginGather;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,7 +80,7 @@ public class GatherServiceImpl implements IGatherService {
     /**
      * 处理得到导出的list列表
      *
-     * @param gatherList 消耗毛利汇总list
+     * @param gathersList 消耗毛利汇总list
      * @return 消耗毛利汇总集合
      */
     @Override
@@ -275,4 +273,50 @@ public class GatherServiceImpl implements IGatherService {
         return days + 1;
     }
 
+    /**
+     * 查询总后的个人毛利信息
+     *
+     * @param gather 毛利汇总查询条件
+     * @return 汇总后的个人毛利信息
+     */
+    @Override
+    public List<YwGrossMarginGather> selectGrossMarginGatherList(YwGrossMarginGather gather) {
+        String timeSch = null;
+        List<YwGrossMarginGather> list = gatherMapper.selectGrossMarginGatherList(gather);
+        for (YwGrossMarginGather ywGatherGrossMargin : list) {
+            //计算时间进度
+            if (ywGatherGrossMargin.getTerm() != null) {
+                double timeSchedule = Double.valueOf(getTermDayNum(ywGatherGrossMargin.getTerm())) / getQuarterDayNum(ywGatherGrossMargin.getQuarter());
+                timeSchedule = timeSchedule * 100;
+                timeSch = BigDecimal.valueOf(timeSchedule).setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString() + "%";
+            }
+
+        }
+        for (YwGrossMarginGather ywGatherGrossMargin : list) {
+            String mlwcRate = null;
+            BigDecimal mlptAmt = null;
+
+            //计算完成率
+            if (ywGatherGrossMargin.getGrossMargin().compareTo(BigDecimal.ZERO) == 0 || ywGatherGrossMargin.getQuotas().compareTo(BigDecimal.ZERO) == 0) {
+                mlwcRate = "0.00%";
+            } else {
+                mlwcRate = ywGatherGrossMargin.getGrossMargin().divide(ywGatherGrossMargin.getQuotas(), 4, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100L)).toPlainString();
+            }
+            ywGatherGrossMargin.setMlwcRate(mlwcRate);
+
+            //平推金额
+            if (ywGatherGrossMargin.getTerm() == null || ywGatherGrossMargin.getTerm().equals("")) {
+                mlptAmt = BigDecimal.ZERO;
+            } else {
+                mlptAmt = ywGatherGrossMargin.getGrossMargin().divide(BigDecimal.valueOf(getTermDayNum(ywGatherGrossMargin.getTerm())), 6, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(getQuarterDayNum(ywGatherGrossMargin.getQuarter())));
+            }
+
+            ywGatherGrossMargin.setTimeSchedule(timeSch);
+            ywGatherGrossMargin.setMlptAmt(mlptAmt.setScale(2,BigDecimal.ROUND_HALF_UP));
+            //消除科学计数法
+            ywGatherGrossMargin.setQuotas(new BigDecimal(ywGatherGrossMargin.getQuotas().toPlainString()));
+            ywGatherGrossMargin.setGrossMargin(new BigDecimal(ywGatherGrossMargin.getGrossMargin().toPlainString()));
+        }
+        return list;
+    }
 }

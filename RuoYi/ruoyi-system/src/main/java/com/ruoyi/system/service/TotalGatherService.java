@@ -1,8 +1,8 @@
 package com.ruoyi.system.service;
 
 import com.ruoyi.system.domain.YwGatherConsumption;
-import com.ruoyi.system.domain.YwGatherGrossMargin;
-import com.ruoyi.system.domain.YwTotalGather;
+import com.ruoyi.system.domain.YwRankGrossMargin;
+import com.ruoyi.system.domain.YwTotalGrossGather;
 
 import java.util.List;
 
@@ -10,9 +10,9 @@ import java.util.List;
  * 服务层 部门汇总
  */
 public interface TotalGatherService {
-    public List<YwTotalGather> selectTotalGather(YwTotalGather ywTotalGather);
+    public List<YwTotalGrossGather> selectTotalGather(YwTotalGrossGather ywTotalGather);
 
-    public List<YwGatherGrossMargin> selectRankGrossMarginList(YwGatherGrossMargin ywGatherGrossMargin);
+    public List<YwRankGrossMargin> selectRankGrossMarginList(YwRankGrossMargin ywRankGrossMargin);
 
     public List<YwGatherConsumption> selectRankConsumptionlist(YwGatherConsumption ywGatherConsumption);
 }

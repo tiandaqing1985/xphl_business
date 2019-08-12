@@ -1,8 +1,7 @@
 package com.ruoyi.system.mapper;
 
 import com.ruoyi.system.domain.Gather;
-import com.ruoyi.system.domain.YwGatherConsumption;
-import com.ruoyi.system.domain.YwGatherGrossMargin;
+import com.ruoyi.system.domain.YwGrossMarginGather;
 
 import java.util.List;
 
@@ -16,11 +15,18 @@ public interface GatherMapper {
 
 
     /**
-     * 查询毛利消耗汇总列表
+     * 查询消耗汇总列表
      *
-     * @param gather 消耗毛利汇总信息
-     * @return 消耗毛利汇总集合
+     * @param gather 消耗汇总信息
+     * @return 消耗汇总集合
      */
     public List<Gather> selectGatherList(Gather gather);
 
+    /**
+     * 查询毛利汇总列表
+     *
+     * @param gather 毛利汇总信息
+     * @return 毛利汇总集合
+     */
+    public List<YwGrossMarginGather> selectGrossMarginGatherList(YwGrossMarginGather gather);
 }
