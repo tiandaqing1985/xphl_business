@@ -112,6 +112,12 @@ public interface SysDeptMapper
      * @return
      */
     public SysDept selectDeptByUserId(@Param("userId") Long userId);
-    
+
+    /**
+     * 根据leader查询部门
+     * @param leader
+     * @return
+     */
+    public List<SysDept> selectDeptByLeader(@Param("leader") String leader);
     
 }

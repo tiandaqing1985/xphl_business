@@ -186,7 +186,7 @@ public class YwGrossMarginGatherController extends BaseController {
         ExcelUtil<YwTask> util = new ExcelUtil<YwTask>(YwTask.class);
         List<YwTask> ywTasks = util.importExcel(file.getInputStream(),0,1);
         String operName = ShiroUtils.getSysUser().getLoginName();
-        String message = ywTaskService.importYwTask(ywTasks, updateSupport, operName);
+        String message = ywTaskService.importYwTask(ywTasks, true, operName);
         return AjaxResult.success(message);
     }
 

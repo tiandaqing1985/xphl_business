@@ -36,7 +36,7 @@ public class YwConsumeGatherController extends BaseController {
     private static String prefix = "system/ywConsumeGather";
 
     @Autowired
-    private IGatherService gatherService;
+    private IGatherService iGatherService;
     @Autowired
     private TotalGatherService totalGatherService;
     @Autowired
@@ -62,8 +62,8 @@ public class YwConsumeGatherController extends BaseController {
         if (gather.getQuarter() == null || gather.getQuarter().equals("")) {
             gather.setQuarter(QuarterUtil.getQuarterByDate(DateUtils.getNowDate()));
         }
-        List<Gather> list = gatherService.selectGatherList(gather);
-        List<Gather> gatherList = gatherService.exportList(list);
+        List<Gather> list = iGatherService.selectGatherList(gather);
+        List<Gather> gatherList = iGatherService.exportList(list);
         return getDataTable(gatherList);
     }
 
@@ -76,8 +76,8 @@ public class YwConsumeGatherController extends BaseController {
         if (gather.getQuarter() == null || gather.getQuarter().equals("")) {
             gather.setQuarter(QuarterUtil.getQuarterByDate(DateUtils.getNowDate()));
         }
-        List<Gather> gathers = gatherService.selectGatherList(gather);
-        List<Gather> gatherList = gatherService.exportList(gathers);
+        List<Gather> gathers = iGatherService.selectGatherList(gather);
+        List<Gather> gatherList = iGatherService.exportList(gathers);
         GatherExcelUtil<Gather> util = new GatherExcelUtil<Gather>(Gather.class);
         return util.exportGatherExcel(gatherList, "个人消耗汇总");
     }
@@ -156,7 +156,7 @@ public class YwConsumeGatherController extends BaseController {
         ExcelUtil<YwConsumption> util = new ExcelUtil<YwConsumption>(YwConsumption.class);
         List<YwConsumption> ywConsumptions = util.importExcel(file.getInputStream(), 0, 1);
         String operName = ShiroUtils.getSysUser().getLoginName();
-        String message = ywConsumptionService.importYwConsumption(ywConsumptions, updateSupport, operName);
+        String message = ywConsumptionService.importYwConsumption(ywConsumptions, true, operName);
         return AjaxResult.success(message);
     }
 
@@ -187,7 +187,7 @@ public class YwConsumeGatherController extends BaseController {
         ExcelUtil<YwTask> util = new ExcelUtil<YwTask>(YwTask.class);
         List<YwTask> ywTasks = util.importExcel(file.getInputStream(),0,1);
         String operName = ShiroUtils.getSysUser().getLoginName();
-        String message = ywTaskService.importYwTask(ywTasks, updateSupport, operName);
+        String message = ywTaskService.importYwTask(ywTasks, true, operName);
         return AjaxResult.success(message);
     }
 

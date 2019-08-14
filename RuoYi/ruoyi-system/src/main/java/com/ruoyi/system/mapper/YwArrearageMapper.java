@@ -1,15 +1,14 @@
 package com.ruoyi.system.mapper;
 
-import com.ruoyi.system.domain.YwArrearage;
-import java.util.List;
-
-import org.apache.ibatis.annotations.Param;	
+import com.ruoyi.system.domain.ywArrearage.SaleManagerArrearageGather;
+import com.ruoyi.system.domain.ywArrearage.YwArrearage;
+import java.util.List;	
 
 /**
  * 商机-欠款 数据层
  * 
  * @author ruoyi
- * @date 2019-07-30
+ * @date 2019-08-14
  */
 public interface YwArrearageMapper 
 {
@@ -60,10 +59,12 @@ public interface YwArrearageMapper
      * @return 结果
      */
 	public int deleteYwArrearageByIds(String[] ids);
-	
-	public  void batchInsert(@Param("list") List<YwArrearage> list);
-	
-	public List<YwArrearage> selectSumList(YwArrearage ywArrearage);
-	
-	
+
+	/**
+	 * 查询汇总表-按销售经理
+	 *
+	 * @param ywArrearage 查询条件
+	 * @return
+	 */
+    public List<SaleManagerArrearageGather> selectGatherSaleManager(YwArrearage ywArrearage);
 }

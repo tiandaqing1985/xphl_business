@@ -8,45 +8,141 @@
         <form class="form-horizontal m" id="form-ywArrearage-edit" th:object="${ywArrearage}">
             <input id="id" name="id" th:field="*{id}"  type="hidden">
 			<div class="form-group">	
-				<label class="col-sm-3 control-label">客户名称：</label>
-				<div class="col-sm-8">
-					<input id="clientName" name="clientName" th:field="*{clientName}" class="form-control" type="text">
-				</div>
-			</div>
-			<div class="form-group">	
-				<label class="col-sm-3 control-label">销售经理：</label>
-				<div class="col-sm-8">
-					<input id="sales" name="sales" th:field="*{sales}" class="form-control" type="text">
-				</div>
-			</div>
-			<div class="form-group">	
 				<label class="col-sm-3 control-label">合同类型：</label>
 				<div class="col-sm-8">
 					<input id="contractType" name="contractType" th:field="*{contractType}" class="form-control" type="text">
 				</div>
 			</div>
 			<div class="form-group">	
-				<label class="col-sm-3 control-label">欠款金额：</label>
+				<label class="col-sm-3 control-label">合同编号：</label>
 				<div class="col-sm-8">
-					<input id="money" name="money" th:field="*{money}" class="form-control" type="text">
+					<input id="contractNo" name="contractNo" th:field="*{contractNo}" class="form-control" type="text">
 				</div>
 			</div>
 			<div class="form-group">	
-				<label class="col-sm-3 control-label">约定回款日期：</label>
+				<label class="col-sm-3 control-label">排期编号：</label>
 				<div class="col-sm-8">
-					<input id="appointedTime" name="appointedTime" th:field="*{appointedTime}" class="form-control" type="text">
+					<input id="scheduleNo" name="scheduleNo" th:field="*{scheduleNo}" class="form-control" type="text">
 				</div>
 			</div>
 			<div class="form-group">	
-				<label class="col-sm-3 control-label">客户逾期：</label>
+				<label class="col-sm-3 control-label">款项编号：</label>
 				<div class="col-sm-8">
-					<input id="overdueDay" name="overdueDay" th:field="*{overdueDay}" class="form-control" type="text">
+					<input id="fundNo" name="fundNo" th:field="*{fundNo}" class="form-control" type="text">
 				</div>
 			</div>
 			<div class="form-group">	
-				<label class="col-sm-3 control-label">媒体逾期：</label>
+				<label class="col-sm-3 control-label">我方签约公司：</label>
 				<div class="col-sm-8">
-					<input id="overdueMedia" name="overdueMedia" th:field="*{overdueMedia}" class="form-control" type="text">
+					<input id="contractCompany" name="contractCompany" th:field="*{contractCompany}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">签约方：</label>
+				<div class="col-sm-8">
+					<input id="signatory" name="signatory" th:field="*{signatory}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">广告主：</label>
+				<div class="col-sm-8">
+					<input id="advertiser" name="advertiser" th:field="*{advertiser}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">购买媒体：</label>
+				<div class="col-sm-8">
+					<input id="media" name="media" th:field="*{media}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">区域：</label>
+				<div class="col-sm-8">
+					<input id="area" name="area" th:field="*{area}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">所属部门：</label>
+				<div class="col-sm-8">
+					<input id="deptName" name="deptName" th:field="*{deptName}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">销售经理：</label>
+				<div class="col-sm-8">
+					<input id="saleManager" name="saleManager" th:field="*{saleManager}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">销售助理：</label>
+				<div class="col-sm-8">
+					<input id="saleAssistant" name="saleAssistant" th:field="*{saleAssistant}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">应收款日期：</label>
+				<div class="col-sm-8">
+					<input id="dueDate" name="dueDate" th:field="*{dueDate}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">月初应收账款金额：</label>
+				<div class="col-sm-8">
+					<input id="firstDueAmt" name="firstDueAmt" th:field="*{firstDueAmt}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">实时应收金额：</label>
+				<div class="col-sm-8">
+					<input id="dueAmt" name="dueAmt" th:field="*{dueAmt}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">未到账期未收款：</label>
+				<div class="col-sm-8">
+					<input id="notReceiveAmt" name="notReceiveAmt" th:field="*{notReceiveAmt}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">实时客户已逾期款：</label>
+				<div class="col-sm-8">
+					<input id="overdueAmt" name="overdueAmt" th:field="*{overdueAmt}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">逾期天数：</label>
+				<div class="col-sm-8">
+					<input id="overdueDayNum" name="overdueDayNum" th:field="*{overdueDayNum}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">预计回款时间：</label>
+				<div class="col-sm-8">
+					<input id="planReturnDate" name="planReturnDate" th:field="*{planReturnDate}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">预计回款金额：</label>
+				<div class="col-sm-8">
+					<input id="planReturnAmt" name="planReturnAmt" th:field="*{planReturnAmt}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">回款可能性：</label>
+				<div class="col-sm-8">
+					<input id="returnProb" name="returnProb" th:field="*{returnProb}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">实际回款金额：</label>
+				<div class="col-sm-8">
+					<input id="realReturnAmt" name="realReturnAmt" th:field="*{realReturnAmt}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">回款类型：</label>
+				<div class="col-sm-8">
+					<input id="returnType" name="returnType" th:field="*{returnType}" class="form-control" type="text">
 				</div>
 			</div>
 			<div class="form-group">	

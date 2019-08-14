@@ -3,68 +3,160 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.system.mapper.YwArrearageMapper">
-    
+
     <resultMap type="YwArrearage" id="YwArrearageResult">
         <result property="id"    column="id"    />
-        <result property="clientName"    column="client_name"    />
-        <result property="sales"    column="sales"    />
         <result property="contractType"    column="contract_type"    />
-        <result property="money"    column="money"    />
-        <result property="appointedTime"    column="appointed_time"    />
-        <result property="overdueDay"    column="overdue_day"    />
-        <result property="overdueMedia"    column="overdue_media"    />
+        <result property="contractNo"    column="contract_no"    />
+        <result property="scheduleNo"    column="schedule_no"    />
+        <result property="fundNo"    column="fund_no"    />
+        <result property="contractCompany"    column="contract_company"    />
+        <result property="signatory"    column="signatory"    />
+        <result property="advertiser"    column="advertiser"    />
+        <result property="media"    column="media"    />
+        <result property="area"    column="area"    />
+        <result property="deptName"    column="dept_name"    />
+        <result property="saleManager"    column="sale_manager"    />
+        <result property="saleAssistant"    column="sale_assistant"    />
+        <result property="dueDate"    column="due_date"    />
+        <result property="firstDueAmt"    column="first_due_amt"    />
+        <result property="dueAmt"    column="due_amt"    />
+        <result property="notReceiveAmt"    column="not_receive_amt"    />
+        <result property="overdueAmt"    column="overdue_amt"    />
+        <result property="overdueDayNum"    column="overdue_day_num"    />
+        <result property="planReturnDate"    column="plan_return_date"    />
+        <result property="planReturnAmt"    column="plan_return_amt"    />
+        <result property="returnProb"    column="return_prob"    />
+        <result property="realReturnAmt"    column="real_return_amt"    />
+        <result property="returnType"    column="return_type"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
         <result property="remark"    column="remark"    />
     </resultMap>
-	
+
 	<sql id="selectYwArrearageVo">
-        select id, client_name, sales, contract_type, money, appointed_time, overdue_day, overdue_media, create_by, create_time, update_by, update_time, remark from yw_arrearage
+        select id, contract_type, contract_no, schedule_no, fund_no, contract_company, signatory, advertiser, media, area, dept_name, sale_manager, sale_assistant, due_date, first_due_amt, due_amt, not_receive_amt, overdue_amt, overdue_day_num, plan_return_date, plan_return_amt, return_prob, real_return_amt, return_type, create_by, create_time, update_by, update_time, remark from yw_arrearage
     </sql>
-	
+
     <select id="selectYwArrearageList" parameterType="YwArrearage" resultMap="YwArrearageResult">
         <include refid="selectYwArrearageVo"/>
-        <where>  
+        <where>
             <if test="id != null "> and id = #{id}</if>
-             <if test="clientName != null  and clientName != '' "> and client_name = #{clientName}</if>
-             <if test="sales != null  and sales != '' "> and sales = #{sales}</if>
              <if test="contractType != null  and contractType != '' "> and contract_type = #{contractType}</if>
-             <if test="money != null "> and money = #{money}</if>
-             <if test="appointedTime != null "> and appointed_time = #{appointedTime}</if>
-             <if test="overdueDay != null "> and overdue_day = #{overdueDay}</if>
-             <if test="overdueMedia != null "> and overdue_media = #{overdueMedia}</if>
+             <if test="contractNo != null  and contractNo != '' "> and contract_no = #{contractNo}</if>
+             <if test="scheduleNo != null  and scheduleNo != '' "> and schedule_no = #{scheduleNo}</if>
+             <if test="fundNo != null  and fundNo != '' "> and fund_no = #{fundNo}</if>
+             <if test="contractCompany != null  and contractCompany != '' "> and contract_company = #{contractCompany}</if>
+             <if test="signatory != null  and signatory != '' "> and signatory = #{signatory}</if>
+             <if test="advertiser != null  and advertiser != '' "> and advertiser = #{advertiser}</if>
+             <if test="media != null  and media != '' "> and media = #{media}</if>
+             <if test="area != null  and area != '' "> and area = #{area}</if>
+             <if test="deptName != null  and deptName != '' "> and dept_name = #{deptName}</if>
+             <if test="saleManager != null  and saleManager != '' "> and sale_manager = #{saleManager}</if>
+             <if test="saleAssistant != null  and saleAssistant != '' "> and sale_assistant = #{saleAssistant}</if>
+             <if test="(dueDateStart != null  and dueDateStart != '') or (dueDateEnd != null  and dueDateEnd != '') "> and due_date between #{dueDateStart} and #{dueDateEnd}</if>
+             <if test="firstDueAmt != null "> and first_due_amt = #{firstDueAmt}</if>
+             <if test="dueAmt != null "> and due_amt = #{dueAmt}</if>
+             <if test="notReceiveAmt != null "> and not_receive_amt = #{notReceiveAmt}</if>
+             <if test="overdueAmt != null "> and overdue_amt = #{overdueAmt}</if>
+             <if test="overdueDayNum != null  and overdueDayNum != '' "> and overdue_day_num = #{overdueDayNum}</if>
+             <if test="planReturnDate != null  and planReturnDate != '' "> and plan_return_date = #{planReturnDate}</if>
+             <if test="planReturnAmt != null "> and plan_return_amt = #{planReturnAmt}</if>
+             <if test="returnProb != null  and returnProb != '' "> and return_prob = #{returnProb}</if>
+             <if test="realReturnAmt != null "> and real_return_amt = #{realReturnAmt}</if>
+             <if test="returnType != null  and returnType != '' "> and return_type = #{returnType}</if>
              <if test="createBy != null  and createBy != '' "> and create_by = #{createBy}</if>
              <if test="createTime != null "> and create_time = #{createTime}</if>
              <if test="updateBy != null  and updateBy != '' "> and update_by = #{updateBy}</if>
              <if test="updateTime != null "> and update_time = #{updateTime}</if>
              <if test="remark != null  and remark != '' "> and remark = #{remark}</if>
-             
-              <if test="createBy1 != null "> and sales in  
-                  <foreach item="createBy1" collection="createBy1" open="(" separator="," close=")">
-           			 #{createBy1}
-       			 </foreach>   	
-             </if>
-             
          </where>
     </select>
-    
+
     <select id="selectYwArrearageById" parameterType="Long" resultMap="YwArrearageResult">
         <include refid="selectYwArrearageVo"/>
         where id = #{id}
     </select>
-        
+
+    <resultMap id="SaleManagerArrearageGatherResult" type="SaleManagerArrearageGather">
+        <result column="area" property="area"/>
+        <result column="dept_name" property="deptName"/>
+        <result column="sale_manager" property="saleManager"/>
+        <result column="first_due_amt" property="firstDueAmt"/>
+        <result column="due_amt" property="dueAmt"/>
+        <result column="overdue_amt" property="overdueAmt"/>
+        <result column="planReturnRate" property="planReturnRate"/>
+        <result column="realReturnRate" property="realReturnRate"/>
+        <result column="plan_return_amt" property="planReturnAmt"/>
+        <result column="real_return_amt" property="realReturnAmt"/>
+    </resultMap>
+
+    <select id="selectGatherSaleManager" parameterType="YwArrearage" resultMap="SaleManagerArrearageGatherResult">
+        select tb1.area,tb1.dept_name,tb1.sale_manager,tb1.first_due_amt,tb1.due_amt,tb1.overdue_amt,tb1.planReturnRate,tb1.realReturnRate,tb2.plan_return_amt,tb1.real_return_amt from
+            (select area,dept_name,sale_manager,ifnull(sum(first_due_amt),0) first_due_amt,ifnull(sum(due_amt),0) due_amt,ifnull(sum(overdue_amt),0) overdue_amt,concat(round(ifnull(plan_return_amt/first_due_amt,0)*100),'%') planReturnRate,concat(round(ifnull(real_return_amt/first_due_amt,0)*100),'%') realReturnRate,ifnull(sum(real_return_amt),0) real_return_amt from yw_arrearage
+                <where>
+                    <if test="deptName != null and deptName != ''">
+                        and dept_name = #{deptName}
+                    </if>
+                    <if test="dueDateStart != null and dueDateStart != '' and dueDateEnd != null and dueDateEnd != ''">
+                        and due_date between #{dueDateStart} and #{dueDateEnd}
+                    </if>
+                </where>
+            group by area,dept_name,sale_manager) tb1
+        left join
+            (select area,dept_name,sale_manager,ifnull(sum(plan_return_amt),0) plan_return_amt from yw_arrearage where return_prob like '高%'
+                <if test="deptName != null and deptName != ''">
+                    and dept_name = #{deptName}
+                </if>
+                <if test="dueDateStart != null and dueDateStart != '' and dueDateEnd != null and dueDateEnd != ''">
+                    and due_date between #{dueDateStart} and #{dueDateEnd}
+                </if>
+            group by area,dept_name,sale_manager) tb2
+        on tb1.area = tb2.area and tb1.dept_name = tb2.dept_name and tb1.sale_manager = tb2.sale_manager
+    </select>
+
+<!--    <select id="selectGatherCustomer" parameterType="" resultMap="">-->
+<!--        select tb1.area,tb1.dept_name,tb1.sale_manager,tb1.first_due_amt,tb1.due_amt,tb1.overdue_amt,tb1.planReturnRate,tb1.realReturnRate,ifnull(tb2.plan_return_amtH,0) plan_return_amtH,ifnull(tb3.plan_return_amtM,0) plan_return_amtM,ifnull(tb4.plan_return_amtL,0) plan_return_amtL from-->
+<!--            (select area,dept_name,sale_manager,ifnull(sum(first_due_amt),0) first_due_amt,ifnull(sum(due_amt),0) due_amt,ifnull(sum(overdue_amt),0) overdue_amt,concat(round(ifnull(plan_return_amt/first_due_amt,0)*100),'%') planReturnRate,concat(round(ifnull(real_return_amt/first_due_amt,0)*100),'%') realReturnRate from yw_arrearage group by area,dept_name,sale_manager) tb1-->
+<!--        left join-->
+<!--            (select area,dept_name,sale_manager,ifnull(sum(plan_return_amt),0) plan_return_amtH from yw_arrearage where return_prob like '高%' group by area,dept_name,sale_manager) tb2-->
+<!--        on tb1.area = tb2.area and tb1.dept_name = tb2.dept_name and tb1.sale_manager = tb2.sale_manager-->
+<!--        left join-->
+<!--            (select area,dept_name,sale_manager,ifnull(sum(plan_return_amt),0) plan_return_amtM from yw_arrearage where return_prob like '中%' group by area,dept_name,sale_manager) tb3-->
+<!--        on tb1.area = tb3.area and tb1.dept_name = tb3.dept_name and tb1.sale_manager = tb3.sale_manager-->
+<!--        left join-->
+<!--            (select area,dept_name,sale_manager,ifnull(sum(plan_return_amt),0) plan_return_amtL from yw_arrearage where return_prob like '低%' group by area,dept_name,sale_manager) tb4-->
+<!--        on tb1.area = tb4.area and tb1.dept_name = tb4.dept_name and tb1.sale_manager = tb4.sale_manager-->
+<!--    </select>-->
+
     <insert id="insertYwArrearage" parameterType="YwArrearage" useGeneratedKeys="true" keyProperty="id">
         insert into yw_arrearage
 		<trim prefix="(" suffix=")" suffixOverrides=",">
-			<if test="clientName != null  and clientName != ''  ">client_name,</if>
-			<if test="sales != null  and sales != ''  ">sales,</if>
 			<if test="contractType != null  and contractType != ''  ">contract_type,</if>
-			<if test="money != null  ">money,</if>
-			<if test="appointedTime != null  ">appointed_time,</if>
-			<if test="overdueDay != null  ">overdue_day,</if>
-			<if test="overdueMedia != null  ">overdue_media,</if>
+			<if test="contractNo != null  and contractNo != ''  ">contract_no,</if>
+			<if test="scheduleNo != null  and scheduleNo != ''  ">schedule_no,</if>
+			<if test="fundNo != null  and fundNo != ''  ">fund_no,</if>
+			<if test="contractCompany != null  and contractCompany != ''  ">contract_company,</if>
+			<if test="signatory != null  and signatory != ''  ">signatory,</if>
+			<if test="advertiser != null  and advertiser != ''  ">advertiser,</if>
+			<if test="media != null  and media != ''  ">media,</if>
+			<if test="area != null  and area != ''  ">area,</if>
+			<if test="deptName != null  and deptName != ''  ">dept_name,</if>
+			<if test="saleManager != null  and saleManager != ''  ">sale_manager,</if>
+			<if test="saleAssistant != null  and saleAssistant != ''  ">sale_assistant,</if>
+			<if test="dueDate != null  and dueDate != ''  ">due_date,</if>
+			<if test="firstDueAmt != null  ">first_due_amt,</if>
+			<if test="dueAmt != null  ">due_amt,</if>
+			<if test="notReceiveAmt != null  ">not_receive_amt,</if>
+			<if test="overdueAmt != null  ">overdue_amt,</if>
+			<if test="overdueDayNum != null  and overdueDayNum != ''  ">overdue_day_num,</if>
+			<if test="planReturnDate != null  and planReturnDate != ''  ">plan_return_date,</if>
+			<if test="planReturnAmt != null  ">plan_return_amt,</if>
+			<if test="returnProb != null  and returnProb != ''  ">return_prob,</if>
+			<if test="realReturnAmt != null  ">real_return_amt,</if>
+			<if test="returnType != null  and returnType != ''  ">return_type,</if>
 			<if test="createBy != null  and createBy != ''  ">create_by,</if>
 			<if test="createTime != null  ">create_time,</if>
 			<if test="updateBy != null  and updateBy != ''  ">update_by,</if>
@@ -72,13 +164,29 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="remark != null  and remark != ''  ">remark,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-			<if test="clientName != null  and clientName != ''  ">#{clientName},</if>
-			<if test="sales != null  and sales != ''  ">#{sales},</if>
 			<if test="contractType != null  and contractType != ''  ">#{contractType},</if>
-			<if test="money != null  ">#{money},</if>
-			<if test="appointedTime != null  ">#{appointedTime},</if>
-			<if test="overdueDay != null  ">#{overdueDay},</if>
-			<if test="overdueMedia != null  ">#{overdueMedia},</if>
+			<if test="contractNo != null  and contractNo != ''  ">#{contractNo},</if>
+			<if test="scheduleNo != null  and scheduleNo != ''  ">#{scheduleNo},</if>
+			<if test="fundNo != null  and fundNo != ''  ">#{fundNo},</if>
+			<if test="contractCompany != null  and contractCompany != ''  ">#{contractCompany},</if>
+			<if test="signatory != null  and signatory != ''  ">#{signatory},</if>
+			<if test="advertiser != null  and advertiser != ''  ">#{advertiser},</if>
+			<if test="media != null  and media != ''  ">#{media},</if>
+			<if test="area != null  and area != ''  ">#{area},</if>
+			<if test="deptName != null  and deptName != ''  ">#{deptName},</if>
+			<if test="saleManager != null  and saleManager != ''  ">#{saleManager},</if>
+			<if test="saleAssistant != null  and saleAssistant != ''  ">#{saleAssistant},</if>
+			<if test="dueDate != null  and dueDate != ''  ">#{dueDate},</if>
+			<if test="firstDueAmt != null  ">#{firstDueAmt},</if>
+			<if test="dueAmt != null  ">#{dueAmt},</if>
+			<if test="notReceiveAmt != null  ">#{notReceiveAmt},</if>
+			<if test="overdueAmt != null  ">#{overdueAmt},</if>
+			<if test="overdueDayNum != null  and overdueDayNum != ''  ">#{overdueDayNum},</if>
+			<if test="planReturnDate != null  and planReturnDate != ''  ">#{planReturnDate},</if>
+			<if test="planReturnAmt != null  ">#{planReturnAmt},</if>
+			<if test="returnProb != null  and returnProb != ''  ">#{returnProb},</if>
+			<if test="realReturnAmt != null  ">#{realReturnAmt},</if>
+			<if test="returnType != null  and returnType != ''  ">#{returnType},</if>
 			<if test="createBy != null  and createBy != ''  ">#{createBy},</if>
 			<if test="createTime != null  ">#{createTime},</if>
 			<if test="updateBy != null  and updateBy != ''  ">#{updateBy},</if>
@@ -86,17 +194,33 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="remark != null  and remark != ''  ">#{remark},</if>
          </trim>
     </insert>
-	 
+
     <update id="updateYwArrearage" parameterType="YwArrearage">
         update yw_arrearage
         <trim prefix="SET" suffixOverrides=",">
-            <if test="clientName != null  and clientName != ''  ">client_name = #{clientName},</if>
-            <if test="sales != null  and sales != ''  ">sales = #{sales},</if>
             <if test="contractType != null  and contractType != ''  ">contract_type = #{contractType},</if>
-            <if test="money != null  ">money = #{money},</if>
-            <if test="appointedTime != null  ">appointed_time = #{appointedTime},</if>
-            <if test="overdueDay != null  ">overdue_day = #{overdueDay},</if>
-            <if test="overdueMedia != null  ">overdue_media = #{overdueMedia},</if>
+            <if test="contractNo != null  and contractNo != ''  ">contract_no = #{contractNo},</if>
+            <if test="scheduleNo != null  and scheduleNo != ''  ">schedule_no = #{scheduleNo},</if>
+            <if test="fundNo != null  and fundNo != ''  ">fund_no = #{fundNo},</if>
+            <if test="contractCompany != null  and contractCompany != ''  ">contract_company = #{contractCompany},</if>
+            <if test="signatory != null  and signatory != ''  ">signatory = #{signatory},</if>
+            <if test="advertiser != null  and advertiser != ''  ">advertiser = #{advertiser},</if>
+            <if test="media != null  and media != ''  ">media = #{media},</if>
+            <if test="area != null  and area != ''  ">area = #{area},</if>
+            <if test="deptName != null  and deptName != ''  ">dept_name = #{deptName},</if>
+            <if test="saleManager != null  and saleManager != ''  ">sale_manager = #{saleManager},</if>
+            <if test="saleAssistant != null  and saleAssistant != ''  ">sale_assistant = #{saleAssistant},</if>
+            <if test="dueDate != null  and dueDate != ''  ">due_date = #{dueDate},</if>
+            <if test="firstDueAmt != null  ">first_due_amt = #{firstDueAmt},</if>
+            <if test="dueAmt != null  ">due_amt = #{dueAmt},</if>
+            <if test="notReceiveAmt != null  ">not_receive_amt = #{notReceiveAmt},</if>
+            <if test="overdueAmt != null  ">overdue_amt = #{overdueAmt},</if>
+            <if test="overdueDayNum != null  and overdueDayNum != ''  ">overdue_day_num = #{overdueDayNum},</if>
+            <if test="planReturnDate != null  and planReturnDate != ''  ">plan_return_date = #{planReturnDate},</if>
+            <if test="planReturnAmt != null  ">plan_return_amt = #{planReturnAmt},</if>
+            <if test="returnProb != null  and returnProb != ''  ">return_prob = #{returnProb},</if>
+            <if test="realReturnAmt != null  ">real_return_amt = #{realReturnAmt},</if>
+            <if test="returnType != null  and returnType != ''  ">return_type = #{returnType},</if>
             <if test="createBy != null  and createBy != ''  ">create_by = #{createBy},</if>
             <if test="createTime != null  ">create_time = #{createTime},</if>
             <if test="updateBy != null  and updateBy != ''  ">update_by = #{updateBy},</if>
@@ -109,32 +233,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<delete id="deleteYwArrearageById" parameterType="Long">
         delete from yw_arrearage where id = #{id}
     </delete>
-	
+
     <delete id="deleteYwArrearageByIds" parameterType="String">
-        delete from yw_arrearage where id in 
+        delete from yw_arrearage where id in
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>
     </delete>
-    
-    
-            <!-- 批量插入数据 -->
-    <insert id="batchInsert" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO yw_arrearage (client_name,sales,contract_type,money,appointed_time,overdue_day,overdue_media,create_by,create_time,remark)
-        VALUES
-        <foreach collection="list" item="item" separator=",">
-            (#{item.clientName}, #{item.sales},#{item.contractType},#{item.money},#{item.appointedTime},#{item.overdueDay},#{item.overdueMedia},#{item.createBy},SYSDATE(),#{item.remark})
-        </foreach>
-    </insert>
-    
 
-	<select id="selectSumList" parameterType="YwArrearage" resultMap="YwArrearageResult">
-		select '部门欠款总数' sales, a.dept_name deptname,sum(a.money) money  from  (select y.* ,d.dept_name  from yw_arrearage y,sys_user u, sys_dept d where y.sales = u.user_name and u.dept_id = d.dept_id) a GROUP BY a.dept_name
-
-			UNION ALL
-
- 		select * from (  select  a.sales,max(a.dept_name) deptname, sum(a.money) money from  (select y.* ,d.dept_name  from yw_arrearage y,sys_user u, sys_dept d where y.sales = u.user_name and u.dept_id = d.dept_id) a GROUP BY a.sales ) b ORDER BY deptname
-	</select>
-    
-    
 </mapper>
