@@ -2,17 +2,34 @@ package com.ruoyi.system.mapper;
 
 import com.ruoyi.system.domain.YwGatherConsumption;
 import com.ruoyi.system.domain.YwRankGrossMargin;
+import com.ruoyi.system.domain.YwTotalConsumGather;
 import com.ruoyi.system.domain.YwTotalGrossGather;
+import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 
+@Mapper
 public interface TotalGatherMapper {
 
     /**
-     * 根据部门汇总所有消耗毛利情况
+     * 以部们和媒体分组查询任务金额
+     * @param ywTotalGrossGather
      * @return
      */
-    public List<YwTotalGrossGather> selectTotalGather(YwTotalGrossGather ywTotalGather);
+    public List<YwTotalGrossGather> selectTotalGatherTask(YwTotalGrossGather ywTotalGrossGather);
+
+    /**
+     * 根据条件查询VO
+     * @return
+     */
+    public YwTotalGrossGather selectTotalGatherGrossByVO(YwTotalGrossGather ywTotalGrossGather);
+
+    /**
+     * 查询部门消耗
+     * @return
+     */
+    public List<YwTotalConsumGather> selectTotalGatherConsum(YwTotalConsumGather ywTotalConsumGather);
+
     /**
      * 查询消耗排名
      *

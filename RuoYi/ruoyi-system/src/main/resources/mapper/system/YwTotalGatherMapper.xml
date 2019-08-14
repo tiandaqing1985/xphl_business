@@ -4,28 +4,19 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.system.mapper.TotalGatherMapper">
 
-    <resultMap id="YwTotalConsumGatherResult" type="YwTotalConsumGather">
-        <result column="dept_name" property="deptName"/>
-        <result column="quotasGrossMargin" property="quotasGrossMargin"/>
-        <result column="quotasConsumption" property="quotasConsumption"/>
-        <result column="totalSummation" property="totalSummation"/>
-        <result column="totalGrossMargin" property="totalGrossMargin"/>
-        <result column="consumptionRate" property="consumptionRate"/>
-        <result column="grossMarginRate" property="grossMarginRate"/>
-    </resultMap>
+    <!--    查询部门毛利汇总-->
 
     <resultMap id="YwTotalGrossGatherResult" type="YwTotalGrossGather">
         <result column="dept_name" property="deptName"/>
-        <result column="quotasGrossMargin" property="quotasGrossMargin"/>
-        <result column="quotasConsumption" property="quotasConsumption"/>
-        <result column="totalSummation" property="totalSummation"/>
-        <result column="totalGrossMargin" property="totalGrossMargin"/>
-        <result column="consumptionRate" property="consumptionRate"/>
-        <result column="grossMarginRate" property="grossMarginRate"/>
+        <result column="media" property="media"/>
+        <result column="quarter" property="quarter"/>
+        <result column="gross_margin" property="grossMargin"/>
+        <result column="quotas" property="quotas"/>
+        <result column="term" property="term"/>
     </resultMap>
 
-    <select id="selectTotalGatherGross" parameterType="YwTotalGrossGather" resultMap="YwTotalGrossGatherResult">
-        select tb1.dept_name,tb1.media,tb1.quarter,ifnull(sum(con.gross_margin),0) gross_margin from (select ta.sale_manager,ta.dept_name,ta.media,ta.quarter from yw_task ta where ta.type = '毛利'
+    <select id="selectTotalGatherGrossByVO" parameterType="YwTotalGrossGather" resultMap="YwTotalGrossGatherResult">
+        select tb1.dept_name,tb1.media,tb1.quarter,ifnull(sum(con.gross_margin),0) gross_margin,con.term from (select ta.sale_manager,ta.dept_name,ta.media,ta.quarter from yw_task ta where ta.type = '毛利'
          <if test="quarter != null and quarter != ''"> and ta.quarter = #{quarter}</if>) tb1 left join yw_gross_margins con on tb1.sale_manager = con.sales_manager
          <if test="media != '全媒体'"> and tb1.media = con.media </if>  and tb1.quarter = con.quarter group by tb1.dept_name,tb1.media having tb1.dept_name = #{deptName} and tb1.media = #{media}
     </select>
@@ -34,109 +25,28 @@
         select ta.dept_name,ta.media,ta.quarter,ifnull(sum(ta.quotas),0) quotas from yw_task ta group by ta.dept_name,ta.media,ta.quarter,ta.type having ta.type = '毛利'
         <if test="quarter != null and quarter != ''">and ta.quarter = #{quarter}</if>
     </select>
-    
+
+<!--    查询部门消耗汇总-->
+
+    <resultMap id="YwTotalConsumGatherResult" type="YwTotalConsumGather">
+        <result column="dept_name" property="deptName"/>
+        <result column="media" property="media"/>
+        <result column="quarter" property="quarter"/>
+        <result column="summation" property="summation"/>
+        <result column="quotas" property="quotas"/>
+        <result column="term" property="term"/>
+    </resultMap>
+
     <select id="selectTotalGatherConsum" resultMap="YwTotalConsumGatherResult" parameterType="YwTotalConsumGather">
-        select tb3.dept_name,tb3.media,tb3.quotas,tb2.summation  from (select ta.dept_name,ta.media,ta.quarter,ifnull(sum(ta.quotas),0) quotas from yw_task ta group by ta.dept_name,ta.media,ta.quarter,ta.type having ta.type = '消耗'
+        select tb3.dept_name,tb3.media,tb3.quotas,tb2.summation,tb2.term,ifnull(tb3.quarter,tb2.quarter) quarter from (select ta.dept_name,ta.media,ta.quarter,ifnull(sum(ta.quotas),0) quotas from yw_task ta group by ta.dept_name,ta.media,ta.quarter,ta.type having ta.type = '消耗'
         <if test="quarter != null and quarter != ''">and ta.quarter = #{quarter}</if>) tb3
         left join
-        (select tb1.dept_name,tb1.media,tb1.quarter,ifnull(sum(con.summation),0) summation from (select ta.sale_manager,ta.dept_name,ta.media,ta.quarter from yw_task ta where ta.type = '消耗'
+        (select tb1.dept_name,tb1.media,tb1.quarter,ifnull(sum(con.summation),0) summation,con.term from (select ta.sale_manager,ta.dept_name,ta.media,ta.quarter from yw_task ta where ta.type = '消耗'
         <if test="quarter != null and quarter != ''"> and ta.quarter = #{quarter}</if>) tb1 left join yw_consumption con on tb1.sale_manager = con.sale_manager and tb1.media = con.media and tb1.quarter = con.quarter group by tb1.dept_name,tb1.media) tb2
         on tb3.dept_name = tb2.dept_name and tb3.media = tb2.media
     </select>
-    
-    <select id="selectTotalGather" resultMap="YwTotalGatherResult" parameterType="YwTotalGather">
-        SELECT
-        dept_name,
-        quotasConsumption,
-        quotasGrossMargin,
-        totalSummation,
-        totalGrossMargin,
-        concat( round( totalSummation / quotasConsumption * 100, 2 ), '%' ) consumptionRate,
-        concat( round( totalGrossMargin / quotasGrossMargin * 100, 2 ), '%' ) grossMarginRate
-        FROM (
-        SELECT
-        tb2.dept_name,
-        IFNULL(tb1.quotasConsumption,0.00) quotasConsumption,
-        IFNULL(tb2.quotasGrossMargin,0.00) quotasGrossMargin,
-        IFNULL(tb5.totalSummation,0.00) totalSummation,
-        IFNULL(tb6.totalGrossMargin,0.00) totalGrossMargin
-        FROM
-        (SELECT
-        ta.dept_name,
-        ta.type,
-        IFNULL(sum( ta.quotas ),'0') quotasConsumption
-        FROM
-        yw_task ta
-        GROUP BY
-        ta.dept_name,ta.type,ta.quarter
-        HAVING ta.type = '消耗' <if test="quarter != null and quarter != ''">AND ta.quarter = #{quarter}</if>) tb1
-        LEFT JOIN
-        (SELECT
-        ta.dept_name,
-        ta.type,
-        IFNULL(sum( ta.quotas ),'0') quotasGrossMargin
-        FROM
-        yw_task ta
-        GROUP BY
-        ta.dept_name,ta.type,ta.quarter
-        HAVING ta.type = '毛利' <if test="quarter != null and quarter != ''">AND ta.quarter = #{quarter}</if>) tb2
-        ON tb1.dept_name = tb2.dept_name
-        LEFT JOIN
-        (select tb4.dept_name,IFNUll(sum(tb4.totalSummation),0.00) totalSummation from (select
-        tb3.sale_manager,tb3.dept_name,IFNUll(sum(con.summation),0.00) totalSummation from yw_consumption con right join
-        (
-        select sale_manager,quarter,dept_name from yw_task group by sale_manager,quarter,type having type = '消耗' <if test="quarter != null and quarter != ''">AND quarter = #{quarter}</if>) tb3 on con.sale_manager = tb3.sale_manager group by tb3.sale_manager) tb4 group by dept_name)
-        tb5 on tb2.dept_name = tb5.dept_name
-        LEFT JOIN
-        (select tb4.dept_name,IFNUll(sum(tb4.totalGrossMargin),0.00) totalGrossMargin from (select
-        tb3.sale_manager,tb3.dept_name,IFNUll(sum(con.gross_margin),0.00) totalGrossMargin from yw_gross_margins con
-        right join (
-        select sale_manager,quarter,dept_name from yw_task group by sale_manager,quarter,type having type = '毛利' <if test="quarter != null and quarter != ''">AND quarter = #{quarter}</if>) tb3 on con.sales_manager = tb3.sale_manager group by tb3.sale_manager) tb4 group by
-        dept_name) tb6 on tb2.dept_name = tb6.dept_name
 
-        UNION
-
-        SELECT
-        tb2.dept_name,
-        IFNULL(tb1.quotasConsumption,0.00) quotasConsumption,
-        IFNULL(tb2.quotasGrossMargin,0.00) quotasGrossMargin,
-        IFNULL(tb5.totalSummation,0.00) totalSummation,
-        IFNULL(tb6.totalGrossMargin,0.00) totalGrossMargin
-        FROM
-        (SELECT
-        ta.dept_name,
-        ta.type,
-        IFNULL(sum( ta.quotas ),'0') quotasConsumption
-        FROM
-        yw_task ta
-        GROUP BY
-        ta.dept_name,ta.type,ta.quarter
-        HAVING ta.type = '消耗' <if test="quarter != null and quarter != ''">AND ta.quarter = #{quarter}</if>) tb1
-        RIGHT JOIN
-        (SELECT
-        ta.dept_name,
-        ta.type,
-        IFNULL(sum( ta.quotas ),'0') quotasGrossMargin
-        FROM
-        yw_task ta
-        GROUP BY
-        ta.dept_name,ta.type,ta.quarter
-        HAVING ta.type = '毛利' <if test="quarter != null and quarter != ''">AND ta.quarter = #{quarter}</if>) tb2
-        ON tb1.dept_name = tb2.dept_name
-        LEFT JOIN
-        (select tb4.dept_name,IFNUll(sum(tb4.totalSummation),0.00) totalSummation from (select
-        tb3.sale_manager,tb3.dept_name,IFNUll(sum(con.summation),0.00) totalSummation from yw_consumption con right join
-        (
-        select sale_manager,quarter,dept_name from yw_task group by sale_manager,quarter,type having type = '消耗' <if test="quarter != null and quarter != ''">AND quarter = #{quarter}</if>) tb3 on con.sale_manager = tb3.sale_manager group by tb3.sale_manager) tb4 group by dept_name)
-        tb5 on tb2.dept_name = tb5.dept_name
-        LEFT JOIN
-        (select tb4.dept_name,IFNUll(sum(tb4.totalGrossMargin),0.00) totalGrossMargin from (select
-        tb3.sale_manager,tb3.dept_name,IFNUll(sum(con.gross_margin),0.00) totalGrossMargin from yw_gross_margins con
-        right join (
-        select sale_manager,quarter,dept_name from yw_task group by sale_manager,quarter,type having type = '毛利' <if test="quarter != null and quarter != ''">AND quarter = #{quarter}</if>) tb3 on con.sales_manager = tb3.sale_manager group by tb3.sale_manager) tb4 group by
-        dept_name) tb6 on tb2.dept_name = tb6.dept_name
-        ) T
-    </select>
+<!--    查询毛利排名-->
 
     <resultMap id="YwGatherGrossMarginResult" type="YwRankGrossMargin">
         <result column="rownum" property="rownum"/>
@@ -160,6 +70,8 @@
         ) a,(SELECT @rownum := 0) b) c
 
     </select>
+
+<!--    查询消耗排名-->
 
     <resultMap id="YwGatherConsumptionResult" type="YwGatherConsumption">
         <result column="rownum" property="rownum"/>

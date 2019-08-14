@@ -66,10 +66,7 @@ public class YwArrearageController extends BaseController
 	{
 		startPage();
 		
-		
 		List<SysRole> rlist = ShiroUtils.getSysUser().getRoles();
-		
-		
 		
 		SysDept dept = sysDeptService.selectDeptById(ShiroUtils.getSysUser().getDeptId());
 		
@@ -81,8 +78,7 @@ public class YwArrearageController extends BaseController
 			if(ShiroUtils.getSysUser().getUserName().equals(dept.getLeader())){  //部门leader看部门所有 销售经理看自己的
 				
 				List<SysUser> list = sysUserService.selectUserByDpetList(ShiroUtils.getSysUser().getDeptId());
-				
-				
+
 				String str = list.get(0).getUserName();
 				
 				for(int i=1;i<list.size();i++){
@@ -113,12 +109,6 @@ public class YwArrearageController extends BaseController
 			}
 
 		}
-		
-		
-
-		
-
-		
 		
         List<YwArrearage> list = ywArrearageService.selectYwArrearageList(ywArrearage);
 		return getDataTable(list);

@@ -11,6 +11,8 @@ public class YwTotalConsumGather {
 
     /** 期间 */
     private String quarter;
+    /** 考核期间 */
+    private String term;
     /** 部门 */
     @Excel(name = "部门",type = Excel.Type.EXPORT)
     private String deptName;
@@ -32,6 +34,14 @@ public class YwTotalConsumGather {
     /** 时间进度 */
     @Excel(name = "时间进度",type = Excel.Type.EXPORT)
     private String timeSchedule;
+
+    public String getTerm() {
+        return term;
+    }
+
+    public void setTerm(String term) {
+        this.term = term;
+    }
 
     public String getQuarter() {
         return quarter;

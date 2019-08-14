@@ -10,6 +10,8 @@ import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.reflect.ReflectUtils;
 import com.ruoyi.system.domain.Gather;
+import com.ruoyi.system.domain.YwTotalConsumGather;
+import com.ruoyi.system.domain.YwTotalGrossGather;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.hssf.usermodel.HSSFFont;
@@ -163,7 +165,7 @@ public class GatherExcelUtil<T> {
                     fillExcelData(index, row, cell);
                 }
             }
-            sheet.createFreezePane( 0, 1, 0, 1 );
+            sheet.createFreezePane(0, 1, 0, 1);
             String filename = encodingFilename(sheetName);
             out = new FileOutputStream(getAbsoluteFile(filename));
             wb.write(out);
@@ -454,6 +456,24 @@ public class GatherExcelUtil<T> {
             if (vo instanceof Gather) {
                 Gather gather = (Gather) vo;
                 if (gather.getDeptName() != null && (gather.getDeptName().equals("合计"))) {
+                    cs = csYellow;
+                } else if (gather.getDeptName() != null && (gather.getDeptName().equals("总计"))) {
+                    cs = csRed;
+                } else {
+                    cs = csNormal;
+                }
+            } else if (vo instanceof YwTotalConsumGather) {
+                YwTotalConsumGather gather = (YwTotalConsumGather) vo;
+                if (gather.getMedia() != null && (gather.getMedia().equals("合计"))) {
+                    cs = csYellow;
+                } else if (gather.getDeptName() != null && (gather.getDeptName().equals("总计"))) {
+                    cs = csRed;
+                } else {
+                    cs = csNormal;
+                }
+            } else if (vo instanceof YwTotalGrossGather) {
+                YwTotalGrossGather gather = (YwTotalGrossGather) vo;
+                if (gather.getMedia() != null && (gather.getMedia().equals("合计"))) {
                     cs = csYellow;
                 } else if (gather.getDeptName() != null && (gather.getDeptName().equals("总计"))) {
                     cs = csRed;

@@ -5,16 +5,16 @@ import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
+import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.framework.util.ShiroUtils;
-import com.ruoyi.system.domain.Gather;
-import com.ruoyi.system.domain.YwGrossMarginGather;
-import com.ruoyi.system.domain.YwRankGrossMargin;
-import com.ruoyi.system.domain.YwGrossMargins;
+import com.ruoyi.system.domain.*;
 import com.ruoyi.system.service.IGatherService;
 import com.ruoyi.system.service.IYwGrossMarginsService;
+import com.ruoyi.system.service.IYwTaskService;
 import com.ruoyi.system.service.TotalGatherService;
 import com.ruoyi.web.controller.tool.GatherExcelUtil;
+import com.ruoyi.web.controller.tool.QuarterUtil;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -41,6 +41,8 @@ public class YwGrossMarginGatherController extends BaseController {
     private TotalGatherService totalGatherService;
     @Autowired
     private IYwGrossMarginsService ywGrossMarginsService;
+    @Autowired
+    private IYwTaskService ywTaskService;
 
     @RequiresPermissions("system:ywBusiness:view")
     @GetMapping()
@@ -57,6 +59,9 @@ public class YwGrossMarginGatherController extends BaseController {
     @ResponseBody
     public TableDataInfo list(YwGrossMarginGather gather) {
         startPage();
+        if (gather.getQuarter() == null || gather.getQuarter().equals("")) {
+            gather.setQuarter(QuarterUtil.getQuarterByDate(DateUtils.getNowDate()));
+        }
         List<YwGrossMarginGather> list = gatherService.selectGrossMarginGatherList(gather);
         return getDataTable(list);
     }
@@ -67,6 +72,9 @@ public class YwGrossMarginGatherController extends BaseController {
     @PostMapping("/export")
     @ResponseBody
     public AjaxResult export(Gather gather) {
+        if (gather.getQuarter() == null || gather.getQuarter().equals("")) {
+            gather.setQuarter(QuarterUtil.getQuarterByDate(DateUtils.getNowDate()));
+        }
         List<Gather> gathers = gatherService.selectGatherList(gather);
         List<Gather> gatherList = gatherService.exportList(gathers);
         GatherExcelUtil<Gather> util = new GatherExcelUtil<Gather>(Gather.class);
@@ -80,7 +88,41 @@ public class YwGrossMarginGatherController extends BaseController {
     @ResponseBody
     public TableDataInfo rankGrossMarginList(YwRankGrossMargin ywRankGrossMargin) {
         startPage();
+        if (ywRankGrossMargin.getQuarter() == null || ywRankGrossMargin.getQuarter().equals("")) {
+            ywRankGrossMargin.setQuarter(QuarterUtil.getQuarterByDate(DateUtils.getNowDate()));
+        }
         List<YwRankGrossMargin> list = totalGatherService.selectRankGrossMarginList(ywRankGrossMargin);
+        return getDataTable(list);
+    }
+
+    /**
+     * 查询毛利部门整体汇总
+     */
+    @PostMapping("/exportTotalGrossMargin")
+    @ResponseBody
+    public AjaxResult exportTotalGrossMargin(YwTotalGrossGather ywTotalGrossGather) {
+        startPage();
+        //默认查询当前季度的数据
+        if (ywTotalGrossGather.getQuarter() == null || ywTotalGrossGather.getQuarter().equals("")) {
+            ywTotalGrossGather.setQuarter(QuarterUtil.getQuarterByDate(DateUtils.getNowDate()));
+        }
+        List<YwTotalGrossGather> list = totalGatherService.selectTotalGrossGather(ywTotalGrossGather);
+        GatherExcelUtil<YwTotalGrossGather> util = new GatherExcelUtil<>(YwTotalGrossGather.class);
+        return util.exportGatherExcel(list,"华东华北毛利整体完成率");
+    }
+
+    /**
+     * 查询毛利部门整体汇总
+     */
+    @PostMapping("/listTotalGrossMargin")
+    @ResponseBody
+    public TableDataInfo listTotalGrossMargin(YwTotalGrossGather ywTotalGrossGather) {
+        startPage();
+        //默认查询当前季度的数据
+        if (ywTotalGrossGather.getQuarter() == null || ywTotalGrossGather.getQuarter().equals("")) {
+            ywTotalGrossGather.setQuarter(QuarterUtil.getQuarterByDate(DateUtils.getNowDate()));
+        }
+        List<YwTotalGrossGather> list = totalGatherService.selectTotalGrossGather(ywTotalGrossGather);
         return getDataTable(list);
     }
 
@@ -90,6 +132,9 @@ public class YwGrossMarginGatherController extends BaseController {
     @PostMapping("/exportRankGrossMargin")
     @ResponseBody
     public AjaxResult exportRankGrossMargin(YwRankGrossMargin ywTotalGather) {
+        if (ywTotalGather.getQuarter() == null || ywTotalGather.getQuarter().equals("")) {
+            ywTotalGather.setQuarter(QuarterUtil.getQuarterByDate(DateUtils.getNowDate()));
+        }
         List<YwRankGrossMargin> list = totalGatherService.selectRankGrossMarginList(ywTotalGather);
         ExcelUtil<YwRankGrossMargin> util = new ExcelUtil<YwRankGrossMargin>(YwRankGrossMargin.class);
         return util.exportExcel(list, "毛利排名");
@@ -110,7 +155,7 @@ public class YwGrossMarginGatherController extends BaseController {
         ExcelUtil<YwGrossMargins> util = new ExcelUtil<YwGrossMargins>(YwGrossMargins.class);
         List<YwGrossMargins> grossMarginList = util.importExcel(file.getInputStream(), 0, 1);
         String operName = ShiroUtils.getSysUser().getLoginName();
-        String message = ywGrossMarginsService.importYwGrossMargins(grossMarginList, updateSupport, operName);
+        String message = ywGrossMarginsService.importYwGrossMargins(grossMarginList, true, operName);
         return AjaxResult.success(message);
     }
 
@@ -126,29 +171,35 @@ public class YwGrossMarginGatherController extends BaseController {
         return util.importTemplateExcel("毛利情况");
     }
 
-    //根据考核期间获取季度
-    private String getQuarter(String term) {
-        String quarter = null;
-        if (term == null || term.equals("")) {
-            return null;
-        }
-        String[] terms = term.split("-");
-        String[] dateStr = terms[0].split("\\.");
-        if (dateStr[1].equals("1")) {
-            //第一季度
-            quarter = "Q1";
-        } else if (dateStr[1].equals("4")) {
-            //第二季度
-            quarter = "Q2";
-        } else if (dateStr[1].equals("7")) {
-            //第三季度
-            quarter = "Q3";
-        } else if (dateStr[1].equals("10")) {
-            //第四度
-            quarter = "Q4";
-        }
-        quarter = dateStr[0].substring(2) + "年" + quarter;
-        return quarter;
+    /**
+     * 导入
+     * @param file
+     * @param updateSupport
+     * @return
+     * @throws Exception
+     */
+    @Log(title = "任务", businessType = BusinessType.IMPORT)
+    @PostMapping("/importTaskData")
+    @ResponseBody
+    public AjaxResult importTaskData(MultipartFile file, boolean updateSupport) throws Exception
+    {
+        ExcelUtil<YwTask> util = new ExcelUtil<YwTask>(YwTask.class);
+        List<YwTask> ywTasks = util.importExcel(file.getInputStream(),0,1);
+        String operName = ShiroUtils.getSysUser().getLoginName();
+        String message = ywTaskService.importYwTask(ywTasks, updateSupport, operName);
+        return AjaxResult.success(message);
+    }
+
+    /**
+     * 导入任务模板
+     * @return
+     */
+    @GetMapping("/importTaskTemplate")
+    @ResponseBody
+    public AjaxResult importTaskTemplate()
+    {
+        ExcelUtil<YwTask> util = new ExcelUtil<YwTask>(YwTask.class);
+        return util.importTemplateExcel("任务");
     }
 
 }
