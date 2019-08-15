@@ -1,5 +1,6 @@
 package com.ruoyi.system.mapper;
 
+import com.ruoyi.system.domain.ywArrearage.CustomerArrearageGather;
 import com.ruoyi.system.domain.ywArrearage.SaleManagerArrearageGather;
 import com.ruoyi.system.domain.ywArrearage.YwArrearage;
 import java.util.List;	
@@ -67,4 +68,12 @@ public interface YwArrearageMapper
 	 * @return
 	 */
     public List<SaleManagerArrearageGather> selectGatherSaleManager(YwArrearage ywArrearage);
+
+	/**
+	 * 查询汇总表-按客户
+	 *
+	 * @param ywArrearage 查询条件
+	 * @return
+	 */
+    public List<CustomerArrearageGather> selectGatherCustomer(YwArrearage ywArrearage);
 }

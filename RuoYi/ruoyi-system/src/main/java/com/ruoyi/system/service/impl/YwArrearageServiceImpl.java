@@ -1,12 +1,17 @@
 package com.ruoyi.system.service.impl;
 
-import java.util.List;
+import java.math.BigDecimal;
+import java.util.*;
 
 import com.ruoyi.common.exception.BusinessException;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.system.domain.SysDept;
+import com.ruoyi.system.domain.SysUser;
 import com.ruoyi.system.domain.YwConsumption;
+import com.ruoyi.system.domain.ywArrearage.CustomerArrearageGather;
 import com.ruoyi.system.domain.ywArrearage.SaleManagerArrearageGather;
+import com.ruoyi.system.mapper.SysDeptMapper;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +35,9 @@ public class YwArrearageServiceImpl implements IYwArrearageService {
 
     @Autowired
     private YwArrearageMapper ywArrearageMapper;
+
+    @Autowired
+    private SysDeptMapper sysDeptMapper;
 
     /**
      * 查询商机-欠款信息
@@ -153,10 +161,83 @@ public class YwArrearageServiceImpl implements IYwArrearageService {
      * @param ywArrearage 查询条件
      * @return
      */
-    public List<SaleManagerArrearageGather> selectGatherSaleManager(YwArrearage ywArrearage) {
+    public List<SaleManagerArrearageGather> selectGatherSaleManager(YwArrearage ywArrearage, SysUser loginUser) {
 
-        return ywArrearageMapper.selectGatherSaleManager(ywArrearage);
+        List<SaleManagerArrearageGather> list = new ArrayList<>();
+        if (loginUser == null || loginUser.getUserId() == 1 || loginUser.getUserId() == 103) {//管理员和COO看所有
+            list = ywArrearageMapper.selectGatherSaleManager(ywArrearage);
+        } else {
+            //查询当前登陆人是哪个部门的leader
+            List<SysDept> sysDepts = sysDeptMapper.selectDeptByLeader(loginUser.getUserName());
+            if (sysDepts.size() != 0) {
+                Map<String, String> deptMap = new HashMap<>();
+                for (SysDept sysDept : sysDepts) {
+                    deptMap.put(sysDept.getDeptName(), "");
+                }
+                //查询数据
+                List<SaleManagerArrearageGather> gatherList = ywArrearageMapper.selectGatherSaleManager(ywArrearage);
+                //只显示leader是当前登陆人的部门信息
+                for (SaleManagerArrearageGather gather : gatherList) {
+                    if (deptMap.get(gather.getDeptName()) != null) {
+                        list.add(gather);
+                    }
+                }
+            }
+        }
 
+        //根据地区计算合计和总计
+        LinkedList<SaleManagerArrearageGather> linkedList = null;
+        SaleManagerArrearageGather sum = null;
+        SaleManagerArrearageGather total = new SaleManagerArrearageGather();
+        SaleManagerArrearageGather gather = null;
+        total.setDueAmt(BigDecimal.ZERO);
+        total.setFirstDueAmt(BigDecimal.ZERO);
+        total.setOverdueAmt(BigDecimal.ZERO);
+        total.setPlanReturnAmt(BigDecimal.ZERO);
+        total.setRealReturnAmt(BigDecimal.ZERO);
+        Map<String,LinkedList<SaleManagerArrearageGather>> gatherMap = new HashMap<>();
+        for (SaleManagerArrearageGather arrearageGather : list) {
+
+            total.setDueAmt(total.getDueAmt().add(arrearageGather.getDueAmt()));
+            total.setFirstDueAmt(total.getFirstDueAmt().add(arrearageGather.getFirstDueAmt()));
+            total.setOverdueAmt(total.getOverdueAmt().add(arrearageGather.getOverdueAmt()));
+            total.setPlanReturnAmt(total.getPlanReturnAmt().add(arrearageGather.getPlanReturnAmt()));
+            total.setRealReturnAmt(total.getRealReturnAmt().add(arrearageGather.getRealReturnAmt()));
+
+            linkedList = gatherMap.get(arrearageGather.getDeptName());
+            if(linkedList==null){
+                linkedList = new LinkedList<>();
+                gatherMap.put(arrearageGather.getDeptName(),linkedList);
+                sum = new SaleManagerArrearageGather();
+                linkedList.addLast(sum);
+                sum.setDueAmt(BigDecimal.ZERO);
+                sum.setFirstDueAmt(BigDecimal.ZERO);
+                sum.setOverdueAmt(BigDecimal.ZERO);
+                sum.setPlanReturnAmt(BigDecimal.ZERO);
+                sum.setRealReturnAmt(BigDecimal.ZERO);
+            }else{
+                sum = linkedList.getLast();
+            }
+            sum.setDueAmt(sum.getDueAmt().add(arrearageGather.getDueAmt()));
+            sum.setFirstDueAmt(sum.getFirstDueAmt().add(arrearageGather.getFirstDueAmt()));
+            sum.setOverdueAmt(sum.getOverdueAmt().add(arrearageGather.getOverdueAmt()));
+            sum.setPlanReturnAmt(sum.getPlanReturnAmt().add(arrearageGather.getPlanReturnAmt()));
+            sum.setRealReturnAmt(sum.getRealReturnAmt().add(arrearageGather.getRealReturnAmt()));
+            linkedList.addFirst(arrearageGather);
+        }
+
+        return list;
+
+    }
+
+    /**
+     * 查询汇总表-按客户
+     *
+     * @param ywArrearage 查询条件
+     * @return
+     */
+    public List<CustomerArrearageGather> selectGatherCustomer(YwArrearage ywArrearage) {
+        return ywArrearageMapper.selectGatherCustomer(ywArrearage);
     }
 
 }

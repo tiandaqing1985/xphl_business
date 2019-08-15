@@ -5,12 +5,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.framework.util.ShiroUtils;
 import com.ruoyi.system.domain.SysDept;
 import com.ruoyi.system.domain.SysUser;
+import com.ruoyi.system.domain.ywArrearage.CustomerArrearageGather;
 import com.ruoyi.system.domain.ywArrearage.SaleManagerArrearageGather;
 import com.ruoyi.system.mapper.SysDeptMapper;
 import com.ruoyi.system.service.ISysDeptService;
+import com.ruoyi.web.controller.tool.QuarterUtil;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -43,8 +46,6 @@ public class YwArrearageController extends BaseController {
 
     @Autowired
     private IYwArrearageService ywArrearageService;
-    @Autowired
-    private SysDeptMapper sysDeptMapper;
 
     @RequiresPermissions("system:ywArrearage:view")
     @GetMapping()
@@ -72,29 +73,20 @@ public class YwArrearageController extends BaseController {
         startPage();
         List<SaleManagerArrearageGather> list = new ArrayList<>();
         SysUser loginUser = ShiroUtils.getSysUser();
-        if (loginUser.getUserId() == 1 || loginUser.getUserId() == 103) {//管理员和COO看所有
-            list = ywArrearageService.selectGatherSaleManager(ywArrearage);
-        } else {
-            //查询当前登陆人是哪个部门的leader
-            List<SysDept> sysDepts = sysDeptMapper.selectDeptByLeader(loginUser.getUserName());
-            if (sysDepts.size() != 0) {
-                Map<String, String> deptMap = new HashMap<>();
-                for (SysDept sysDept : sysDepts) {
-                    deptMap.put(sysDept.getDeptName(), "");
-                }
-                //查询数据
-                List<SaleManagerArrearageGather> gatherList = ywArrearageService.selectGatherSaleManager(ywArrearage);
-                //只显示leader是当前登陆人的部门信息
-                for (SaleManagerArrearageGather gather : gatherList) {
-                    if (deptMap.get(gather.getDeptName()) != null) {
-                        list.add(gather);
-                    }
-                }
-            }
-        }
+        list = ywArrearageService.selectGatherSaleManager(ywArrearage, loginUser);
         return getDataTable(list);
     }
 
+    /**
+     * 查询汇总表-按客户
+     */
+    @PostMapping("/listGatherByCustomer")
+    @ResponseBody
+    public TableDataInfo listGatherByCustomer(YwArrearage ywArrearage) {
+        startPage();
+        List<CustomerArrearageGather> list = ywArrearageService.selectGatherCustomer(ywArrearage);
+        return getDataTable(list);
+    }
 
     /**
      * 导出商机-欠款列表

@@ -53,32 +53,9 @@
                                 </div>
                             </form>
                         </div>
-                        <a class="btn btn-success" onclick="$.operate.add()">
-                            <i class="fa fa-plus"></i> 添加
-                        </a>
-                        <a class="btn btn-primary btn-edit disabled" onclick="$.operate.edit()">
-                            <i class="fa fa-edit"></i> 修改
-                        </a>
-                        <a class="btn btn-danger btn-del btn-del disabled" onclick="$.operate.removeAll()">
-                            <i class="fa fa-remove"></i> 删除
-                        </a>
                         <a class="btn btn-warning" onclick="$.table.importExcel()">
                             <i class="fa fa-download"></i> 导入
                         </a>
-<!--                        <div class="btn-group-sm" id="toolbar" role="group">-->
-<!--                            <a class="btn btn-success" onclick="$.operate.add()">-->
-<!--                                <i class="fa fa-plus"></i> 添加-->
-<!--                            </a>-->
-<!--                            <a class="btn btn-primary btn-edit disabled" onclick="$.operate.edit()">-->
-<!--                                <i class="fa fa-edit"></i> 修改-->
-<!--                            </a>-->
-<!--                            <a class="btn btn-danger btn-del btn-del disabled" onclick="$.operate.removeAll()">-->
-<!--                                <i class="fa fa-remove"></i> 删除-->
-<!--                            </a>-->
-<!--                            <a class="btn btn-warning" onclick="$.table.importExcel()">-->
-<!--                                <i class="fa fa-download"></i> 导入-->
-<!--                            </a>-->
-<!--                        </div>-->
                         <div class="col-sm-12 select-table table-striped">
                             <table id="bootstrap-table-1" data-mobile-responsive="true"></table>
                         </div>
@@ -121,7 +98,6 @@
             </div>
             <div id="tab-3" class="tab-pane">
                 <div class="panel-body">
-                    3
                     <div class="col-sm-12 search-collapse">
                         <form id="formId3">
                             <div class="select-list">
@@ -153,7 +129,6 @@
             </div>
             <div id="tab-4" class="tab-pane">
                 <div class="panel-body">
-                    4
                     <div class="col-sm-12 search-collapse">
                         <form id="formId4">
                             <div class="select-list">
@@ -185,7 +160,6 @@
             </div>
             <div id="tab-5" class="tab-pane">
                 <div class="panel-body">
-                    5
                     <div class="col-sm-12 search-collapse">
                         <form id="formId5">
                             <div class="select-list">
@@ -500,10 +474,11 @@
             }
         ]
     };
+
     var options3 = {
         id: "bootstrap-table-3",
-        url: prefix + "/list",
-        exportUrl: prefix + "/export",
+        url: prefix + "/listGatherByCustomer",
+        exportUrl: prefix + "/exportGatherByCustomer",
         modalName: "汇总表-按客户",
         showExport: false,
         columns: [{
@@ -513,6 +488,86 @@
                 field: 'id',
                 title: 'ID',
                 visible: false
+            },
+            {
+                field: 'area',
+                title: '区域',
+                sortable: false
+            },
+            {
+                field: 'deptName',
+                title: '所属部门',
+                sortable: false
+            },
+            {
+                field: 'saleManager',
+                title: '销售经理',
+                sortable: false
+            },
+            {
+                field: 'signatory',
+                title: '签约方',
+                sortable: false
+            },
+            {
+                field: 'advertiser',
+                title: '广告主',
+                sortable: false
+            },
+            {
+                field: 'firstDueAmt',
+                title: '月初应收金额',
+                sortable: false
+            },
+            {
+                field: 'dueAmt',
+                title: '实时应收金额',
+                sortable: false
+            },
+            {
+                field: 'notReceiveAmt',
+                title: '未到账期未收款',
+                sortable: false
+            },
+            {
+                field: 'overdueAmt',
+                title: '实时客户已逾期款',
+                sortable: false
+            },
+            {
+                field: 'planReturnAmt',
+                title: '预计回款金额（当月）',
+                sortable: false
+            },
+            {
+                field: 'planReturnAmtH',
+                title: '预计回款金额（可能性为高）',
+                sortable: false
+            },
+            {
+                field: 'planReturnAmtM',
+                title: '预计回款金额（可能性为中）',
+                sortable: false
+            },
+            {
+                field: 'planReturnAmtL',
+                title: '预计回款金额（可能性为低）',
+                sortable: false
+            },
+            {
+                field: 'realReturnAmt',
+                title: '实际回款金额',
+                sortable: false
+            },
+            {
+                field: 'planReturnRate',
+                title: '预计应收账款回款率',
+                sortable: false
+            },
+            {
+                field: 'realReturnRate',
+                title: '实际应收账款回款率',
+                sortable: false
             }
         ]
     };

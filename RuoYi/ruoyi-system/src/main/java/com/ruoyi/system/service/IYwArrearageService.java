@@ -1,5 +1,7 @@
 package com.ruoyi.system.service;
 
+import com.ruoyi.system.domain.SysUser;
+import com.ruoyi.system.domain.ywArrearage.CustomerArrearageGather;
 import com.ruoyi.system.domain.ywArrearage.SaleManagerArrearageGather;
 import com.ruoyi.system.domain.ywArrearage.YwArrearage;
 import java.util.List;
@@ -65,5 +67,14 @@ public interface IYwArrearageService
 	 * @param ywArrearage 查询条件
 	 * @return
 	 */
-    public List<SaleManagerArrearageGather> selectGatherSaleManager(YwArrearage ywArrearage);
+    public List<SaleManagerArrearageGather> selectGatherSaleManager(YwArrearage ywArrearage, SysUser loginUser);
+
+	/**
+	 * 查询汇总表-按客户
+	 *
+	 * @param ywArrearage 查询条件
+	 * @return
+	 */
+	public List<CustomerArrearageGather> selectGatherCustomer(YwArrearage ywArrearage);
+
 }
