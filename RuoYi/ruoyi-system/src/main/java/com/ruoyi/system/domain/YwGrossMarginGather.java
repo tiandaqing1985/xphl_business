@@ -9,8 +9,17 @@ import java.math.BigDecimal;
  */
 public class YwGrossMarginGather {
 
+    @Excel(name = "区域",type = Excel.Type.EXPORT)
+    private String area;
+
+    @Excel(name = "部门",type = Excel.Type.EXPORT)
+    private String deptName;
+
     @Excel(name = "销售经理", type = Excel.Type.EXPORT)
     private String saleManager;//销售经理
+
+    @Excel(name = "购买媒体",type = Excel.Type.EXPORT)
+    private String media;
 
     @Excel(name = "毛利季度任务", type = Excel.Type.EXPORT)
     private BigDecimal quotas;//毛利任务
@@ -30,6 +39,30 @@ public class YwGrossMarginGather {
     private String term;//期间
 
     private String quarter;//期间
+
+    public String getArea() {
+        return area;
+    }
+
+    public void setArea(String area) {
+        this.area = area;
+    }
+
+    public String getDeptName() {
+        return deptName;
+    }
+
+    public void setDeptName(String deptName) {
+        this.deptName = deptName;
+    }
+
+    public String getMedia() {
+        return media;
+    }
+
+    public void setMedia(String media) {
+        this.media = media;
+    }
 
     public String getTerm() {
         return term;

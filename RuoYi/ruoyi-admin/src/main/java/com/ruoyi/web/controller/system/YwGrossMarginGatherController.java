@@ -71,14 +71,14 @@ public class YwGrossMarginGatherController extends BaseController {
      */
     @PostMapping("/export")
     @ResponseBody
-    public AjaxResult export(Gather gather) {
+    public AjaxResult export(YwGrossMarginGather gather) {
         if (gather.getQuarter() == null || gather.getQuarter().equals("")) {
             gather.setQuarter(QuarterUtil.getQuarterByDate(DateUtils.getNowDate()));
         }
-        List<Gather> gathers = gatherService.selectGatherList(gather);
-        List<Gather> gatherList = gatherService.exportList(gathers);
-        GatherExcelUtil<Gather> util = new GatherExcelUtil<Gather>(Gather.class);
-        return util.exportGatherExcel(gatherList, "个人毛利汇总");
+        List<YwGrossMarginGather> gathers = gatherService.selectGrossMarginGatherList(gather);
+//        List<Gather> gatherList = gatherService.exportList(gathers);
+        GatherExcelUtil<YwGrossMarginGather> util = new GatherExcelUtil<YwGrossMarginGather>(YwGrossMarginGather.class);
+        return util.exportGatherExcel(gathers, "个人毛利汇总");
     }
 
     /**

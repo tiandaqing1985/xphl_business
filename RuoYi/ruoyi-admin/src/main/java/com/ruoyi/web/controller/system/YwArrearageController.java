@@ -5,12 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.framework.util.ShiroUtils;
 import com.ruoyi.system.domain.SysDept;
 import com.ruoyi.system.domain.SysUser;
-import com.ruoyi.system.domain.ywArrearage.CustomerArrearageGather;
-import com.ruoyi.system.domain.ywArrearage.SaleManagerArrearageGather;
+import com.ruoyi.system.domain.ywArrearage.*;
 import com.ruoyi.system.mapper.SysDeptMapper;
 import com.ruoyi.system.service.ISysDeptService;
 import com.ruoyi.web.controller.tool.QuarterUtil;
@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.enums.BusinessType;
-import com.ruoyi.system.domain.ywArrearage.YwArrearage;
 import com.ruoyi.system.service.IYwArrearageService;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.page.TableDataInfo;
@@ -70,11 +69,23 @@ public class YwArrearageController extends BaseController {
     @PostMapping("/listGatherBySaleManager")
     @ResponseBody
     public TableDataInfo listGatherBySaleManager(YwArrearage ywArrearage) {
-        startPage();
         List<SaleManagerArrearageGather> list = new ArrayList<>();
         SysUser loginUser = ShiroUtils.getSysUser();
         list = ywArrearageService.selectGatherSaleManager(ywArrearage, loginUser);
         return getDataTable(list);
+    }
+
+    /**
+     * 导出汇总表-按销售经理
+     */
+    @PostMapping("/exportGatherBySaleManager")
+    @ResponseBody
+    public AjaxResult exportGatherBySaleManager(YwArrearage ywArrearage) {
+        List<SaleManagerArrearageGather> list = new ArrayList<>();
+        SysUser loginUser = ShiroUtils.getSysUser();
+        list = ywArrearageService.selectGatherSaleManager(ywArrearage, loginUser);
+        ExcelUtil<SaleManagerArrearageGather> excelUtil = new ExcelUtil<SaleManagerArrearageGather>(SaleManagerArrearageGather.class);
+        return excelUtil.exportExcel(list, "汇总表-按销售经理");
     }
 
     /**
@@ -83,9 +94,64 @@ public class YwArrearageController extends BaseController {
     @PostMapping("/listGatherByCustomer")
     @ResponseBody
     public TableDataInfo listGatherByCustomer(YwArrearage ywArrearage) {
-        startPage();
         List<CustomerArrearageGather> list = ywArrearageService.selectGatherCustomer(ywArrearage);
         return getDataTable(list);
+    }
+
+    /**
+     * 导出汇总表-按客户
+     */
+    @PostMapping("/exportGatherByCustomer")
+    @ResponseBody
+    public AjaxResult exportGatherByCustomer(YwArrearage ywArrearage) {
+        List<CustomerArrearageGather> list = ywArrearageService.selectGatherCustomer(ywArrearage);
+        ExcelUtil<CustomerArrearageGather> excelUtil = new ExcelUtil<>(CustomerArrearageGather.class);
+        return excelUtil.exportExcel(list, "汇总表-按客户");
+    }
+
+    /**
+     * 查询实际应收账款回款率排名
+     */
+    @PostMapping("/listRealReturnRateRank")
+    @ResponseBody
+    public TableDataInfo listRealReturnRateRank(YwArrearage ywArrearage) {
+        startPage();
+        List<ReturnRateRank> returnRateRanks = ywArrearageService.selectRealReturnRateRank(ywArrearage);
+        return getDataTable(returnRateRanks);
+    }
+
+    /**
+     * 导出实际应收账款回款率排名
+     */
+    @PostMapping("/exportRealReturnRateRank")
+    @ResponseBody
+    public AjaxResult exportRealReturnRateRank(YwArrearage ywArrearage) {
+        List<ReturnRateRank> returnRateRanks = ywArrearageService.selectRealReturnRateRank(ywArrearage);
+        ExcelUtil<ReturnRateRank> excelUtil = new ExcelUtil<>(ReturnRateRank.class);
+        return excelUtil.exportExcel(returnRateRanks, "实际应收账款回款率排名");
+    }
+
+    /**
+     * 查询回款情况
+     */
+    @PostMapping("/listReturnSituation")
+    @ResponseBody
+    public TableDataInfo listReturnSituation(YwArrearage ywArrearage) {
+        startPage();
+        List<ReturnSituation> returnRateRanks = ywArrearageService.selectReturnSituation(ywArrearage);
+        return getDataTable(returnRateRanks);
+    }
+
+    /**
+     * 导出回款情况
+     */
+    @PostMapping("/exportReturnSituation")
+    @ResponseBody
+    public AjaxResult exportReturnSituation(YwArrearage ywArrearage) {
+        startPage();
+        List<ReturnSituation> returnRateRanks = ywArrearageService.selectReturnSituation(ywArrearage);
+        ExcelUtil<ReturnSituation> excelUtil = new ExcelUtil<>(ReturnSituation.class);
+        return excelUtil.exportExcel(returnRateRanks, "回款情况");
     }
 
     /**

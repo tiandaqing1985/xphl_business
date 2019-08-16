@@ -9,8 +9,7 @@ import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.domain.SysDept;
 import com.ruoyi.system.domain.SysUser;
 import com.ruoyi.system.domain.YwConsumption;
-import com.ruoyi.system.domain.ywArrearage.CustomerArrearageGather;
-import com.ruoyi.system.domain.ywArrearage.SaleManagerArrearageGather;
+import com.ruoyi.system.domain.ywArrearage.*;
 import com.ruoyi.system.mapper.SysDeptMapper;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.slf4j.Logger;
@@ -18,7 +17,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.system.mapper.YwArrearageMapper;
-import com.ruoyi.system.domain.ywArrearage.YwArrearage;
 import com.ruoyi.system.service.IYwArrearageService;
 import com.ruoyi.common.core.text.Convert;
 
@@ -167,6 +165,8 @@ public class YwArrearageServiceImpl implements IYwArrearageService {
         if (loginUser == null || loginUser.getUserId() == 1 || loginUser.getUserId() == 103) {//管理员和COO看所有
             list = ywArrearageMapper.selectGatherSaleManager(ywArrearage);
         } else {
+            //查询数据
+            List<SaleManagerArrearageGather> gatherList = ywArrearageMapper.selectGatherSaleManager(ywArrearage);
             //查询当前登陆人是哪个部门的leader
             List<SysDept> sysDepts = sysDeptMapper.selectDeptByLeader(loginUser.getUserName());
             if (sysDepts.size() != 0) {
@@ -174,14 +174,14 @@ public class YwArrearageServiceImpl implements IYwArrearageService {
                 for (SysDept sysDept : sysDepts) {
                     deptMap.put(sysDept.getDeptName(), "");
                 }
-                //查询数据
-                List<SaleManagerArrearageGather> gatherList = ywArrearageMapper.selectGatherSaleManager(ywArrearage);
                 //只显示leader是当前登陆人的部门信息
                 for (SaleManagerArrearageGather gather : gatherList) {
                     if (deptMap.get(gather.getDeptName()) != null) {
                         list.add(gather);
                     }
                 }
+            } else {
+                return list;
             }
         }
 
@@ -191,11 +191,12 @@ public class YwArrearageServiceImpl implements IYwArrearageService {
         SaleManagerArrearageGather total = new SaleManagerArrearageGather();
         SaleManagerArrearageGather gather = null;
         total.setDueAmt(BigDecimal.ZERO);
+        total.setArea("总计");
         total.setFirstDueAmt(BigDecimal.ZERO);
         total.setOverdueAmt(BigDecimal.ZERO);
         total.setPlanReturnAmt(BigDecimal.ZERO);
         total.setRealReturnAmt(BigDecimal.ZERO);
-        Map<String,LinkedList<SaleManagerArrearageGather>> gatherMap = new HashMap<>();
+        Map<String, LinkedList<SaleManagerArrearageGather>> gatherMap = new HashMap<>();
         for (SaleManagerArrearageGather arrearageGather : list) {
 
             total.setDueAmt(total.getDueAmt().add(arrearageGather.getDueAmt()));
@@ -204,18 +205,19 @@ public class YwArrearageServiceImpl implements IYwArrearageService {
             total.setPlanReturnAmt(total.getPlanReturnAmt().add(arrearageGather.getPlanReturnAmt()));
             total.setRealReturnAmt(total.getRealReturnAmt().add(arrearageGather.getRealReturnAmt()));
 
-            linkedList = gatherMap.get(arrearageGather.getDeptName());
-            if(linkedList==null){
+            linkedList = gatherMap.get(arrearageGather.getArea());
+            if (linkedList == null) {
                 linkedList = new LinkedList<>();
-                gatherMap.put(arrearageGather.getDeptName(),linkedList);
+                gatherMap.put(arrearageGather.getArea(), linkedList);
                 sum = new SaleManagerArrearageGather();
                 linkedList.addLast(sum);
+                sum.setArea(arrearageGather.getArea() + "合计");
                 sum.setDueAmt(BigDecimal.ZERO);
                 sum.setFirstDueAmt(BigDecimal.ZERO);
                 sum.setOverdueAmt(BigDecimal.ZERO);
                 sum.setPlanReturnAmt(BigDecimal.ZERO);
                 sum.setRealReturnAmt(BigDecimal.ZERO);
-            }else{
+            } else {
                 sum = linkedList.getLast();
             }
             sum.setDueAmt(sum.getDueAmt().add(arrearageGather.getDueAmt()));
@@ -223,10 +225,35 @@ public class YwArrearageServiceImpl implements IYwArrearageService {
             sum.setOverdueAmt(sum.getOverdueAmt().add(arrearageGather.getOverdueAmt()));
             sum.setPlanReturnAmt(sum.getPlanReturnAmt().add(arrearageGather.getPlanReturnAmt()));
             sum.setRealReturnAmt(sum.getRealReturnAmt().add(arrearageGather.getRealReturnAmt()));
+            if (sum.getFirstDueAmt().compareTo(BigDecimal.ZERO) != 0) {
+                sum.setPlanReturnRate(sum.getPlanReturnAmt().divide(sum.getFirstDueAmt(), 6, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100L)).setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString() + "%");
+                sum.setRealReturnRate(sum.getRealReturnAmt().divide(sum.getFirstDueAmt(), 6, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100L)).setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString() + "%");
+            } else {
+                sum.setPlanReturnRate("0.00%");
+            }
             linkedList.addFirst(arrearageGather);
         }
 
-        return list;
+        LinkedList<SaleManagerArrearageGather> singletonLinkedList = new LinkedList<>();
+
+        for (LinkedList<SaleManagerArrearageGather> gatherLinkedList : gatherMap.values()) {
+            if (gatherLinkedList.size() == 1) {
+                singletonLinkedList.addLast(gatherLinkedList.getFirst());
+            } else {
+                while (gatherLinkedList.size() > 0) {
+                    gather = gatherLinkedList.removeLast();
+                    singletonLinkedList.addFirst(gather);
+                }
+            }
+        }
+        if (total.getFirstDueAmt().compareTo(BigDecimal.ZERO) != 0) {
+            total.setPlanReturnRate(total.getPlanReturnAmt().divide(total.getFirstDueAmt(), 6, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100L)).setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString() + "%");
+            total.setRealReturnRate(total.getRealReturnAmt().divide(total.getFirstDueAmt(), 6, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100L)).setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString() + "%");
+        } else {
+            total.setPlanReturnRate("0.00%");
+        }
+        singletonLinkedList.addLast(total);
+        return singletonLinkedList;
 
     }
 
@@ -237,7 +264,110 @@ public class YwArrearageServiceImpl implements IYwArrearageService {
      * @return
      */
     public List<CustomerArrearageGather> selectGatherCustomer(YwArrearage ywArrearage) {
-        return ywArrearageMapper.selectGatherCustomer(ywArrearage);
+        List<CustomerArrearageGather> list = ywArrearageMapper.selectGatherCustomer(ywArrearage);
+        //根据地区计算合计和总计
+        LinkedList<CustomerArrearageGather> linkedList = null;
+        CustomerArrearageGather sum = null;
+        CustomerArrearageGather total = new CustomerArrearageGather();
+        CustomerArrearageGather gather = null;
+        total.setDueAmt(BigDecimal.ZERO);
+        total.setArea("总计");
+        total.setDueAmt(BigDecimal.ZERO);
+        total.setFirstDueAmt(BigDecimal.ZERO);
+        total.setOverdueAmt(BigDecimal.ZERO);
+        total.setPlanReturnAmt(BigDecimal.ZERO);
+        total.setRealReturnAmt(BigDecimal.ZERO);
+        total.setNotReceiveAmt(BigDecimal.ZERO);
+        total.setPlanReturnAmtH(BigDecimal.ZERO);
+        total.setPlanReturnAmtL(BigDecimal.ZERO);
+        total.setPlanReturnAmtM(BigDecimal.ZERO);
+        Map<String, LinkedList<CustomerArrearageGather>> gatherMap = new HashMap<>();
+        for (CustomerArrearageGather arrearageGather : list) {
+
+            total.setDueAmt(total.getDueAmt().add(arrearageGather.getDueAmt()));
+            total.setFirstDueAmt(total.getFirstDueAmt().add(arrearageGather.getFirstDueAmt()));
+            total.setOverdueAmt(total.getOverdueAmt().add(arrearageGather.getOverdueAmt()));
+            total.setPlanReturnAmt(total.getPlanReturnAmt().add(arrearageGather.getPlanReturnAmt()));
+            total.setRealReturnAmt(total.getRealReturnAmt().add(arrearageGather.getRealReturnAmt()));
+
+            linkedList = gatherMap.get(arrearageGather.getArea());
+            if (linkedList == null) {
+                linkedList = new LinkedList<>();
+                gatherMap.put(arrearageGather.getArea(), linkedList);
+                sum = new CustomerArrearageGather();
+                linkedList.addLast(sum);
+                sum.setArea(arrearageGather.getArea() + "合计");
+                sum.setDueAmt(BigDecimal.ZERO);
+                sum.setFirstDueAmt(BigDecimal.ZERO);
+                sum.setOverdueAmt(BigDecimal.ZERO);
+                sum.setPlanReturnAmt(BigDecimal.ZERO);
+                sum.setRealReturnAmt(BigDecimal.ZERO);
+                sum.setNotReceiveAmt(BigDecimal.ZERO);
+                sum.setPlanReturnAmtH(BigDecimal.ZERO);
+                sum.setPlanReturnAmtL(BigDecimal.ZERO);
+                sum.setPlanReturnAmtM(BigDecimal.ZERO);
+            } else {
+                sum = linkedList.getLast();
+            }
+            sum.setDueAmt(arrearageGather.getDueAmt().add(sum.getDueAmt()));
+            sum.setFirstDueAmt(arrearageGather.getFirstDueAmt().add(sum.getFirstDueAmt()));
+            sum.setOverdueAmt(arrearageGather.getOverdueAmt().add(sum.getOverdueAmt()));
+            sum.setPlanReturnAmt(arrearageGather.getPlanReturnAmt().add(sum.getPlanReturnAmt()));
+            sum.setRealReturnAmt(arrearageGather.getRealReturnAmt().add(sum.getRealReturnAmt()));
+            sum.setNotReceiveAmt(arrearageGather.getNotReceiveAmt().add(sum.getNotReceiveAmt()));
+            sum.setPlanReturnAmtH(arrearageGather.getPlanReturnAmtH().add(sum.getPlanReturnAmtH()));
+            sum.setPlanReturnAmtL(arrearageGather.getPlanReturnAmtL().add(sum.getPlanReturnAmtL()));
+            sum.setPlanReturnAmtM(arrearageGather.getPlanReturnAmtM().add(sum.getPlanReturnAmtM()));
+            if (sum.getFirstDueAmt().compareTo(BigDecimal.ZERO) != 0) {
+                sum.setPlanReturnRate(sum.getPlanReturnAmt().divide(sum.getFirstDueAmt(), 6, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100L)).setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString() + "%");
+                sum.setRealReturnRate(sum.getRealReturnAmt().divide(sum.getFirstDueAmt(), 6, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100L)).setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString() + "%");
+            } else {
+                sum.setPlanReturnRate("0.00%");
+            }
+            linkedList.addFirst(arrearageGather);
+        }
+
+        LinkedList<CustomerArrearageGather> singletonLinkedList = new LinkedList<>();
+
+        for (LinkedList<CustomerArrearageGather> gatherLinkedList : gatherMap.values()) {
+            if (gatherLinkedList.size() == 1) {
+                singletonLinkedList.addLast(gatherLinkedList.getFirst());
+            } else {
+                while (gatherLinkedList.size() > 0) {
+                    gather = gatherLinkedList.removeLast();
+                    singletonLinkedList.addFirst(gather);
+                }
+            }
+        }
+        if (total.getFirstDueAmt().compareTo(BigDecimal.ZERO) != 0) {
+            total.setPlanReturnRate(total.getPlanReturnAmt().divide(total.getFirstDueAmt(), 6, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100L)).setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString() + "%");
+            total.setRealReturnRate(total.getRealReturnAmt().divide(total.getFirstDueAmt(), 6, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100L)).setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString() + "%");
+        } else {
+            total.setPlanReturnRate("0.00%");
+            total.setRealReturnRate("0.00%");
+        }
+        singletonLinkedList.addLast(total);
+        return singletonLinkedList;
+    }
+
+    /**
+     * 查询实际应收账款回款率排名
+     *
+     * @param ywArrearage 查询条件
+     * @return
+     */
+    public List<ReturnRateRank> selectRealReturnRateRank(YwArrearage ywArrearage) {
+        return ywArrearageMapper.selectRealReturnRateRank(ywArrearage);
+    }
+
+    /**
+     * 查询回款情况
+     *
+     * @param ywArrearage 查询条件
+     * @return
+     */
+    public List<ReturnSituation> selectReturnSituation(YwArrearage ywArrearage) {
+        return ywArrearageMapper.selectReturnSituation(ywArrearage);
     }
 
 }

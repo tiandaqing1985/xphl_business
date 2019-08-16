@@ -63,9 +63,7 @@ public class YwTractController extends BaseController
 	@ResponseBody
 	public TableDataInfo list(YwTract ywTract)
 	{
-		startPage();
-		
-		
+
 		SysDept dept = sysDeptService.selectDeptById(ShiroUtils.getSysUser().getDeptId());
 		
 		if(ShiroUtils.getUserId()==1 || ShiroUtils.getUserId()==103){ //超级管理员 和 任总看所有数据  
@@ -97,6 +95,7 @@ public class YwTractController extends BaseController
 			}
 
 		}
+		startPage();
         List<YwTract> list = ywTractService.selectYwTractList(ywTract);
 		return getDataTable(list);
 	}

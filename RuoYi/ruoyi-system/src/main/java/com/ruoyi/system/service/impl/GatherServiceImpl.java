@@ -6,6 +6,10 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import com.ruoyi.system.domain.YwGrossMarginGather;
+import com.ruoyi.system.domain.YwTask;
+import com.ruoyi.system.domain.ywArrearage.CustomerArrearageGather;
+import com.ruoyi.system.mapper.YwGrossMarginsMapper;
+import com.ruoyi.system.mapper.YwTaskMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -281,42 +285,151 @@ public class GatherServiceImpl implements IGatherService {
      */
     @Override
     public List<YwGrossMarginGather> selectGrossMarginGatherList(YwGrossMarginGather gather) {
+        //是否有媒体是全媒体
+        boolean isFullMedia = false;
         String timeSch = null;
-        List<YwGrossMarginGather> list = gatherMapper.selectGrossMarginGatherList(gather);
-        for (YwGrossMarginGather ywGatherGrossMargin : list) {
+        String mlwcRate = null;
+        BigDecimal mlptAmt = null;
+        List<YwGrossMarginGather> ywGrossMarginGathers = gatherMapper.selectGatherTask(gather);
+        //查询任务汇总，得到毛利任务金额
+        for (YwGrossMarginGather grossMarginGather : ywGrossMarginGathers) {
+            if (grossMarginGather.getMedia().equals("全媒体")) {
+                isFullMedia = true;
+            }
+            YwGrossMarginGather marginGather = gatherMapper.selectGrossMarginGatherGroup(grossMarginGather);
+            if (marginGather == null) {
+                grossMarginGather.setGrossMargin(BigDecimal.ZERO);
+            } else {
+                grossMarginGather.setGrossMargin(marginGather.getGrossMargin());
+                grossMarginGather.setTerm(marginGather.getTerm());
+            }
+            //计算完成率
+            if (grossMarginGather.getGrossMargin().compareTo(BigDecimal.ZERO) == 0 || grossMarginGather.getQuotas().compareTo(BigDecimal.ZERO) == 0) {
+                mlwcRate = "0.00%";
+            } else {
+                mlwcRate = grossMarginGather.getGrossMargin().divide(grossMarginGather.getQuotas(), 4, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100L)).setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString() + "%";
+            }
+            grossMarginGather.setMlwcRate(mlwcRate);
+            //平推金额
+            if (grossMarginGather.getTerm() == null || grossMarginGather.getTerm().equals("")) {
+                mlptAmt = BigDecimal.ZERO;
+            } else {
+                mlptAmt = grossMarginGather.getGrossMargin().divide(BigDecimal.valueOf(getTermDayNum(grossMarginGather.getTerm())), 6, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(getQuarterDayNum(grossMarginGather.getQuarter())));
+            }
+            grossMarginGather.setMlptAmt(mlptAmt);
             //计算时间进度
-            if (ywGatherGrossMargin.getTerm() != null) {
-                double timeSchedule = Double.valueOf(getTermDayNum(ywGatherGrossMargin.getTerm())) / getQuarterDayNum(ywGatherGrossMargin.getQuarter());
+            if (grossMarginGather.getTerm() != null && timeSch == null) {
+                double timeSchedule = Double.valueOf(getTermDayNum(grossMarginGather.getTerm())) / getQuarterDayNum(grossMarginGather.getQuarter());
                 timeSchedule = timeSchedule * 100;
                 timeSch = BigDecimal.valueOf(timeSchedule).setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString() + "%";
             }
-
+            grossMarginGather.setTimeSchedule(timeSch);
+            //消除科学计数法
+            grossMarginGather.setQuotas(new BigDecimal(grossMarginGather.getQuotas().toPlainString()));
+            grossMarginGather.setGrossMargin(new BigDecimal(grossMarginGather.getGrossMargin().toPlainString()));
         }
-        for (YwGrossMarginGather ywGatherGrossMargin : list) {
-            String mlwcRate = null;
-            BigDecimal mlptAmt = null;
+        //查询没有任务的毛利合计
+        YwGrossMarginGather mediaCon = new YwGrossMarginGather();
+        List<YwGrossMarginGather> noTaskGross = new ArrayList<>();
+        if (isFullMedia) {
+            mediaCon.setMedia("全媒体");
+            noTaskGross = gatherMapper.selectNoTaskGatherGross(mediaCon);
+        } else {
+            noTaskGross = gatherMapper.selectNoTaskGatherGross(mediaCon);
+        }
 
-            //计算完成率
-            if (ywGatherGrossMargin.getGrossMargin().compareTo(BigDecimal.ZERO) == 0 || ywGatherGrossMargin.getQuotas().compareTo(BigDecimal.ZERO) == 0) {
-                mlwcRate = "0.00%";
-            } else {
-                mlwcRate = ywGatherGrossMargin.getGrossMargin().divide(ywGatherGrossMargin.getQuotas(), 4, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100L)).toPlainString();
-            }
-            ywGatherGrossMargin.setMlwcRate(mlwcRate);
-
+        for (YwGrossMarginGather grossMarginGather : noTaskGross) {
+            grossMarginGather.setMlwcRate("0.00%");
             //平推金额
-            if (ywGatherGrossMargin.getTerm() == null || ywGatherGrossMargin.getTerm().equals("")) {
+            if (grossMarginGather.getTerm() == null || grossMarginGather.getTerm().equals("")) {
                 mlptAmt = BigDecimal.ZERO;
             } else {
-                mlptAmt = ywGatherGrossMargin.getGrossMargin().divide(BigDecimal.valueOf(getTermDayNum(ywGatherGrossMargin.getTerm())), 6, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(getQuarterDayNum(ywGatherGrossMargin.getQuarter())));
+                mlptAmt = grossMarginGather.getGrossMargin().divide(BigDecimal.valueOf(getTermDayNum(grossMarginGather.getTerm())), 6, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(getQuarterDayNum(grossMarginGather.getQuarter())));
             }
-
-            ywGatherGrossMargin.setTimeSchedule(timeSch);
-            ywGatherGrossMargin.setMlptAmt(mlptAmt.setScale(2,BigDecimal.ROUND_HALF_UP));
+            grossMarginGather.setMlptAmt(mlptAmt);
+            grossMarginGather.setTimeSchedule(timeSch);
             //消除科学计数法
-            ywGatherGrossMargin.setQuotas(new BigDecimal(ywGatherGrossMargin.getQuotas().toPlainString()));
-            ywGatherGrossMargin.setGrossMargin(new BigDecimal(ywGatherGrossMargin.getGrossMargin().toPlainString()));
+            grossMarginGather.setGrossMargin(new BigDecimal(grossMarginGather.getGrossMargin().toPlainString()));
         }
-        return list;
+        ywGrossMarginGathers.addAll(noTaskGross);
+
+
+        //统一时间进度
+        for (YwGrossMarginGather grossMarginGather : ywGrossMarginGathers) {
+            grossMarginGather.setTimeSchedule(timeSch);
+        }
+
+        return computeSumAndTotal(ywGrossMarginGathers);
     }
+
+    private List<YwGrossMarginGather> computeSumAndTotal(List<YwGrossMarginGather> list) {
+        //根据地区计算合计和总计
+        LinkedList<YwGrossMarginGather> linkedList = null;
+        YwGrossMarginGather sum = null;
+        YwGrossMarginGather total = new YwGrossMarginGather();
+        YwGrossMarginGather gather = null;
+        total.setSaleManager("总计");
+        total.setQuotas(BigDecimal.ZERO);
+        total.setGrossMargin(BigDecimal.ZERO);
+        total.setMlptAmt(BigDecimal.ZERO);
+        Map<String, LinkedList<YwGrossMarginGather>> gatherMap = new HashMap<>();
+        for (YwGrossMarginGather arrearageGather : list) {
+            if (arrearageGather.getQuotas() == null) {
+                arrearageGather.setQuotas(BigDecimal.ZERO);
+            }
+            total.setQuotas(total.getQuotas().add(arrearageGather.getQuotas()));
+            if (arrearageGather.getGrossMargin() == null) {
+                arrearageGather.setGrossMargin(BigDecimal.ZERO);
+            }
+            total.setGrossMargin(total.getGrossMargin().add(arrearageGather.getGrossMargin()));
+            if (arrearageGather.getMlptAmt() == null) {
+                arrearageGather.setMlptAmt(BigDecimal.ZERO);
+            }
+            total.setMlptAmt(total.getMlptAmt().add(arrearageGather.getMlptAmt()));
+
+            linkedList = gatherMap.get(arrearageGather.getDeptName());
+            if (linkedList == null) {
+                linkedList = new LinkedList<>();
+                gatherMap.put(arrearageGather.getDeptName(), linkedList);
+                sum = new YwGrossMarginGather();
+                linkedList.addLast(sum);
+                sum.setSaleManager("合计");
+                sum.setQuotas(BigDecimal.ZERO);
+                sum.setGrossMargin(BigDecimal.ZERO);
+                sum.setMlptAmt(BigDecimal.ZERO);
+            } else {
+                sum = linkedList.getLast();
+            }
+            sum.setQuotas(sum.getQuotas().add(arrearageGather.getQuotas()));
+            sum.setGrossMargin(sum.getGrossMargin().add(arrearageGather.getGrossMargin()));
+            sum.setMlptAmt(sum.getMlptAmt().add(arrearageGather.getMlptAmt()));
+            if (sum.getQuotas().compareTo(BigDecimal.ZERO) != 0) {
+                sum.setMlwcRate(sum.getGrossMargin().divide(sum.getQuotas(), 6, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100L)).setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString() + "%");
+            } else {
+                sum.setMlwcRate("0.00%");
+            }
+            linkedList.addFirst(arrearageGather);
+        }
+
+        LinkedList<YwGrossMarginGather> singletonLinkedList = new LinkedList<>();
+
+        for (LinkedList<YwGrossMarginGather> gatherLinkedList : gatherMap.values()) {
+            if (gatherLinkedList.size() == 2) {
+                singletonLinkedList.addLast(gatherLinkedList.getFirst());
+            } else {
+                while (gatherLinkedList.size() > 0) {
+                    gather = gatherLinkedList.removeLast();
+                    singletonLinkedList.addFirst(gather);
+                }
+            }
+        }
+        if (total.getQuotas().compareTo(BigDecimal.ZERO) != 0) {
+            total.setMlwcRate(total.getGrossMargin().divide(total.getQuotas(), 6, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100L)).setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString() + "%");
+        } else {
+            total.setMlwcRate("0.00%");
+        }
+        singletonLinkedList.addLast(total);
+        return singletonLinkedList;
+    }
+
 }

@@ -62,13 +62,9 @@ public class YwBusinessController extends BaseController
 	@ResponseBody
 	public TableDataInfo list(YwBusiness ywBusiness)
 	{
-		startPage();
-		
-		SysDept dept = sysDeptService.selectDeptById(ShiroUtils.getSysUser().getDeptId());
-		
 
-		
-		if(ShiroUtils.getUserId()==1 || ShiroUtils.getUserId()==103){ //超级管理员 和 任总看所有数据  
+		SysDept dept = sysDeptService.selectDeptById(ShiroUtils.getSysUser().getDeptId());
+		if(ShiroUtils.getUserId()==1 || ShiroUtils.getUserId()==103){ //超级管理员 和 任总看所有数据
 		
 		
 		}else{
@@ -98,6 +94,7 @@ public class YwBusinessController extends BaseController
 
 		}
 		ywBusiness.setBusinessStatus("0");
+		startPage();
         List<YwBusiness> list = ywBusinessService.selectYwBusinessList(ywBusiness);
 		return getDataTable(list);
 	}
@@ -254,8 +251,6 @@ public class YwBusinessController extends BaseController
 	@ResponseBody
 	public TableDataInfo list1(YwBusiness ywBusiness)
 	{
-		startPage();
-		
 		SysDept dept = sysDeptService.selectDeptById(ShiroUtils.getSysUser().getDeptId());
 		
 		if(ShiroUtils.getUserId()==1 || ShiroUtils.getUserId()==103){ //超级管理员 和 任总看所有数据  
@@ -282,6 +277,7 @@ public class YwBusinessController extends BaseController
 
 		}
 		ywBusiness.setBusinessStatus("1");
+		startPage();
         List<YwBusiness> list = ywBusinessService.selectYwBusinessList(ywBusiness);
 		return getDataTable(list);
 	}

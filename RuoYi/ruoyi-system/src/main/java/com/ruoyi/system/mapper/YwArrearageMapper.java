@@ -1,9 +1,8 @@
 package com.ruoyi.system.mapper;
 
-import com.ruoyi.system.domain.ywArrearage.CustomerArrearageGather;
-import com.ruoyi.system.domain.ywArrearage.SaleManagerArrearageGather;
-import com.ruoyi.system.domain.ywArrearage.YwArrearage;
-import java.util.List;	
+import com.ruoyi.system.domain.ywArrearage.*;
+
+import java.util.List;
 
 /**
  * 商机-欠款 数据层
@@ -76,4 +75,23 @@ public interface YwArrearageMapper
 	 * @return
 	 */
     public List<CustomerArrearageGather> selectGatherCustomer(YwArrearage ywArrearage);
+
+
+	/**
+	 * 查询实际应收账款回款率排名
+	 *
+	 * @param ywArrearage 查询条件
+	 * @return
+	 */
+    public List<ReturnRateRank> selectRealReturnRateRank(YwArrearage ywArrearage);
+
+
+	/**
+	 * 查询回款情况
+	 *
+	 * @param ywArrearage 查询条件
+	 * @return
+	 */
+    public List<ReturnSituation> selectReturnSituation(YwArrearage ywArrearage);
+
 }

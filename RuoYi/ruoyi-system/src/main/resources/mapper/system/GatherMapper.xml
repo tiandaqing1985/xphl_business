@@ -139,6 +139,8 @@
 
     </select>
 
+
+
     <resultMap id="YwGatherConsumptionResult" type="YwGatherConsumption">
         <result column="rownum" property="rownum"/>
         <result column="sale_manager" property="saleManager"/>
@@ -166,7 +168,58 @@
         <result column="gross_margin" property="grossMargin"/>
         <result column="quotas" property="quotas"/>
         <result column="term" property="term"/>
+        <result column="area" property="area"/>
+        <result column="dept_name" property="deptName"/>
+        <result column="media" property="media"/>
     </resultMap>
+
+    <select id="selectGrossMarginGatherGroup" parameterType="YwGrossMarginGather" resultMap="grossMarginGatherResult">
+        SELECT
+            d.sales_manager sale_manager,
+            d.media,
+            d.quarter,
+            sum( d.gross_margin ) gross_margin,
+            d.term
+        FROM
+            yw_gross_margins d
+        <where>
+            <if test="saleManager != null and saleManager != ''">
+                and d.sales_manager = #{saleManager}
+            </if>
+            <if test="quarter != null and quarter != ''">
+                and d.quarter = #{quarter}
+            </if>
+            <if test="media != '全媒体' and media != null and media != ''">
+                and d.media = #{media}
+            </if>
+        </where>
+        GROUP BY
+            d.sales_manager,
+            <if test="media != '全媒体'">
+                d.media,
+            </if>
+            d.quarter
+
+    </select>
+
+    <select id="selectNoTaskGatherGross" parameterType="YwGrossMarginGather" resultMap="grossMarginGatherResult">
+        select
+            gm.sales_manager sale_manager,
+            gm.media,
+            gm.quarter,
+            sum( gm.gross_margin ) gross_margin,
+            gm.term
+        from yw_gross_margins gm
+            left join yw_task ta on gm.quarter = ta.quarter and gm.sales_manager = ta.sale_manager
+            <if test="media != '全媒体'">
+                and gm.media = ta.media
+            </if>
+        where ta.id is null group by gm.quarter,gm.sales_manager
+        <if test="media != '全媒体'">
+            ,gm.media
+        </if>
+
+    </select>
 
     <select id="selectGrossMarginGatherList" parameterType="YwGrossMarginGather" resultMap="grossMarginGatherResult">
         select tb1.sales_manager sale_manager,tb1.quarter,ifnull(tb1.gross_margin,0) gross_margin,ifnull(tb2.quotas,0) quotas,tb1.term from
@@ -184,6 +237,31 @@
         (select ta.sale_manager,ifnull(sum(ta.quotas),0) quotas,ta.quarter from yw_task ta group by ta.type,ta.quarter,ta.sale_manager having ta.type = '毛利' <if
             test="quarter != null and quarter != ''"> and ta.quarter = #{quarter}</if>) tb2
         on tb1.quarter = tb2.quarter and tb1.sales_manager = tb2.sale_manager
+    </select>
+
+    <select id="selectGatherTask" parameterType="YwGrossMarginGather" resultMap="grossMarginGatherResult">
+        SELECT
+        c.type,
+        c.quarter,
+        c.area,
+        c.dept_name,
+        c.sale_manager,
+        c.media,
+        IFNULL( sum( c.quotas ), '0' ) quotas
+        FROM
+        yw_task c
+        GROUP BY
+        c.sale_manager,
+        c.media,
+        c.quarter
+        HAVING
+        c.type = '毛利'
+        <if test="quarter != null and quarter != ''">
+            and c.quarter = #{quarter}
+        </if>
+        <if test="saleManager != null and saleManager != ''">
+            and c.sale_manager = #{saleManager}
+        </if>
     </select>
 
 </mapper>

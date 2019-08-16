@@ -48,14 +48,14 @@
                                             <a class="btn btn-warning btn-rounded btn-sm"
                                                onclick="$.form.reset('formId1')"><i
                                                     class="fa fa-refresh"></i>&nbsp;重置</a>
+                                            <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.importExcel()">
+                                                <i class="fa fa-download"></i> 导入
+                                            </a>
                                         </li>
                                     </ul>
                                 </div>
                             </form>
                         </div>
-                        <a class="btn btn-warning" onclick="$.table.importExcel()">
-                            <i class="fa fa-download"></i> 导入
-                        </a>
                         <div class="col-sm-12 select-table table-striped">
                             <table id="bootstrap-table-1" data-mobile-responsive="true"></table>
                         </div>
@@ -84,6 +84,9 @@
                                                 class="fa fa-search"></i>&nbsp;搜索</a>
                                         <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset('formId2')"><i
                                                 class="fa fa-refresh"></i>&nbsp;重置</a>
+                                        <a class="btn btn-primary btn-rounded btn-sm" onclick="myExportExcel(2)">
+                                            <i class="fa fa-download"></i> 导出
+                                        </a>
                                     </li>
                                 </ul>
                             </div>
@@ -115,6 +118,9 @@
                                                 class="fa fa-search"></i>&nbsp;搜索</a>
                                         <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset('formId3')"><i
                                                 class="fa fa-refresh"></i>&nbsp;重置</a>
+                                        <a class="btn btn-primary btn-rounded btn-sm" onclick="myExportExcel(3)">
+                                            <i class="fa fa-download"></i> 导出
+                                        </a>
                                     </li>
                                 </ul>
                             </div>
@@ -146,6 +152,9 @@
                                                 class="fa fa-search"></i>&nbsp;搜索</a>
                                         <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset('formId4')"><i
                                                 class="fa fa-refresh"></i>&nbsp;重置</a>
+                                        <a class="btn btn-primary btn-rounded btn-sm" onclick="myExportExcel(4)">
+                                            <i class="fa fa-download"></i> 导出
+                                        </a>
                                     </li>
                                 </ul>
                             </div>
@@ -175,6 +184,9 @@
                                     <li>
                                         <a class="btn btn-primary btn-rounded btn-sm" onclick="mySearch(5)"> <i class="fa fa-search"></i>&nbsp;搜索</a>
                                         <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset('formId5')"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                                        <a class="btn btn-primary btn-rounded btn-sm" onclick="myExportExcel(5)">
+                                            <i class="fa fa-download"></i> 导出
+                                        </a>
                                     </li>
                                 </ul>
                             </div>
@@ -212,17 +224,22 @@
         $.table.search('formId' + id);
     }
 
-
     function myExportExcel(id) {
         if (id == '1') {
             $.table._option.exportUrl = prefix + "/export";
-            $.table._option.modalName = "个人毛利情况汇总";
+            $.table._option.modalName = "欠款情况明细";
         } else if (id == '2') {
-            $.table._option.exportUrl = prefix + "/exportRankGrossMargin";
-            $.table._option.modalName = "毛利完成率排名";
+            $.table._option.exportUrl = prefix + "/exportGatherBySaleManager";
+            $.table._option.modalName = "汇总表-按销售经理";
         } else if (id == '3') {
-            $.table._option.exportUrl = prefix + "/exportTotalGrossMargin";
-            $.table._option.modalName = "华东华北毛利整体完成率";
+            $.table._option.exportUrl = prefix + "/exportGatherByCustomer";
+            $.table._option.modalName = "汇总表-按客户";
+        } else if (id == '4') {
+            $.table._option.exportUrl = prefix + "/exportRealReturnRateRank";
+            $.table._option.modalName = "实际应收账款回款率排名";
+        } else if (id == '5') {
+            $.table._option.exportUrl = prefix + "/exportReturnSituation";
+            $.table._option.modalName = "回款情况";
         }
         $.table.exportExcel('formId' + id);
     }
@@ -418,6 +435,7 @@
         exportUrl: prefix + "/exportGatherBySaleManager",
         modalName: "汇总表-按销售经理",
         showExport: false,
+        pagination: false,
         columns: [
             {
                 checkbox: false
@@ -481,6 +499,7 @@
         exportUrl: prefix + "/exportGatherByCustomer",
         modalName: "汇总表-按客户",
         showExport: false,
+        pagination: false,
         columns: [{
             checkbox: false
         },
@@ -571,10 +590,11 @@
             }
         ]
     };
+
     var options4 = {
         id: "bootstrap-table-4",
-        url: prefix + "/list",
-        exportUrl: prefix + "/export",
+        url: prefix + "/listRealReturnRateRank",
+        exportUrl: prefix + "/exportRealReturnRateRank",
         modalName: "实际应收账款回款率排名",
         showExport: false,
         columns: [{
@@ -584,22 +604,43 @@
                 field: 'id',
                 title: 'ID',
                 visible: false
+            },
+            {
+                field: 'rank',
+                title: '排名',
+                sortable: false
+            },
+            {
+                field: 'saleManager',
+                title: '销售经理',
+                sortable: false
+            },
+            {
+                field: 'realReturnRate',
+                title: '实际应收账款回款率',
+                sortable: false
             }
         ]
     };
+
     var options5 = {
         id: "bootstrap-table-5",
-        url: prefix + "/list",
-        exportUrl: prefix + "/export",
+        url: prefix + "/listReturnSituation",
+        exportUrl: prefix + "/exportReturnSituation",
         modalName: "回款情况",
         showExport: false,
         columns: [{
             checkbox: false
         },
             {
-                field: 'id',
-                title: 'ID',
-                visible: false
+                field: 'returnType',
+                title: '回款类型',
+                sortable: false
+            },
+            {
+                field: 'returnAmt',
+                title: '回款金额',
+                sortable: true
             }
         ]
     };

@@ -63,7 +63,6 @@ public class YwContractController extends BaseController
 	@ResponseBody
 	public TableDataInfo list(YwContract ywContract)
 	{
-		startPage();
 
 		SysDept dept = sysDeptService.selectDeptById(ShiroUtils.getSysUser().getDeptId());
 		
@@ -96,7 +95,7 @@ public class YwContractController extends BaseController
 			}
 
 		}
-		
+		startPage();
         List<YwContract> list = ywContractService.selectYwContractList(ywContract);
 		return getDataTable(list);
 	}

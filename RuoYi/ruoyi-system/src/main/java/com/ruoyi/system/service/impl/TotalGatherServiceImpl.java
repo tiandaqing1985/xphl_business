@@ -53,7 +53,7 @@ public class TotalGatherServiceImpl implements TotalGatherService {
                 //计算时间进度
                 double timeSchedul = Double.valueOf(getTermDayNum(totalConsumGather.getTerm())) / getQuarterDayNum(totalConsumGather.getQuarter());
                 timeSchedul = timeSchedul * 100;
-                timeSchedule = BigDecimal.valueOf(timeSchedul).setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString();
+                timeSchedule = BigDecimal.valueOf(timeSchedul).setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString()+"%";
                 break;
             }
         }
@@ -205,7 +205,7 @@ public class TotalGatherServiceImpl implements TotalGatherService {
                 //计算时间进度
                 double timeSchedul = Double.valueOf(getTermDayNum(totalGrossGather.getTerm())) / getQuarterDayNum(totalGrossGather.getQuarter());
                 timeSchedul = timeSchedul * 100;
-                timeSchedule = BigDecimal.valueOf(timeSchedul).setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString();
+                timeSchedule = BigDecimal.valueOf(timeSchedul).setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString() + "%";
                 break;
             }
         }

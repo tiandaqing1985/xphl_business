@@ -2,6 +2,7 @@ package com.ruoyi.system.mapper;
 
 import com.ruoyi.system.domain.Gather;
 import com.ruoyi.system.domain.YwGrossMarginGather;
+import com.ruoyi.system.domain.YwTask;
 
 import java.util.List;
 
@@ -29,4 +30,25 @@ public interface GatherMapper {
      * @return 毛利汇总集合
      */
     public List<YwGrossMarginGather> selectGrossMarginGatherList(YwGrossMarginGather gather);
+
+    /**
+     * 查询任务表合计
+     * @param grossMarginGather
+     * @return
+     */
+    public List<YwGrossMarginGather> selectGatherTask(YwGrossMarginGather grossMarginGather);
+
+    /**
+     * 查询毛利表合计
+     * @param grossMarginGather
+     * @return
+     */
+    public YwGrossMarginGather selectGrossMarginGatherGroup(YwGrossMarginGather grossMarginGather);
+
+    /**
+     * 查询毛利表中没有对应任务的合计
+     * @param grossMarginGather
+     * @return
+     */
+    public List<YwGrossMarginGather> selectNoTaskGatherGross(YwGrossMarginGather grossMarginGather);
 }

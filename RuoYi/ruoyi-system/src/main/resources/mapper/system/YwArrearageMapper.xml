@@ -81,6 +81,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </select>
 
+    <select id="selectReturnSituation" parameterType="YwArrearage" resultType="ReturnSituation">
+        select return_type returnType,ifnull(sum(real_return_amt),0) returnAmt  from yw_arrearage
+        <where>
+            <if test="dueDateStart == null or dueDateStart == '' or dueDateEnd == null or dueDateEnd == ''">
+                and due_date between last_day(curdate()) and date_add(curdate(), interval - day(curdate()) + 1 day)
+            </if>
+            <if test="dueDateStart != null and dueDateStart != '' and dueDateEnd != null and dueDateEnd != ''">
+                and due_date between #{dueDateStart} and #{dueDateEnd}
+            </if>
+        </where>
+        group by return_type
+    </select>
+
     <resultMap id="SaleManagerArrearageGatherResult" type="SaleManagerArrearageGather">
         <result column="area" property="area"/>
         <result column="dept_name" property="deptName"/>
@@ -122,6 +135,21 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 </if>
             group by area,dept_name,sale_manager) tb2
         on tb1.area = tb2.area and tb1.dept_name = tb2.dept_name and tb1.sale_manager = tb2.sale_manager
+    </select>
+
+    <select id="selectRealReturnRateRank" parameterType="YwArrearage" resultType="ReturnRateRank">
+         select a.sale_manager saleManager,a.realReturnRate,@rownum := @rownum + 1 rank from
+        (select sale_manager,concat(round(ifnull(ifnull(sum(real_return_amt),0)/ifnull(sum(first_due_amt),0),0)*100,2),'%') realReturnRate from yw_arrearage
+            <where>
+                <if test="dueDateStart == null or dueDateStart == '' or dueDateEnd == null or dueDateEnd == ''">
+                    and due_date between date_sub(date_sub(date_format(now(),'%y-%m-%d'),interval extract(day from now())-1 day),interval 1 month) and date_sub(date_sub(date_format(now(),'%y-%m-%d'),interval extract(day from now()) day),interval 0 month)
+                </if>
+                <if test="dueDateStart != null and dueDateStart != '' and dueDateEnd != null and dueDateEnd != ''">
+                    and due_date between #{dueDateStart} and #{dueDateEnd}
+                </if>
+            </where>
+         group by sale_manager order by realReturnRate) a,
+        (SELECT @rownum := 0) b
     </select>
 
     <resultMap id="CustomerArrearageGatherResult" type="CustomerArrearageGather">

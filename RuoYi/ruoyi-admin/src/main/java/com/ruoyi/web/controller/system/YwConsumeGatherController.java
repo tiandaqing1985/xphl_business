@@ -87,7 +87,7 @@ public class YwConsumeGatherController extends BaseController {
      */
     @PostMapping("/exportTotalConsume")
     @ResponseBody
-    public AjaxResult exportTotalGrossMargin(YwTotalConsumGather ywTotalConsumGather) {
+    public AjaxResult exportTotalConsume(YwTotalConsumGather ywTotalConsumGather) {
         startPage();
         //默认查询当前季度的数据
         if (ywTotalConsumGather.getQuarter() == null || ywTotalConsumGather.getQuarter().equals("")) {
@@ -103,7 +103,7 @@ public class YwConsumeGatherController extends BaseController {
      */
     @PostMapping("/listTotalConsume")
     @ResponseBody
-    public TableDataInfo listTotalGrossMargin(YwTotalConsumGather ywTotalConsumGather) {
+    public TableDataInfo listTotalConsume(YwTotalConsumGather ywTotalConsumGather) {
         startPage();
         //默认查询当前季度的数据
         if (ywTotalConsumGather.getQuarter() == null || ywTotalConsumGather.getQuarter().equals("")) {
