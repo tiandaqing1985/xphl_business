@@ -419,6 +419,9 @@ public class GatherServiceImpl implements IGatherService {
             } else {
                 while (gatherLinkedList.size() > 0) {
                     gather = gatherLinkedList.removeLast();
+                    if(gather.getDeptName()==null&&gather.getSaleManager().equals("合计")){
+                        continue;
+                    }
                     singletonLinkedList.addFirst(gather);
                 }
             }

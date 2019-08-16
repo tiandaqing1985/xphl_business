@@ -95,6 +95,8 @@ public class YwTaskServiceImpl implements IYwTaskService {
     @Override
     public String importYwTask(List<YwTask> ywTasks, boolean updateSupport, String operName) {
 
+        List<YwTask> updateTasks = null;
+        YwTask updateTask = null;
         if (StringUtils.isNull(ywTasks) || ywTasks.size() == 0) {
             throw new BusinessException("导入用户数据不能为空！");
         }
@@ -104,6 +106,24 @@ public class YwTaskServiceImpl implements IYwTaskService {
         StringBuilder failureMsg = new StringBuilder();
         for (YwTask ywTask : ywTasks) {
             try {
+                if (updateSupport) {
+                    updateTask = new YwTask();
+                    updateTask.setQuarter(ywTask.getQuarter());
+                    updateTask.setType(ywTask.getType());
+                    updateTask.setArea(ywTask.getArea());
+                    updateTask.setDeptName(ywTask.getDeptName());
+                    updateTask.setMedia(ywTask.getMedia());
+                    updateTask.setSaleManager(ywTask.getSaleManager());
+                    updateTasks = ywTaskMapper.selectYwTaskList(updateTask);
+                    if (updateTasks.size() == 1) {
+                        updateTask = updateTasks.get(0);
+                        updateTask.setQuotas(ywTask.getQuotas());
+                        ywTaskMapper.updateYwTask(updateTask);
+                        successNum++;
+                        successMsg.append("<br/>" + successNum + "、销售经理 " + ywTask.getSaleManager() + " 更新成功");
+                        continue;
+                    }
+                }
                 ywTask.setCreateBy(operName);
                 ywTask.setCreateTime(DateUtils.getNowDate());
                 this.insertYwTask(ywTask);

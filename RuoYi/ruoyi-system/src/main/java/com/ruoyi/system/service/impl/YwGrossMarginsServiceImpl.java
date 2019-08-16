@@ -152,16 +152,17 @@ public class YwGrossMarginsServiceImpl implements IYwGrossMarginsService {
         }
         String[] terms = term.split("-");
         String[] dateStr = terms[0].split("\\.");
-        if (dateStr[1].equals("1")) {
+        int month = Integer.valueOf(dateStr[1]);
+        if (month >= 1 && month < 4) {
             //第一季度
             quarter = "Q1";
-        } else if (dateStr[1].equals("4")) {
+        } else if (month >= 4 && month < 7) {
             //第二季度
             quarter = "Q2";
-        } else if (dateStr[1].equals("7")) {
+        } else if (month >= 7 && month < 10) {
             //第三季度
             quarter = "Q3";
-        } else if (dateStr[1].equals("10")) {
+        } else if (month >= 10 && month <= 12) {
             //第四度
             quarter = "Q4";
         }
