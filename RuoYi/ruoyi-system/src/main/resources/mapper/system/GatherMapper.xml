@@ -214,7 +214,11 @@
             <if test="media != '全媒体'">
                 and gm.media = ta.media
             </if>
-        where ta.id is null group by gm.quarter,gm.sales_manager
+        where ta.id is null
+         <if test="quarter != null and quarter != ''">
+             and gm.quarter = #{quarter}
+         </if>
+         group by gm.quarter,gm.sales_manager
         <if test="media != '全媒体'">
             ,gm.media
         </if>

@@ -72,7 +72,7 @@
                                             <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset('formId2')"><i
                                                     class="fa fa-refresh"></i>&nbsp;重置</a>
                                             <a class="btn btn-primary btn-rounded btn-sm"
-                                               onclick="myExportExcel('2')"><i class="fa fa-download"></i> 导出</a>
+                                               onclick="myExportExcel(2)"><i class="fa fa-download"></i> 导出</a>
                                         </li>
                                     </ul>
                                 </div>
@@ -101,7 +101,7 @@
                                             <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset('formId3')"><i
                                                     class="fa fa-refresh"></i>&nbsp;重置</a>
                                             <a class="btn btn-primary btn-rounded btn-sm"
-                                               onclick="myExportExcel('3')"><i class="fa fa-download"></i> 导出</a>
+                                               onclick="myExportExcel(3)"><i class="fa fa-download"></i> 导出</a>
                                         </li>
                                     </ul>
                                 </div>
@@ -158,7 +158,7 @@
             $.table._option.exportUrl = prefix + "/exportTotalConsume";
             $.table._option.modalName = "华东华北消耗整体完成率";
         }
-        $.table.exportExcel('fromId' + id);
+        $.table.exportExcel('formId' + id);
     }
 
     var options1 = {

@@ -76,7 +76,6 @@ public class YwGrossMarginGatherController extends BaseController {
             gather.setQuarter(QuarterUtil.getQuarterByDate(DateUtils.getNowDate()));
         }
         List<YwGrossMarginGather> gathers = gatherService.selectGrossMarginGatherList(gather);
-//        List<Gather> gatherList = gatherService.exportList(gathers);
         GatherExcelUtil<YwGrossMarginGather> util = new GatherExcelUtil<YwGrossMarginGather>(YwGrossMarginGather.class);
         return util.exportGatherExcel(gathers, "个人毛利汇总");
     }

@@ -10,6 +10,7 @@ import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.reflect.ReflectUtils;
 import com.ruoyi.system.domain.Gather;
+import com.ruoyi.system.domain.YwGrossMarginGather;
 import com.ruoyi.system.domain.YwTotalConsumGather;
 import com.ruoyi.system.domain.YwTotalGrossGather;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
@@ -476,6 +477,15 @@ public class GatherExcelUtil<T> {
                 if (gather.getMedia() != null && (gather.getMedia().equals("合计"))) {
                     cs = csYellow;
                 } else if (gather.getDeptName() != null && (gather.getDeptName().equals("总计"))) {
+                    cs = csRed;
+                } else {
+                    cs = csNormal;
+                }
+            }else if(vo instanceof YwGrossMarginGather){
+                YwGrossMarginGather gather = (YwGrossMarginGather) vo;
+                if (gather.getSaleManager() != null && (gather.getSaleManager().equals("合计"))) {
+                    cs = csYellow;
+                } else if (gather.getSaleManager() != null && (gather.getSaleManager().equals("总计"))) {
                     cs = csRed;
                 } else {
                     cs = csNormal;

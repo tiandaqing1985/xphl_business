@@ -331,6 +331,7 @@ public class GatherServiceImpl implements IGatherService {
         //查询没有任务的毛利合计
         YwGrossMarginGather mediaCon = new YwGrossMarginGather();
         List<YwGrossMarginGather> noTaskGross = new ArrayList<>();
+        mediaCon.setQuarter(gather.getQuarter());
         if (isFullMedia) {
             mediaCon.setMedia("全媒体");
             noTaskGross = gatherMapper.selectNoTaskGatherGross(mediaCon);
@@ -412,20 +413,26 @@ public class GatherServiceImpl implements IGatherService {
         }
 
         LinkedList<YwGrossMarginGather> singletonLinkedList = new LinkedList<>();
+        Set<Map.Entry<String, LinkedList<YwGrossMarginGather>>> entries = gatherMap.entrySet();
+        String deptName = null;
+        LinkedList<YwGrossMarginGather> gatherLinkedList = null;
 
-        for (LinkedList<YwGrossMarginGather> gatherLinkedList : gatherMap.values()) {
+        for (Map.Entry<String, LinkedList<YwGrossMarginGather>> entry : gatherMap.entrySet()) {
+            deptName = entry.getKey();
+            gatherLinkedList = entry.getValue();
             if (gatherLinkedList.size() == 2) {
                 singletonLinkedList.addLast(gatherLinkedList.getFirst());
             } else {
                 while (gatherLinkedList.size() > 0) {
                     gather = gatherLinkedList.removeLast();
-                    if(gather.getDeptName()==null&&gather.getSaleManager().equals("合计")){
+                    if (deptName == null && gather.getSaleManager().equals("合计")) {
                         continue;
                     }
                     singletonLinkedList.addFirst(gather);
                 }
             }
         }
+
         if (total.getQuotas().compareTo(BigDecimal.ZERO) != 0) {
             total.setMlwcRate(total.getGrossMargin().divide(total.getQuotas(), 6, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100L)).setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString() + "%");
         } else {
