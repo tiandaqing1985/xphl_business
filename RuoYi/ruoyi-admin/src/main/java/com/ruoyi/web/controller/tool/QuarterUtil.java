@@ -105,4 +105,59 @@ public class QuarterUtil {
         return quarter;
     }
 
+    //获取当前月最后一天
+    public static String getNowMonthFirstDay() {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+
+        Calendar c = Calendar.getInstance();
+
+        c.add(Calendar.MONTH, 0);
+
+        c.set(Calendar.DAY_OF_MONTH, 1);//1:本月第一天
+
+        String day1 = format.format(c.getTime());
+        return day1;
+    }
+
+    //获取当前月最后一天
+    public static String getNowMonthFinallyDay() {
+        //获取当前月最后一天
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar ca = Calendar.getInstance();
+
+        ca.set(Calendar.DAY_OF_MONTH, ca.getActualMaximum(Calendar.DAY_OF_MONTH));
+
+        String day2 = format.format(ca.getTime());
+
+        return day2;
+    }
+
+    //获取上个月第一天
+    public static String getLastMonthFirstDay() {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+
+        Calendar calendar = Calendar.getInstance();
+
+        calendar.add(Calendar.MONTH, -1);
+
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+
+        return format.format(calendar.getTime());
+    }
+
+    //获取上个月最后一天
+    public static String getLastMonthFinallyDay() {
+        SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
+
+        Calendar calendar = Calendar.getInstance();
+
+        int month = calendar.get(Calendar.MONTH);
+
+        calendar.set(Calendar.MONTH, month - 1);
+
+        calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+
+        return sf.format(calendar.getTime());
+    }
+
 }

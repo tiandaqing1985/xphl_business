@@ -59,6 +59,12 @@ public class YwArrearageController extends BaseController {
     @ResponseBody
     public TableDataInfo list(YwArrearage ywArrearage) {
         startPage();
+        if(ywArrearage.getDueDateStart()==null||ywArrearage.getDueDateStart().equals("")){
+            ywArrearage.setDueDateStart(QuarterUtil.getNowMonthFirstDay());
+        }
+        if(ywArrearage.getDueDateEnd()==null||ywArrearage.getDueDateEnd().equals("")){
+            ywArrearage.setDueDateEnd(QuarterUtil.getNowMonthFinallyDay());
+        }
         List<YwArrearage> list = ywArrearageService.selectYwArrearageList(ywArrearage);
         return getDataTable(list);
     }
@@ -71,6 +77,12 @@ public class YwArrearageController extends BaseController {
     public TableDataInfo listGatherBySaleManager(YwArrearage ywArrearage) {
         List<SaleManagerArrearageGather> list = new ArrayList<>();
         SysUser loginUser = ShiroUtils.getSysUser();
+        if(ywArrearage.getDueDateStart()==null||ywArrearage.getDueDateStart().equals("")){
+            ywArrearage.setDueDateStart(QuarterUtil.getNowMonthFirstDay());
+        }
+        if(ywArrearage.getDueDateEnd()==null||ywArrearage.getDueDateEnd().equals("")){
+            ywArrearage.setDueDateEnd(QuarterUtil.getNowMonthFinallyDay());
+        }
         list = ywArrearageService.selectGatherSaleManager(ywArrearage, loginUser);
         return getDataTable(list);
     }
@@ -83,6 +95,12 @@ public class YwArrearageController extends BaseController {
     public AjaxResult exportGatherBySaleManager(YwArrearage ywArrearage) {
         List<SaleManagerArrearageGather> list = new ArrayList<>();
         SysUser loginUser = ShiroUtils.getSysUser();
+        if(ywArrearage.getDueDateStart()==null||ywArrearage.getDueDateStart().equals("")){
+            ywArrearage.setDueDateStart(QuarterUtil.getNowMonthFirstDay());
+        }
+        if(ywArrearage.getDueDateEnd()==null||ywArrearage.getDueDateEnd().equals("")){
+            ywArrearage.setDueDateEnd(QuarterUtil.getNowMonthFinallyDay());
+        }
         list = ywArrearageService.selectGatherSaleManager(ywArrearage, loginUser);
         ExcelUtil<SaleManagerArrearageGather> excelUtil = new ExcelUtil<SaleManagerArrearageGather>(SaleManagerArrearageGather.class);
         return excelUtil.exportExcel(list, "汇总表-按销售经理");
@@ -94,6 +112,12 @@ public class YwArrearageController extends BaseController {
     @PostMapping("/listGatherByCustomer")
     @ResponseBody
     public TableDataInfo listGatherByCustomer(YwArrearage ywArrearage) {
+        if(ywArrearage.getDueDateStart()==null||ywArrearage.getDueDateStart().equals("")){
+            ywArrearage.setDueDateStart(QuarterUtil.getNowMonthFirstDay());
+        }
+        if(ywArrearage.getDueDateEnd()==null||ywArrearage.getDueDateEnd().equals("")){
+            ywArrearage.setDueDateEnd(QuarterUtil.getNowMonthFinallyDay());
+        }
         List<CustomerArrearageGather> list = ywArrearageService.selectGatherCustomer(ywArrearage);
         return getDataTable(list);
     }
@@ -104,6 +128,12 @@ public class YwArrearageController extends BaseController {
     @PostMapping("/exportGatherByCustomer")
     @ResponseBody
     public AjaxResult exportGatherByCustomer(YwArrearage ywArrearage) {
+        if(ywArrearage.getDueDateStart()==null||ywArrearage.getDueDateStart().equals("")){
+            ywArrearage.setDueDateStart(QuarterUtil.getNowMonthFirstDay());
+        }
+        if(ywArrearage.getDueDateEnd()==null||ywArrearage.getDueDateEnd().equals("")){
+            ywArrearage.setDueDateEnd(QuarterUtil.getNowMonthFinallyDay());
+        }
         List<CustomerArrearageGather> list = ywArrearageService.selectGatherCustomer(ywArrearage);
         ExcelUtil<CustomerArrearageGather> excelUtil = new ExcelUtil<>(CustomerArrearageGather.class);
         return excelUtil.exportExcel(list, "汇总表-按客户");
@@ -116,6 +146,12 @@ public class YwArrearageController extends BaseController {
     @ResponseBody
     public TableDataInfo listRealReturnRateRank(YwArrearage ywArrearage) {
         startPage();
+        if(ywArrearage.getDueDateStart()==null||ywArrearage.getDueDateStart().equals("")){
+            ywArrearage.setDueDateStart(QuarterUtil.getLastMonthFirstDay());
+        }
+        if(ywArrearage.getDueDateEnd()==null||ywArrearage.getDueDateEnd().equals("")){
+            ywArrearage.setDueDateEnd(QuarterUtil.getLastMonthFinallyDay());
+        }
         List<ReturnRateRank> returnRateRanks = ywArrearageService.selectRealReturnRateRank(ywArrearage);
         return getDataTable(returnRateRanks);
     }
@@ -126,6 +162,12 @@ public class YwArrearageController extends BaseController {
     @PostMapping("/exportRealReturnRateRank")
     @ResponseBody
     public AjaxResult exportRealReturnRateRank(YwArrearage ywArrearage) {
+        if(ywArrearage.getDueDateStart()==null||ywArrearage.getDueDateStart().equals("")){
+            ywArrearage.setDueDateStart(QuarterUtil.getLastMonthFirstDay());
+        }
+        if(ywArrearage.getDueDateEnd()==null||ywArrearage.getDueDateEnd().equals("")){
+            ywArrearage.setDueDateEnd(QuarterUtil.getLastMonthFinallyDay());
+        }
         List<ReturnRateRank> returnRateRanks = ywArrearageService.selectRealReturnRateRank(ywArrearage);
         ExcelUtil<ReturnRateRank> excelUtil = new ExcelUtil<>(ReturnRateRank.class);
         return excelUtil.exportExcel(returnRateRanks, "实际应收账款回款率排名");
@@ -138,6 +180,12 @@ public class YwArrearageController extends BaseController {
     @ResponseBody
     public TableDataInfo listReturnSituation(YwArrearage ywArrearage) {
         startPage();
+        if(ywArrearage.getDueDateStart()==null||ywArrearage.getDueDateStart().equals("")){
+            ywArrearage.setDueDateStart(QuarterUtil.getNowMonthFirstDay());
+        }
+        if(ywArrearage.getDueDateEnd()==null||ywArrearage.getDueDateEnd().equals("")){
+            ywArrearage.setDueDateEnd(QuarterUtil.getNowMonthFinallyDay());
+        }
         List<ReturnSituation> returnRateRanks = ywArrearageService.selectReturnSituation(ywArrearage);
         return getDataTable(returnRateRanks);
     }
@@ -149,6 +197,12 @@ public class YwArrearageController extends BaseController {
     @ResponseBody
     public AjaxResult exportReturnSituation(YwArrearage ywArrearage) {
         startPage();
+        if(ywArrearage.getDueDateStart()==null||ywArrearage.getDueDateStart().equals("")){
+            ywArrearage.setDueDateStart(QuarterUtil.getNowMonthFirstDay());
+        }
+        if(ywArrearage.getDueDateEnd()==null||ywArrearage.getDueDateEnd().equals("")){
+            ywArrearage.setDueDateEnd(QuarterUtil.getNowMonthFinallyDay());
+        }
         List<ReturnSituation> returnRateRanks = ywArrearageService.selectReturnSituation(ywArrearage);
         ExcelUtil<ReturnSituation> excelUtil = new ExcelUtil<>(ReturnSituation.class);
         return excelUtil.exportExcel(returnRateRanks, "回款情况");

@@ -140,6 +140,8 @@ public class YwArrearage extends BaseEntity {
     private String dueDateStart;
     private String dueDateEnd;
 
+
+
     public String getDueDateStart() {
         return dueDateStart;
     }

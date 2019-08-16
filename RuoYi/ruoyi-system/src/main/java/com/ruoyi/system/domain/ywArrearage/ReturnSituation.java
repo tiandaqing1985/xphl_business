@@ -12,7 +12,7 @@ public class ReturnSituation {
     @Excel(name = "回款类型", type = Excel.Type.EXPORT)
     private String returnType;
 
-    @Excel(name = "回款金额", type = Excel.Type.IMPORT)
+    @Excel(name = "回款金额", type = Excel.Type.EXPORT)
     private BigDecimal returnAmt;
 
     public String getReturnType() {

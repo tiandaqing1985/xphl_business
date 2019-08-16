@@ -1,6 +1,8 @@
 package com.ruoyi.system.service.impl;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import com.ruoyi.common.exception.BusinessException;
@@ -106,10 +108,36 @@ public class YwArrearageServiceImpl implements IYwArrearageService {
         int failureNum = 0;
         StringBuilder successMsg = new StringBuilder();
         StringBuilder failureMsg = new StringBuilder();
+
+        SimpleDateFormat sdf1 = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.US);
+        SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
         //查询是否重复的条件VO
         YwArrearage selectVO = new YwArrearage();
         for (YwArrearage ywArrearage : ywArrearageList) {
             try {
+                //计算实时应收金额
+                if (ywArrearage.getNotReceiveAmt() == null) {
+                    ywArrearage.setNotReceiveAmt(BigDecimal.ZERO);
+                }
+                if (ywArrearage.getOverdueAmt() == null) {
+                    ywArrearage.setOverdueAmt(BigDecimal.ZERO);
+                }
+                ywArrearage.setDueAmt(ywArrearage.getNotReceiveAmt().add(ywArrearage.getOverdueAmt()));
+                //修改时间格式
+                if (ywArrearage.getDueDate() != null && !ywArrearage.getDueDate().equals("")) {
+                    try {
+                        sdf2.parse(ywArrearage.getDueDate());
+                    } catch (Exception e) {
+                        ywArrearage.setDueDate(sdf2.format(sdf1.parse(ywArrearage.getDueDate())));
+                    }
+                }
+                if (ywArrearage.getPlanReturnDate() != null && !ywArrearage.getPlanReturnDate().equals("")) {
+                    try {
+                        sdf2.parse(ywArrearage.getPlanReturnDate());
+                    } catch (Exception e) {
+                        ywArrearage.setPlanReturnDate(sdf2.format(sdf1.parse(ywArrearage.getPlanReturnDate())));
+                    }
+                }
                 //更新信息
                 if (updateSupport) {
                     selectVO.setFundNo(ywArrearage.getFundNo());
@@ -230,6 +258,7 @@ public class YwArrearageServiceImpl implements IYwArrearageService {
                 sum.setRealReturnRate(sum.getRealReturnAmt().divide(sum.getFirstDueAmt(), 6, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100L)).setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString() + "%");
             } else {
                 sum.setPlanReturnRate("0.00%");
+                sum.setRealReturnRate("0.00%");
             }
             linkedList.addFirst(arrearageGather);
         }
