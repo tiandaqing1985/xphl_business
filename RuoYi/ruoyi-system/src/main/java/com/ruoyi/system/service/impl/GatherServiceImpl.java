@@ -316,7 +316,7 @@ public class GatherServiceImpl implements IGatherService {
             } else {
                 mlptAmt = grossMarginGather.getGrossMargin().divide(BigDecimal.valueOf(getTermDayNum(grossMarginGather.getTerm())), 6, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(getQuarterDayNum(grossMarginGather.getQuarter())));
             }
-            grossMarginGather.setMlptAmt(mlptAmt);
+            grossMarginGather.setMlptAmt(mlptAmt.setScale(2, BigDecimal.ROUND_HALF_UP));
             //计算时间进度
             if (grossMarginGather.getTerm() != null && timeSch == null) {
                 double timeSchedule = Double.valueOf(getTermDayNum(grossMarginGather.getTerm())) / getQuarterDayNum(grossMarginGather.getQuarter());
@@ -347,7 +347,7 @@ public class GatherServiceImpl implements IGatherService {
             } else {
                 mlptAmt = grossMarginGather.getGrossMargin().divide(BigDecimal.valueOf(getTermDayNum(grossMarginGather.getTerm())), 6, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(getQuarterDayNum(grossMarginGather.getQuarter())));
             }
-            grossMarginGather.setMlptAmt(mlptAmt);
+            grossMarginGather.setMlptAmt(mlptAmt.setScale(2,BigDecimal.ROUND_HALF_UP));
             grossMarginGather.setTimeSchedule(timeSch);
             //消除科学计数法
             grossMarginGather.setGrossMargin(new BigDecimal(grossMarginGather.getGrossMargin().toPlainString()));
