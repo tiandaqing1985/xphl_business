@@ -13,6 +13,7 @@ import com.ruoyi.system.domain.SysUser;
 import com.ruoyi.system.domain.ywArrearage.*;
 import com.ruoyi.system.mapper.SysDeptMapper;
 import com.ruoyi.system.service.ISysDeptService;
+import com.ruoyi.web.controller.tool.GatherExcelUtil;
 import com.ruoyi.web.controller.tool.QuarterUtil;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -102,8 +103,8 @@ public class YwArrearageController extends BaseController {
             ywArrearage.setDueDateEnd(QuarterUtil.getNowMonthFinallyDay());
         }
         list = ywArrearageService.selectGatherSaleManager(ywArrearage, loginUser);
-        ExcelUtil<SaleManagerArrearageGather> excelUtil = new ExcelUtil<SaleManagerArrearageGather>(SaleManagerArrearageGather.class);
-        return excelUtil.exportExcel(list, "汇总表-按销售经理");
+        GatherExcelUtil<SaleManagerArrearageGather> excelUtil = new GatherExcelUtil<SaleManagerArrearageGather>(SaleManagerArrearageGather.class);
+        return excelUtil.exportGatherExcel(list, "汇总表-按销售经理");
     }
 
     /**
@@ -135,8 +136,8 @@ public class YwArrearageController extends BaseController {
             ywArrearage.setDueDateEnd(QuarterUtil.getNowMonthFinallyDay());
         }
         List<CustomerArrearageGather> list = ywArrearageService.selectGatherCustomer(ywArrearage);
-        ExcelUtil<CustomerArrearageGather> excelUtil = new ExcelUtil<>(CustomerArrearageGather.class);
-        return excelUtil.exportExcel(list, "汇总表-按客户");
+        GatherExcelUtil<CustomerArrearageGather> excelUtil = new GatherExcelUtil<>(CustomerArrearageGather.class);
+        return excelUtil.exportGatherExcel(list, "汇总表-按客户");
     }
 
     /**

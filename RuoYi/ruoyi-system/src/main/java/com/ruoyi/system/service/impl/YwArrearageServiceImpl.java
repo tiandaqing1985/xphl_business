@@ -237,28 +237,32 @@ public class YwArrearageServiceImpl implements IYwArrearageService {
             if (linkedList == null) {
                 linkedList = new LinkedList<>();
                 gatherMap.put(arrearageGather.getArea(), linkedList);
+                sum = null;
+            } else if (linkedList.size() == 1) {
                 sum = new SaleManagerArrearageGather();
                 linkedList.addLast(sum);
                 sum.setArea(arrearageGather.getArea() + "合计");
-                sum.setDueAmt(BigDecimal.ZERO);
-                sum.setFirstDueAmt(BigDecimal.ZERO);
-                sum.setOverdueAmt(BigDecimal.ZERO);
-                sum.setPlanReturnAmt(BigDecimal.ZERO);
-                sum.setRealReturnAmt(BigDecimal.ZERO);
+                sum.setDueAmt(linkedList.getFirst().getDueAmt());
+                sum.setFirstDueAmt(linkedList.getFirst().getFirstDueAmt());
+                sum.setOverdueAmt(linkedList.getFirst().getOverdueAmt());
+                sum.setPlanReturnAmt(linkedList.getFirst().getPlanReturnAmt());
+                sum.setRealReturnAmt(linkedList.getFirst().getRealReturnAmt());
             } else {
                 sum = linkedList.getLast();
             }
-            sum.setDueAmt(sum.getDueAmt().add(arrearageGather.getDueAmt()));
-            sum.setFirstDueAmt(sum.getFirstDueAmt().add(arrearageGather.getFirstDueAmt()));
-            sum.setOverdueAmt(sum.getOverdueAmt().add(arrearageGather.getOverdueAmt()));
-            sum.setPlanReturnAmt(sum.getPlanReturnAmt().add(arrearageGather.getPlanReturnAmt()));
-            sum.setRealReturnAmt(sum.getRealReturnAmt().add(arrearageGather.getRealReturnAmt()));
-            if (sum.getFirstDueAmt().compareTo(BigDecimal.ZERO) != 0) {
-                sum.setPlanReturnRate(sum.getPlanReturnAmt().divide(sum.getFirstDueAmt(), 6, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100L)).setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString() + "%");
-                sum.setRealReturnRate(sum.getRealReturnAmt().divide(sum.getFirstDueAmt(), 6, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100L)).setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString() + "%");
-            } else {
-                sum.setPlanReturnRate("0.00%");
-                sum.setRealReturnRate("0.00%");
+            if (sum != null) {
+                sum.setDueAmt(sum.getDueAmt().add(arrearageGather.getDueAmt()));
+                sum.setFirstDueAmt(sum.getFirstDueAmt().add(arrearageGather.getFirstDueAmt()));
+                sum.setOverdueAmt(sum.getOverdueAmt().add(arrearageGather.getOverdueAmt()));
+                sum.setPlanReturnAmt(sum.getPlanReturnAmt().add(arrearageGather.getPlanReturnAmt()));
+                sum.setRealReturnAmt(sum.getRealReturnAmt().add(arrearageGather.getRealReturnAmt()));
+                if (sum.getFirstDueAmt().compareTo(BigDecimal.ZERO) != 0) {
+                    sum.setPlanReturnRate(sum.getPlanReturnAmt().divide(sum.getFirstDueAmt(), 6, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100L)).setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString() + "%");
+                    sum.setRealReturnRate(sum.getRealReturnAmt().divide(sum.getFirstDueAmt(), 6, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100L)).setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString() + "%");
+                } else {
+                    sum.setPlanReturnRate("0.00%");
+                    sum.setRealReturnRate("0.00%");
+                }
             }
             linkedList.addFirst(arrearageGather);
         }
@@ -323,35 +327,39 @@ public class YwArrearageServiceImpl implements IYwArrearageService {
             if (linkedList == null) {
                 linkedList = new LinkedList<>();
                 gatherMap.put(arrearageGather.getArea(), linkedList);
+                sum = null;
+            } else if (linkedList.size() == 1) {
                 sum = new CustomerArrearageGather();
                 linkedList.addLast(sum);
                 sum.setArea(arrearageGather.getArea() + "合计");
-                sum.setDueAmt(BigDecimal.ZERO);
-                sum.setFirstDueAmt(BigDecimal.ZERO);
-                sum.setOverdueAmt(BigDecimal.ZERO);
-                sum.setPlanReturnAmt(BigDecimal.ZERO);
-                sum.setRealReturnAmt(BigDecimal.ZERO);
-                sum.setNotReceiveAmt(BigDecimal.ZERO);
-                sum.setPlanReturnAmtH(BigDecimal.ZERO);
-                sum.setPlanReturnAmtL(BigDecimal.ZERO);
-                sum.setPlanReturnAmtM(BigDecimal.ZERO);
+                sum.setDueAmt(linkedList.getFirst().getDueAmt());
+                sum.setFirstDueAmt(linkedList.getFirst().getFirstDueAmt());
+                sum.setOverdueAmt(linkedList.getFirst().getOverdueAmt());
+                sum.setPlanReturnAmt(linkedList.getFirst().getPlanReturnAmt());
+                sum.setRealReturnAmt(linkedList.getFirst().getRealReturnAmt());
+                sum.setNotReceiveAmt(linkedList.getFirst().getNotReceiveAmt());
+                sum.setPlanReturnAmtH(linkedList.getFirst().getPlanReturnAmtH());
+                sum.setPlanReturnAmtL(linkedList.getFirst().getPlanReturnAmtL());
+                sum.setPlanReturnAmtM(linkedList.getFirst().getPlanReturnAmtM());
             } else {
                 sum = linkedList.getLast();
             }
-            sum.setDueAmt(arrearageGather.getDueAmt().add(sum.getDueAmt()));
-            sum.setFirstDueAmt(arrearageGather.getFirstDueAmt().add(sum.getFirstDueAmt()));
-            sum.setOverdueAmt(arrearageGather.getOverdueAmt().add(sum.getOverdueAmt()));
-            sum.setPlanReturnAmt(arrearageGather.getPlanReturnAmt().add(sum.getPlanReturnAmt()));
-            sum.setRealReturnAmt(arrearageGather.getRealReturnAmt().add(sum.getRealReturnAmt()));
-            sum.setNotReceiveAmt(arrearageGather.getNotReceiveAmt().add(sum.getNotReceiveAmt()));
-            sum.setPlanReturnAmtH(arrearageGather.getPlanReturnAmtH().add(sum.getPlanReturnAmtH()));
-            sum.setPlanReturnAmtL(arrearageGather.getPlanReturnAmtL().add(sum.getPlanReturnAmtL()));
-            sum.setPlanReturnAmtM(arrearageGather.getPlanReturnAmtM().add(sum.getPlanReturnAmtM()));
-            if (sum.getFirstDueAmt().compareTo(BigDecimal.ZERO) != 0) {
-                sum.setPlanReturnRate(sum.getPlanReturnAmt().divide(sum.getFirstDueAmt(), 6, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100L)).setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString() + "%");
-                sum.setRealReturnRate(sum.getRealReturnAmt().divide(sum.getFirstDueAmt(), 6, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100L)).setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString() + "%");
-            } else {
-                sum.setPlanReturnRate("0.00%");
+            if (sum != null) {
+                sum.setDueAmt(arrearageGather.getDueAmt().add(sum.getDueAmt()));
+                sum.setFirstDueAmt(arrearageGather.getFirstDueAmt().add(sum.getFirstDueAmt()));
+                sum.setOverdueAmt(arrearageGather.getOverdueAmt().add(sum.getOverdueAmt()));
+                sum.setPlanReturnAmt(arrearageGather.getPlanReturnAmt().add(sum.getPlanReturnAmt()));
+                sum.setRealReturnAmt(arrearageGather.getRealReturnAmt().add(sum.getRealReturnAmt()));
+                sum.setNotReceiveAmt(arrearageGather.getNotReceiveAmt().add(sum.getNotReceiveAmt()));
+                sum.setPlanReturnAmtH(arrearageGather.getPlanReturnAmtH().add(sum.getPlanReturnAmtH()));
+                sum.setPlanReturnAmtL(arrearageGather.getPlanReturnAmtL().add(sum.getPlanReturnAmtL()));
+                sum.setPlanReturnAmtM(arrearageGather.getPlanReturnAmtM().add(sum.getPlanReturnAmtM()));
+                if (sum.getFirstDueAmt().compareTo(BigDecimal.ZERO) != 0) {
+                    sum.setPlanReturnRate(sum.getPlanReturnAmt().divide(sum.getFirstDueAmt(), 6, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100L)).setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString() + "%");
+                    sum.setRealReturnRate(sum.getRealReturnAmt().divide(sum.getFirstDueAmt(), 6, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100L)).setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString() + "%");
+                } else {
+                    sum.setPlanReturnRate("0.00%");
+                }
             }
             linkedList.addFirst(arrearageGather);
         }

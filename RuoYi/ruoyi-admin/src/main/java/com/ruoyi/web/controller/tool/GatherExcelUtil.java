@@ -13,6 +13,8 @@ import com.ruoyi.system.domain.Gather;
 import com.ruoyi.system.domain.YwGrossMarginGather;
 import com.ruoyi.system.domain.YwTotalConsumGather;
 import com.ruoyi.system.domain.YwTotalGrossGather;
+import com.ruoyi.system.domain.ywArrearage.CustomerArrearageGather;
+import com.ruoyi.system.domain.ywArrearage.SaleManagerArrearageGather;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.hssf.usermodel.HSSFFont;
@@ -449,7 +451,7 @@ public class GatherExcelUtil<T> {
         csRed.setAlignment(HorizontalAlignment.CENTER);
         csRed.setVerticalAlignment(VerticalAlignment.CENTER);
         csRed.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-        csRed.setFillForegroundColor(HSSFColorPredefined.RED.getIndex());
+        csRed.setFillForegroundColor(HSSFColorPredefined.LIGHT_GREEN.getIndex());
         for (int i = startNo; i < endNo; i++) {
             row = sheet.createRow(i + 1 - startNo);
             // 得到导出对象.
@@ -486,6 +488,24 @@ public class GatherExcelUtil<T> {
                 if (gather.getSaleManager() != null && (gather.getSaleManager().equals("合计"))) {
                     cs = csYellow;
                 } else if (gather.getSaleManager() != null && (gather.getSaleManager().equals("总计"))) {
+                    cs = csRed;
+                } else {
+                    cs = csNormal;
+                }
+            }else if(vo instanceof CustomerArrearageGather){
+                CustomerArrearageGather gather = (CustomerArrearageGather) vo;
+                if (gather.getArea() != null && (gather.getArea().endsWith("合计"))) {
+                    cs = csYellow;
+                } else if (gather.getArea() != null && (gather.getArea().equals("总计"))) {
+                    cs = csRed;
+                } else {
+                    cs = csNormal;
+                }
+            }else if(vo instanceof SaleManagerArrearageGather){
+                SaleManagerArrearageGather gather = (SaleManagerArrearageGather) vo;
+                if (gather.getArea() != null && (gather.getArea().endsWith("合计"))) {
+                    cs = csYellow;
+                } else if (gather.getArea() != null && (gather.getArea().equals("总计"))) {
                     cs = csRed;
                 } else {
                     cs = csNormal;

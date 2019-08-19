@@ -145,50 +145,52 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectGatherCustomer" parameterType="YwArrearage" resultMap="CustomerArrearageGatherResult">
 
-        select tb1.area,tb1.dept_name,tb1.sale_manager,tb1.signatory,tb1.advertiser,tb1.first_due_amt,tb1.due_amt,tb1.not_receive_amt,tb1.overdue_amt,ifnull(tb5.plan_return_amt,0) plan_return_amt,tb1.real_return_amt,concat(round(ifnull(tb5.plan_return_amt/first_due_amt,0)*100),'%') planReturnRate,concat(round(ifnull(tb1.real_return_amt/first_due_amt,0)*100),'%') realReturnRate,ifnull(tb2.plan_return_amtH,0) plan_return_amtH,ifnull(tb3.plan_return_amtM,0) plan_return_amtM,ifnull(tb4.plan_return_amtL,0) plan_return_amtL from
-            (select area,dept_name,sale_manager,signatory,advertiser,ifnull(sum(first_due_amt),0) first_due_amt,ifnull(sum(due_amt),0) due_amt,ifnull(sum(not_receive_amt),0) not_receive_amt,ifnull(sum(overdue_amt),0) overdue_amt,ifnull(sum(plan_return_amt),0) plan_return_amt,ifnull(sum(real_return_amt),0) real_return_amt from yw_arrearage
-             group by area,dept_name,sale_manager) tb1
+        select
+        tb1.area,tb1.dept_name,tb1.sale_manager,tb1.signatory,tb1.advertiser,tb1.first_due_amt,tb1.due_amt,tb1.not_receive_amt,tb1.overdue_amt,ifnull(tb5.plan_return_amt,0) plan_return_amt,tb1.real_return_amt,concat(round(ifnull(tb5.plan_return_amt/first_due_amt,0)*100),'%') planReturnRate,concat(round(ifnull(tb1.real_return_amt/first_due_amt,0)*100),'%') realReturnRate,ifnull(tb2.plan_return_amtH,0) plan_return_amtH,ifnull(tb3.plan_return_amtM,0) plan_return_amtM,ifnull(tb4.plan_return_amtL,0) plan_return_amtL
+        from
+        (select area,dept_name,sale_manager,signatory,advertiser,ifnull(sum(first_due_amt),0) first_due_amt,ifnull(sum(due_amt),0) due_amt,ifnull(sum(not_receive_amt),0) not_receive_amt,ifnull(sum(overdue_amt),0) overdue_amt,ifnull(sum(plan_return_amt),0) plan_return_amt,ifnull(sum(real_return_amt),0) real_return_amt from yw_arrearage
+        group by area,dept_name,sale_manager,signatory,advertiser) tb1
         left join
-            (select area,dept_name,sale_manager,ifnull(sum(plan_return_amt),0) plan_return_amtH from yw_arrearage where return_prob like '高%'
-             group by area,dept_name,sale_manager) tb2
-        on tb1.area = tb2.area and tb1.dept_name = tb2.dept_name and tb1.sale_manager = tb2.sale_manager
+        (select signatory,advertiser,area,dept_name,sale_manager,ifnull(sum(plan_return_amt),0) plan_return_amtH from yw_arrearage where return_prob like '高%'
+        group by area,dept_name,sale_manager,signatory,advertiser) tb2
+        on tb1.area = tb2.area and tb1.dept_name = tb2.dept_name and tb1.sale_manager = tb2.sale_manager and tb1.signatory = tb2.signatory and tb1.advertiser = tb2.advertiser
         left join
-            (select area,dept_name,sale_manager,ifnull(sum(plan_return_amt),0) plan_return_amtM from yw_arrearage where return_prob like '中%'
-             group by area,dept_name,sale_manager) tb3
-        on tb1.area = tb3.area and tb1.dept_name = tb3.dept_name and tb1.sale_manager = tb3.sale_manager
+        (select signatory,advertiser,area,dept_name,sale_manager,ifnull(sum(plan_return_amt),0) plan_return_amtM from yw_arrearage where return_prob like '中%'
+        group by area,dept_name,sale_manager,signatory,advertiser) tb3
+        on tb1.area = tb3.area and tb1.dept_name = tb3.dept_name and tb1.sale_manager = tb3.sale_manager and tb1.signatory = tb3.signatory and tb1.advertiser = tb3.advertiser
         left join
-            (select area,dept_name,sale_manager,ifnull(sum(plan_return_amt),0) plan_return_amtL from yw_arrearage where return_prob like '低%'
-             group by area,dept_name,sale_manager) tb4
-        on tb1.area = tb4.area and tb1.dept_name = tb4.dept_name and tb1.sale_manager = tb4.sale_manager
+        (select signatory,advertiser,area,dept_name,sale_manager,ifnull(sum(plan_return_amt),0) plan_return_amtL from yw_arrearage where return_prob like '低%'
+        group by area,dept_name,sale_manager,signatory,advertiser) tb4
+        on tb1.area = tb4.area and tb1.dept_name = tb4.dept_name and tb1.sale_manager = tb4.sale_manager and tb1.signatory = tb4.signatory and tb1.advertiser = tb4.advertiser
         left join
-            (select tb1.area,tb1.dept_name,tb1.sale_manager,ifnull(tb1.plan_return_amt,0)+ifnull(tb2.plan_return_amt,0) plan_return_amt from
-            (select area,dept_name,sale_manager,sum(plan_return_amt) plan_return_amt from yw_arrearage where overdue_day_num is not null and return_prob like '高%'
-                <if test="dueDateStart != null and dueDateStart != '' and dueDateEnd != null and dueDateEnd != ''">
-                    and due_date between #{dueDateStart} and #{dueDateEnd}
-                </if>
-            group by area,dept_name,sale_manager) tb1
-            left join
-            (select area,dept_name,sale_manager,sum(plan_return_amt) plan_return_amt from yw_arrearage where overdue_day_num is null and return_prob like '高%'
-                <if test="dueDateStart != null and dueDateStart != '' and dueDateEnd != null and dueDateEnd != ''">
-                    and due_date between #{dueDateStart} and #{dueDateEnd}
-                </if>
-             group by area,dept_name,sale_manager) tb2
-            on tb1.area = tb2.area and tb1.dept_name = tb2.dept_name and tb1.sale_manager = tb2.sale_manager
-            union
-            select tb2.area,tb2.dept_name,tb2.sale_manager,ifnull(tb1.plan_return_amt,0)+ifnull(tb2.plan_return_amt,0) plan_return_amt from
-            (select area,dept_name,sale_manager,sum(plan_return_amt) plan_return_amt from yw_arrearage where overdue_day_num is not null and return_prob like '高%'
-                <if test="dueDateStart != null and dueDateStart != '' and dueDateEnd != null and dueDateEnd != ''">
-                    and due_date between #{dueDateStart} and #{dueDateEnd}
-                </if>
-             group by area,dept_name,sale_manager) tb1
-            right join
-            (select area,dept_name,sale_manager,sum(plan_return_amt) plan_return_amt from yw_arrearage where overdue_day_num is null and return_prob like '高%'
-                <if test="dueDateStart != null and dueDateStart != '' and dueDateEnd != null and dueDateEnd != ''">
-                    and due_date between #{dueDateStart} and #{dueDateEnd}
-                </if>
-             group by area,dept_name,sale_manager) tb2
-            on tb1.area = tb2.area and tb1.dept_name = tb2.dept_name and tb1.sale_manager = tb2.sale_manager) tb5
-        on tb1.area = tb5.area and tb1.dept_name = tb5.dept_name and tb1.sale_manager = tb5.sale_manager
+        (select tb1.signatory,tb1.advertiser,tb1.area,tb1.dept_name,tb1.sale_manager,ifnull(tb1.plan_return_amt,0)+ifnull(tb2.plan_return_amt,0) plan_return_amt from
+        (select signatory,advertiser,area,dept_name,sale_manager,sum(plan_return_amt) plan_return_amt from yw_arrearage where overdue_day_num is not null and return_prob like '高%'
+        <if test="dueDateStart != null and dueDateStart != '' and dueDateEnd != null and dueDateEnd != ''">
+            and due_date between #{dueDateStart} and #{dueDateEnd}
+        </if>
+        group by area,dept_name,sale_manager,signatory,advertiser) tb1
+        left join
+        (select signatory,advertiser,area,dept_name,sale_manager,sum(plan_return_amt) plan_return_amt from yw_arrearage where overdue_day_num is null and return_prob like '高%'
+        <if test="dueDateStart != null and dueDateStart != '' and dueDateEnd != null and dueDateEnd != ''">
+            and due_date between #{dueDateStart} and #{dueDateEnd}
+        </if>
+        group by area,dept_name,sale_manager,signatory,advertiser) tb2
+        on tb1.area = tb2.area and tb1.dept_name = tb2.dept_name and tb1.sale_manager = tb2.sale_manager and tb1.signatory = tb2.signatory and tb1.advertiser = tb2.advertiser
+        union
+        select tb2.signatory,tb2.advertiser,tb2.area,tb2.dept_name,tb2.sale_manager,ifnull(tb1.plan_return_amt,0)+ifnull(tb2.plan_return_amt,0) plan_return_amt from
+        (select signatory,advertiser,area,dept_name,sale_manager,sum(plan_return_amt) plan_return_amt from yw_arrearage where overdue_day_num is not null and return_prob like '高%'
+        <if test="dueDateStart != null and dueDateStart != '' and dueDateEnd != null and dueDateEnd != ''">
+            and due_date between #{dueDateStart} and #{dueDateEnd}
+        </if>
+        group by area,dept_name,sale_manager,signatory,advertiser) tb1
+        right join
+        (select signatory,advertiser,area,dept_name,sale_manager,sum(plan_return_amt) plan_return_amt from yw_arrearage where overdue_day_num is null and return_prob like '高%'
+        <if test="dueDateStart != null and dueDateStart != '' and dueDateEnd != null and dueDateEnd != ''">
+            and due_date between #{dueDateStart} and #{dueDateEnd}
+        </if>
+        group by area,dept_name,sale_manager,signatory,advertiser) tb2
+        on tb1.area = tb2.area and tb1.dept_name = tb2.dept_name and tb1.sale_manager = tb2.sale_manager and tb1.signatory = tb2.signatory and tb1.advertiser = tb2.advertiser) tb5
+        on tb1.area = tb5.area and tb1.dept_name = tb5.dept_name and tb1.sale_manager = tb5.sale_manager and tb1.signatory = tb5.signatory and tb1.advertiser = tb5.advertiser
 
 
     </select>
