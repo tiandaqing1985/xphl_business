@@ -33,6 +33,12 @@ public class YwArrearageServiceImpl implements IYwArrearageService {
 
     private Logger log = LoggerFactory.getLogger(YwArrearageServiceImpl.class);
 
+    //显示时此数组中的部门值对应记录在下方一起显示
+    private static String[] below = new String[]{
+            "其他SEM", "精英", "悦维", "SEO", "任一鸣",
+            "其他SEM合计", "精英合计", "悦维合计", "SEO合计", "任一鸣合计"
+    };
+
     @Autowired
     private YwArrearageMapper ywArrearageMapper;
 
@@ -286,8 +292,46 @@ public class YwArrearageServiceImpl implements IYwArrearageService {
             total.setPlanReturnRate("0.00%");
         }
         singletonLinkedList.addLast(total);
+
+        singletonLinkedList = adjustSoftSaleManager(singletonLinkedList);
         return singletonLinkedList;
 
+    }
+
+    /**
+     * 其他SEM、精英、悦维、SEO、任一鸣顺序往下调，其他的都往上调
+     *
+     * @param list 要处理的数据
+     * @return
+     */
+    private LinkedList<SaleManagerArrearageGather> adjustSoftSaleManager(LinkedList<SaleManagerArrearageGather> list) {
+        LinkedList<SaleManagerArrearageGather> upLinkedList = new LinkedList<SaleManagerArrearageGather>();
+        LinkedList<SaleManagerArrearageGather> downLinkedList = new LinkedList<SaleManagerArrearageGather>();
+        SaleManagerArrearageGather gather = null;
+        SaleManagerArrearageGather totalGather = null;
+        boolean isDown = false;
+        //总计的记录
+        if (list.size() > 0) {
+            totalGather = list.removeLast();
+        }
+        while (list.size() > 0) {
+            gather = list.removeLast();
+            isDown = false;
+            for (String area : below) {
+                if (area.equals(gather.getArea())) {
+                    isDown = true;
+                    break;
+                }
+            }
+            if (isDown) {
+                downLinkedList.addFirst(gather);
+            } else {
+                upLinkedList.addFirst(gather);
+            }
+        }
+        upLinkedList.addAll(downLinkedList);
+        upLinkedList.addLast(totalGather);
+        return upLinkedList;
     }
 
     /**
@@ -384,7 +428,45 @@ public class YwArrearageServiceImpl implements IYwArrearageService {
             total.setRealReturnRate("0.00%");
         }
         singletonLinkedList.addLast(total);
+        singletonLinkedList = adjustSoftCustomer(singletonLinkedList);
         return singletonLinkedList;
+    }
+
+    /**
+     * 其他SEM、精英、悦维、SEO、任一鸣顺序往下调，其他的都往上调
+     *
+     * @param list 要处理的数据
+     * @return
+     */
+    private LinkedList<CustomerArrearageGather> adjustSoftCustomer(LinkedList<CustomerArrearageGather> list) {
+        LinkedList<CustomerArrearageGather> upLinkedList = new LinkedList<CustomerArrearageGather>();
+        LinkedList<CustomerArrearageGather> downLinkedList = new LinkedList<CustomerArrearageGather>();
+        CustomerArrearageGather gather = null;
+        CustomerArrearageGather totalGather = null;
+        String sumArea = null;
+        boolean isDown = false;
+        //总计的记录
+        if (list.size() > 0) {
+            totalGather = list.removeLast();
+        }
+        while (list.size() > 0) {
+            gather = list.removeLast();
+            isDown = false;
+            for (String area : below) {
+                if (area.equals(gather.getArea())) {
+                    isDown = true;
+                    break;
+                }
+            }
+            if (isDown) {
+                downLinkedList.addFirst(gather);
+            } else {
+                upLinkedList.addFirst(gather);
+            }
+        }
+        upLinkedList.addAll(downLinkedList);
+        upLinkedList.addLast(totalGather);
+        return upLinkedList;
     }
 
     /**
