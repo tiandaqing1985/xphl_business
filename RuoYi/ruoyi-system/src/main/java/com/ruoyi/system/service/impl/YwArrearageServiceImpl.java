@@ -221,16 +221,24 @@ public class YwArrearageServiceImpl implements IYwArrearageService {
 
         //根据地区计算合计和总计
         LinkedList<SaleManagerArrearageGather> linkedList = null;
-        SaleManagerArrearageGather sum = null;
+        Map<String, LinkedList<SaleManagerArrearageGather>> deptMap = null;
+        Map<String, SaleManagerArrearageGather> sumMap = new HashMap<>();
+        SaleManagerArrearageGather areaSum = null;
+        SaleManagerArrearageGather deptSum = null;
         SaleManagerArrearageGather total = new SaleManagerArrearageGather();
         SaleManagerArrearageGather gather = null;
-        total.setDueAmt(BigDecimal.ZERO);
+        //key是地区 value是同一个部门的记录map形式的集合。
+        Map<String, Map<String, LinkedList<SaleManagerArrearageGather>>> deptMaps = new HashMap<>();
+        //key是部门，value是同一个部门的记录LinkedList形式的集合。
+        Map<String, LinkedList<SaleManagerArrearageGather>> deptListsMap = new HashMap<>();
+        //key是区域名+字符串‘合计’ value是区域合计
         total.setArea("总计");
+        total.setDueAmt(BigDecimal.ZERO);
         total.setFirstDueAmt(BigDecimal.ZERO);
         total.setOverdueAmt(BigDecimal.ZERO);
         total.setPlanReturnAmt(BigDecimal.ZERO);
         total.setRealReturnAmt(BigDecimal.ZERO);
-        Map<String, LinkedList<SaleManagerArrearageGather>> gatherMap = new HashMap<>();
+
         for (SaleManagerArrearageGather arrearageGather : list) {
 
             total.setDueAmt(total.getDueAmt().add(arrearageGather.getDueAmt()));
@@ -239,46 +247,95 @@ public class YwArrearageServiceImpl implements IYwArrearageService {
             total.setPlanReturnAmt(total.getPlanReturnAmt().add(arrearageGather.getPlanReturnAmt()));
             total.setRealReturnAmt(total.getRealReturnAmt().add(arrearageGather.getRealReturnAmt()));
 
-            linkedList = gatherMap.get(arrearageGather.getArea());
-            if (linkedList == null) {
+            deptMap = deptMaps.get(arrearageGather.getArea());
+
+            if (deptMap == null) {
+                deptMap = new HashMap<>();
+                deptMaps.put(arrearageGather.getArea(), deptMap);
                 linkedList = new LinkedList<>();
-                gatherMap.put(arrearageGather.getArea(), linkedList);
-                sum = null;
-            } else if (linkedList.size() == 1) {
-                sum = new SaleManagerArrearageGather();
-                linkedList.addLast(sum);
-                sum.setArea(arrearageGather.getArea() + "合计");
-                sum.setDueAmt(linkedList.getFirst().getDueAmt());
-                sum.setFirstDueAmt(linkedList.getFirst().getFirstDueAmt());
-                sum.setOverdueAmt(linkedList.getFirst().getOverdueAmt());
-                sum.setPlanReturnAmt(linkedList.getFirst().getPlanReturnAmt());
-                sum.setRealReturnAmt(linkedList.getFirst().getRealReturnAmt());
+                deptMap.put(arrearageGather.getDeptName(), linkedList);
+                areaSum = null;
+                deptSum = null;
             } else {
-                sum = linkedList.getLast();
-            }
-            if (sum != null) {
-                sum.setDueAmt(sum.getDueAmt().add(arrearageGather.getDueAmt()));
-                sum.setFirstDueAmt(sum.getFirstDueAmt().add(arrearageGather.getFirstDueAmt()));
-                sum.setOverdueAmt(sum.getOverdueAmt().add(arrearageGather.getOverdueAmt()));
-                sum.setPlanReturnAmt(sum.getPlanReturnAmt().add(arrearageGather.getPlanReturnAmt()));
-                sum.setRealReturnAmt(sum.getRealReturnAmt().add(arrearageGather.getRealReturnAmt()));
-                if (sum.getFirstDueAmt().compareTo(BigDecimal.ZERO) != 0) {
-                    sum.setPlanReturnRate(sum.getPlanReturnAmt().divide(sum.getFirstDueAmt(), 6, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100L)).setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString() + "%");
-                    sum.setRealReturnRate(sum.getRealReturnAmt().divide(sum.getFirstDueAmt(), 6, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100L)).setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString() + "%");
+
+                linkedList = deptMap.get(arrearageGather.getDeptName());
+
+                if (linkedList == null) {
+                    linkedList = new LinkedList<>();
+                    deptMap.put(arrearageGather.getDeptName(), linkedList);
+                    deptSum = null;
+                } else if (linkedList.size() == 1) {
+                    deptSum = new SaleManagerArrearageGather();
+                    gather = linkedList.getFirst();
+                    deptSum.setArea(gather.getArea());
+                    deptSum.setDeptName(gather.getDeptName() + "合计");
+                    deptSum.setDueAmt(gather.getDueAmt());
+                    deptSum.setFirstDueAmt(gather.getFirstDueAmt());
+                    deptSum.setOverdueAmt(gather.getOverdueAmt());
+                    deptSum.setPlanReturnAmt(gather.getPlanReturnAmt());
+                    deptSum.setRealReturnAmt(gather.getRealReturnAmt());
+                    linkedList.addLast(deptSum);
+                    if ((areaSum = sumMap.get(arrearageGather.getArea() + "合计")) == null) {
+                        areaSum = new SaleManagerArrearageGather();
+                        areaSum.setArea(gather.getArea() + "合计");
+                        areaSum.setDueAmt(gather.getDueAmt());
+                        areaSum.setFirstDueAmt(gather.getFirstDueAmt());
+                        areaSum.setOverdueAmt(gather.getOverdueAmt());
+                        areaSum.setPlanReturnAmt(gather.getPlanReturnAmt());
+                        areaSum.setRealReturnAmt(gather.getRealReturnAmt());
+                        sumMap.put(arrearageGather.getArea() + "合计", areaSum);
+                    }
                 } else {
-                    sum.setPlanReturnRate("0.00%");
-                    sum.setRealReturnRate("0.00%");
+                    deptSum = linkedList.getLast();
+                    areaSum = sumMap.get(arrearageGather.getArea() + "合计");
                 }
             }
             linkedList.addFirst(arrearageGather);
+            //计算部门合计
+            if (deptSum != null) {
+
+                deptSum.setDueAmt(deptSum.getDueAmt().add(arrearageGather.getDueAmt()));
+                deptSum.setFirstDueAmt(deptSum.getFirstDueAmt().add(arrearageGather.getFirstDueAmt()));
+                deptSum.setOverdueAmt(deptSum.getOverdueAmt().add(arrearageGather.getOverdueAmt()));
+                deptSum.setPlanReturnAmt(deptSum.getPlanReturnAmt().add(arrearageGather.getPlanReturnAmt()));
+                deptSum.setRealReturnAmt(deptSum.getRealReturnAmt().add(arrearageGather.getRealReturnAmt()));
+                if (deptSum.getFirstDueAmt().compareTo(BigDecimal.ZERO) != 0) {
+                    deptSum.setPlanReturnRate(deptSum.getPlanReturnAmt().divide(deptSum.getFirstDueAmt(), 6, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100L)).setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString() + "%");
+                    deptSum.setRealReturnRate(deptSum.getRealReturnAmt().divide(deptSum.getFirstDueAmt(), 6, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100L)).setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString() + "%");
+                } else {
+                    total.setPlanReturnRate("0.00%");
+                    total.setRealReturnRate("0.00%");
+                }
+            }
+            //计算区域合计
+            if (areaSum != null) {
+
+                areaSum.setDueAmt(areaSum.getDueAmt().add(arrearageGather.getDueAmt()));
+                areaSum.setFirstDueAmt(areaSum.getFirstDueAmt().add(arrearageGather.getFirstDueAmt()));
+                areaSum.setOverdueAmt(areaSum.getOverdueAmt().add(arrearageGather.getOverdueAmt()));
+                areaSum.setPlanReturnAmt(areaSum.getPlanReturnAmt().add(arrearageGather.getPlanReturnAmt()));
+                areaSum.setRealReturnAmt(areaSum.getRealReturnAmt().add(arrearageGather.getRealReturnAmt()));
+                if (areaSum.getFirstDueAmt().compareTo(BigDecimal.ZERO) != 0) {
+                    areaSum.setPlanReturnRate(areaSum.getPlanReturnAmt().divide(areaSum.getFirstDueAmt(), 6, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100L)).setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString() + "%");
+                    areaSum.setRealReturnRate(areaSum.getRealReturnAmt().divide(areaSum.getFirstDueAmt(), 6, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100L)).setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString() + "%");
+                } else {
+                    total.setPlanReturnRate("0.00%");
+                    total.setRealReturnRate("0.00%");
+                }
+            }
         }
-
         LinkedList<SaleManagerArrearageGather> singletonLinkedList = new LinkedList<>();
-
-        for (LinkedList<SaleManagerArrearageGather> gatherLinkedList : gatherMap.values()) {
-            if (gatherLinkedList.size() == 1) {
-                singletonLinkedList.addLast(gatherLinkedList.getFirst());
-            } else {
+        String area = null;
+        String dept = null;
+        //将所求结果组合成linkedList
+        for (Map.Entry<String, Map<String, LinkedList<SaleManagerArrearageGather>>> deptEntry : deptMaps.entrySet()) {
+            area = deptEntry.getKey();
+            deptMap = deptEntry.getValue();
+            areaSum = sumMap.get(area + "合计");
+            if (areaSum != null) {
+                singletonLinkedList.addFirst(areaSum);
+            }
+            for (LinkedList<SaleManagerArrearageGather> gatherLinkedList : deptMap.values()) {
                 while (gatherLinkedList.size() > 0) {
                     gather = gatherLinkedList.removeLast();
                     singletonLinkedList.addFirst(gather);
@@ -290,6 +347,7 @@ public class YwArrearageServiceImpl implements IYwArrearageService {
             total.setRealReturnRate(total.getRealReturnAmt().divide(total.getFirstDueAmt(), 6, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100L)).setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString() + "%");
         } else {
             total.setPlanReturnRate("0.00%");
+            total.setRealReturnRate("0.00%");
         }
         singletonLinkedList.addLast(total);
 
@@ -344,10 +402,17 @@ public class YwArrearageServiceImpl implements IYwArrearageService {
         List<CustomerArrearageGather> list = ywArrearageMapper.selectGatherCustomer(ywArrearage);
         //根据地区计算合计和总计
         LinkedList<CustomerArrearageGather> linkedList = null;
-        CustomerArrearageGather sum = null;
+        Map<String, LinkedList<CustomerArrearageGather>> deptMap = null;
+        Map<String, CustomerArrearageGather> sumMap = new HashMap<>();
+        CustomerArrearageGather areaSum = null;
+        CustomerArrearageGather deptSum = null;
         CustomerArrearageGather total = new CustomerArrearageGather();
         CustomerArrearageGather gather = null;
-        total.setDueAmt(BigDecimal.ZERO);
+        //key是地区 value是同一个部门的记录map形式的集合。
+        Map<String, Map<String, LinkedList<CustomerArrearageGather>>> deptMaps = new HashMap<>();
+        //key是部门，value是同一个部门的记录LinkedList形式的集合。
+        Map<String, LinkedList<CustomerArrearageGather>> deptListsMap = new HashMap<>();
+        //key是区域名+字符串‘合计’ value是区域合计
         total.setArea("总计");
         total.setDueAmt(BigDecimal.ZERO);
         total.setFirstDueAmt(BigDecimal.ZERO);
@@ -358,7 +423,6 @@ public class YwArrearageServiceImpl implements IYwArrearageService {
         total.setPlanReturnAmtH(BigDecimal.ZERO);
         total.setPlanReturnAmtL(BigDecimal.ZERO);
         total.setPlanReturnAmtM(BigDecimal.ZERO);
-        Map<String, LinkedList<CustomerArrearageGather>> gatherMap = new HashMap<>();
         for (CustomerArrearageGather arrearageGather : list) {
 
             total.setDueAmt(total.getDueAmt().add(arrearageGather.getDueAmt()));
@@ -366,54 +430,115 @@ public class YwArrearageServiceImpl implements IYwArrearageService {
             total.setOverdueAmt(total.getOverdueAmt().add(arrearageGather.getOverdueAmt()));
             total.setPlanReturnAmt(total.getPlanReturnAmt().add(arrearageGather.getPlanReturnAmt()));
             total.setRealReturnAmt(total.getRealReturnAmt().add(arrearageGather.getRealReturnAmt()));
+            total.setNotReceiveAmt(total.getNotReceiveAmt().add(arrearageGather.getNotReceiveAmt()));
+            total.setPlanReturnAmtH(arrearageGather.getPlanReturnAmtH().add(total.getPlanReturnAmtH()));
+            total.setPlanReturnAmtL(arrearageGather.getPlanReturnAmtL().add(total.getPlanReturnAmtL()));
+            total.setPlanReturnAmtM(arrearageGather.getPlanReturnAmtM().add(total.getPlanReturnAmtM()));
+            deptMap = deptMaps.get(arrearageGather.getArea());
 
-            linkedList = gatherMap.get(arrearageGather.getArea());
-            if (linkedList == null) {
+            if (deptMap == null) {
+                deptMap = new HashMap<>();
+                deptMaps.put(arrearageGather.getArea(), deptMap);
                 linkedList = new LinkedList<>();
-                gatherMap.put(arrearageGather.getArea(), linkedList);
-                sum = null;
-            } else if (linkedList.size() == 1) {
-                sum = new CustomerArrearageGather();
-                linkedList.addLast(sum);
-                sum.setArea(arrearageGather.getArea() + "合计");
-                sum.setDueAmt(linkedList.getFirst().getDueAmt());
-                sum.setFirstDueAmt(linkedList.getFirst().getFirstDueAmt());
-                sum.setOverdueAmt(linkedList.getFirst().getOverdueAmt());
-                sum.setPlanReturnAmt(linkedList.getFirst().getPlanReturnAmt());
-                sum.setRealReturnAmt(linkedList.getFirst().getRealReturnAmt());
-                sum.setNotReceiveAmt(linkedList.getFirst().getNotReceiveAmt());
-                sum.setPlanReturnAmtH(linkedList.getFirst().getPlanReturnAmtH());
-                sum.setPlanReturnAmtL(linkedList.getFirst().getPlanReturnAmtL());
-                sum.setPlanReturnAmtM(linkedList.getFirst().getPlanReturnAmtM());
+                deptMap.put(arrearageGather.getDeptName(), linkedList);
+                areaSum = null;
+                deptSum = null;
             } else {
-                sum = linkedList.getLast();
-            }
-            if (sum != null) {
-                sum.setDueAmt(arrearageGather.getDueAmt().add(sum.getDueAmt()));
-                sum.setFirstDueAmt(arrearageGather.getFirstDueAmt().add(sum.getFirstDueAmt()));
-                sum.setOverdueAmt(arrearageGather.getOverdueAmt().add(sum.getOverdueAmt()));
-                sum.setPlanReturnAmt(arrearageGather.getPlanReturnAmt().add(sum.getPlanReturnAmt()));
-                sum.setRealReturnAmt(arrearageGather.getRealReturnAmt().add(sum.getRealReturnAmt()));
-                sum.setNotReceiveAmt(arrearageGather.getNotReceiveAmt().add(sum.getNotReceiveAmt()));
-                sum.setPlanReturnAmtH(arrearageGather.getPlanReturnAmtH().add(sum.getPlanReturnAmtH()));
-                sum.setPlanReturnAmtL(arrearageGather.getPlanReturnAmtL().add(sum.getPlanReturnAmtL()));
-                sum.setPlanReturnAmtM(arrearageGather.getPlanReturnAmtM().add(sum.getPlanReturnAmtM()));
-                if (sum.getFirstDueAmt().compareTo(BigDecimal.ZERO) != 0) {
-                    sum.setPlanReturnRate(sum.getPlanReturnAmt().divide(sum.getFirstDueAmt(), 6, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100L)).setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString() + "%");
-                    sum.setRealReturnRate(sum.getRealReturnAmt().divide(sum.getFirstDueAmt(), 6, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100L)).setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString() + "%");
+
+                linkedList = deptMap.get(arrearageGather.getDeptName());
+
+                if (linkedList == null) {
+                    linkedList = new LinkedList<>();
+                    deptMap.put(arrearageGather.getDeptName(), linkedList);
+                    deptSum = null;
+                } else if (linkedList.size() == 1) {
+                    deptSum = new CustomerArrearageGather();
+                    gather = linkedList.getFirst();
+                    deptSum.setArea(gather.getArea());
+                    deptSum.setDeptName(gather.getDeptName() + "合计");
+                    deptSum.setDueAmt(gather.getDueAmt());
+                    deptSum.setFirstDueAmt(gather.getFirstDueAmt());
+                    deptSum.setOverdueAmt(gather.getOverdueAmt());
+                    deptSum.setPlanReturnAmt(gather.getPlanReturnAmt());
+                    deptSum.setRealReturnAmt(gather.getRealReturnAmt());
+                    deptSum.setNotReceiveAmt(gather.getNotReceiveAmt());
+                    deptSum.setPlanReturnAmtH(gather.getPlanReturnAmtH());
+                    deptSum.setPlanReturnAmtL(gather.getPlanReturnAmtL());
+                    deptSum.setPlanReturnAmtM(gather.getPlanReturnAmtM());
+                    linkedList.addLast(deptSum);
+                    if ((areaSum = sumMap.get(arrearageGather.getArea() + "合计")) == null) {
+                        areaSum = new CustomerArrearageGather();
+                        areaSum.setArea(gather.getArea() + "合计");
+                        areaSum.setDueAmt(gather.getDueAmt());
+                        areaSum.setFirstDueAmt(gather.getFirstDueAmt());
+                        areaSum.setOverdueAmt(gather.getOverdueAmt());
+                        areaSum.setPlanReturnAmt(gather.getPlanReturnAmt());
+                        areaSum.setRealReturnAmt(gather.getRealReturnAmt());
+                        areaSum.setNotReceiveAmt(gather.getNotReceiveAmt());
+                        areaSum.setPlanReturnAmtH(gather.getPlanReturnAmtH());
+                        areaSum.setPlanReturnAmtL(gather.getPlanReturnAmtL());
+                        areaSum.setPlanReturnAmtM(gather.getPlanReturnAmtM());
+                        sumMap.put(arrearageGather.getArea() + "合计", areaSum);
+                    }
                 } else {
-                    sum.setPlanReturnRate("0.00%");
+                    deptSum = linkedList.getLast();
+                    areaSum = sumMap.get(arrearageGather.getArea() + "合计");
                 }
             }
             linkedList.addFirst(arrearageGather);
+            //计算部门合计
+            if (deptSum != null) {
+
+                deptSum.setDueAmt(deptSum.getDueAmt().add(arrearageGather.getDueAmt()));
+                deptSum.setFirstDueAmt(deptSum.getFirstDueAmt().add(arrearageGather.getFirstDueAmt()));
+                deptSum.setOverdueAmt(deptSum.getOverdueAmt().add(arrearageGather.getOverdueAmt()));
+                deptSum.setPlanReturnAmt(deptSum.getPlanReturnAmt().add(arrearageGather.getPlanReturnAmt()));
+                deptSum.setRealReturnAmt(deptSum.getRealReturnAmt().add(arrearageGather.getRealReturnAmt()));
+                deptSum.setNotReceiveAmt(deptSum.getNotReceiveAmt().add(arrearageGather.getNotReceiveAmt()));
+                deptSum.setPlanReturnAmtH(arrearageGather.getPlanReturnAmtH().add(deptSum.getPlanReturnAmtH()));
+                deptSum.setPlanReturnAmtL(arrearageGather.getPlanReturnAmtL().add(deptSum.getPlanReturnAmtL()));
+                deptSum.setPlanReturnAmtM(arrearageGather.getPlanReturnAmtM().add(deptSum.getPlanReturnAmtM()));
+                if (deptSum.getFirstDueAmt().compareTo(BigDecimal.ZERO) != 0) {
+                    deptSum.setPlanReturnRate(deptSum.getPlanReturnAmt().divide(deptSum.getFirstDueAmt(), 6, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100L)).setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString() + "%");
+                    deptSum.setRealReturnRate(deptSum.getRealReturnAmt().divide(deptSum.getFirstDueAmt(), 6, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100L)).setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString() + "%");
+                } else {
+                    total.setPlanReturnRate("0.00%");
+                    total.setRealReturnRate("0.00%");
+                }
+            }
+            //计算区域合计
+            if (areaSum != null) {
+
+                areaSum.setDueAmt(areaSum.getDueAmt().add(arrearageGather.getDueAmt()));
+                areaSum.setFirstDueAmt(areaSum.getFirstDueAmt().add(arrearageGather.getFirstDueAmt()));
+                areaSum.setOverdueAmt(areaSum.getOverdueAmt().add(arrearageGather.getOverdueAmt()));
+                areaSum.setPlanReturnAmt(areaSum.getPlanReturnAmt().add(arrearageGather.getPlanReturnAmt()));
+                areaSum.setRealReturnAmt(areaSum.getRealReturnAmt().add(arrearageGather.getRealReturnAmt()));
+                areaSum.setNotReceiveAmt(areaSum.getNotReceiveAmt().add(arrearageGather.getNotReceiveAmt()));
+                areaSum.setPlanReturnAmtH(arrearageGather.getPlanReturnAmtH().add(areaSum.getPlanReturnAmtH()));
+                areaSum.setPlanReturnAmtL(arrearageGather.getPlanReturnAmtL().add(areaSum.getPlanReturnAmtL()));
+                areaSum.setPlanReturnAmtM(arrearageGather.getPlanReturnAmtM().add(areaSum.getPlanReturnAmtM()));
+                if (areaSum.getFirstDueAmt().compareTo(BigDecimal.ZERO) != 0) {
+                    areaSum.setPlanReturnRate(areaSum.getPlanReturnAmt().divide(areaSum.getFirstDueAmt(), 6, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100L)).setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString() + "%");
+                    areaSum.setRealReturnRate(areaSum.getRealReturnAmt().divide(areaSum.getFirstDueAmt(), 6, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100L)).setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString() + "%");
+                } else {
+                    total.setPlanReturnRate("0.00%");
+                    total.setRealReturnRate("0.00%");
+                }
+            }
         }
-
         LinkedList<CustomerArrearageGather> singletonLinkedList = new LinkedList<>();
-
-        for (LinkedList<CustomerArrearageGather> gatherLinkedList : gatherMap.values()) {
-            if (gatherLinkedList.size() == 1) {
-                singletonLinkedList.addLast(gatherLinkedList.getFirst());
-            } else {
+        String area = null;
+        String dept = null;
+        //将所求结果组合成linkedList
+        for (Map.Entry<String, Map<String, LinkedList<CustomerArrearageGather>>> deptEntry : deptMaps.entrySet()) {
+            area = deptEntry.getKey();
+            deptMap = deptEntry.getValue();
+            areaSum = sumMap.get(area + "合计");
+            if (areaSum != null) {
+                singletonLinkedList.addFirst(areaSum);
+            }
+            for (LinkedList<CustomerArrearageGather> gatherLinkedList : deptMap.values()) {
                 while (gatherLinkedList.size() > 0) {
                     gather = gatherLinkedList.removeLast();
                     singletonLinkedList.addFirst(gather);

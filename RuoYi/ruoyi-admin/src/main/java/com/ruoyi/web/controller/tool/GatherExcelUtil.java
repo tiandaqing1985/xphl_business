@@ -450,13 +450,20 @@ public class GatherExcelUtil<T> {
         csYellow.setFillPattern(FillPatternType.SOLID_FOREGROUND);
         csYellow.setFillForegroundColor(HSSFColorPredefined.LIGHT_YELLOW.getIndex());
         csYellow.setDataFormat(dataFormat.getFormat("#,#0.00"));
-        //红色背景色
-        CellStyle csRed = wb.createCellStyle();
-        csRed.setAlignment(HorizontalAlignment.CENTER);
-        csRed.setVerticalAlignment(VerticalAlignment.CENTER);
-        csRed.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-        csRed.setFillForegroundColor(HSSFColorPredefined.LIGHT_GREEN.getIndex());
-        csRed.setDataFormat(dataFormat.getFormat("#,#0.00"));
+        //绿色背景色
+        CellStyle csGreen = wb.createCellStyle();
+        csGreen.setAlignment(HorizontalAlignment.CENTER);
+        csGreen.setVerticalAlignment(VerticalAlignment.CENTER);
+        csGreen.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        csGreen.setFillForegroundColor(HSSFColorPredefined.LIGHT_GREEN.getIndex());
+        csGreen.setDataFormat(dataFormat.getFormat("#,#0.00"));
+        //金色背景色
+        CellStyle csGlod = wb.createCellStyle();
+        csGlod.setAlignment(HorizontalAlignment.CENTER);
+        csGlod.setVerticalAlignment(VerticalAlignment.CENTER);
+        csGlod.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        csGlod.setFillForegroundColor(HSSFColorPredefined.GOLD.getIndex());
+        csGlod.setDataFormat(dataFormat.getFormat("#,#0.00"));
         for (int i = startNo; i < endNo; i++) {
             row = sheet.createRow(i + 1 - startNo);
             // 得到导出对象.
@@ -466,7 +473,7 @@ public class GatherExcelUtil<T> {
                 if (gather.getDeptName() != null && (gather.getDeptName().equals("合计"))) {
                     cs = csYellow;
                 } else if (gather.getDeptName() != null && (gather.getDeptName().equals("总计"))) {
-                    cs = csRed;
+                    cs = csGreen;
                 } else {
                     cs = csNormal;
                 }
@@ -475,7 +482,7 @@ public class GatherExcelUtil<T> {
                 if (gather.getMedia() != null && (gather.getMedia().equals("合计"))) {
                     cs = csYellow;
                 } else if (gather.getDeptName() != null && (gather.getDeptName().equals("总计"))) {
-                    cs = csRed;
+                    cs = csGreen;
                 } else {
                     cs = csNormal;
                 }
@@ -484,7 +491,7 @@ public class GatherExcelUtil<T> {
                 if (gather.getMedia() != null && (gather.getMedia().equals("合计"))) {
                     cs = csYellow;
                 } else if (gather.getDeptName() != null && (gather.getDeptName().equals("总计"))) {
-                    cs = csRed;
+                    cs = csGreen;
                 } else {
                     cs = csNormal;
                 }
@@ -493,25 +500,29 @@ public class GatherExcelUtil<T> {
                 if (gather.getSaleManager() != null && (gather.getSaleManager().equals("合计"))) {
                     cs = csYellow;
                 } else if (gather.getSaleManager() != null && (gather.getSaleManager().equals("总计"))) {
-                    cs = csRed;
+                    cs = csGreen;
                 } else {
                     cs = csNormal;
                 }
             } else if (vo instanceof CustomerArrearageGather) {
                 CustomerArrearageGather gather = (CustomerArrearageGather) vo;
                 if (gather.getArea() != null && (gather.getArea().endsWith("合计"))) {
+                    cs = csGlod;
+                } else if (gather.getDeptName() != null && gather.getDeptName().endsWith("合计")) {
                     cs = csYellow;
                 } else if (gather.getArea() != null && (gather.getArea().equals("总计"))) {
-                    cs = csRed;
+                    cs = csGreen;
                 } else {
                     cs = csNormal;
                 }
             } else if (vo instanceof SaleManagerArrearageGather) {
                 SaleManagerArrearageGather gather = (SaleManagerArrearageGather) vo;
                 if (gather.getArea() != null && (gather.getArea().endsWith("合计"))) {
+                    cs = csGlod;
+                } else if (gather.getDeptName() != null && gather.getDeptName().endsWith("合计")) {
                     cs = csYellow;
                 } else if (gather.getArea() != null && (gather.getArea().equals("总计"))) {
-                    cs = csRed;
+                    cs = csGreen;
                 } else {
                     cs = csNormal;
                 }
@@ -540,9 +551,7 @@ public class GatherExcelUtil<T> {
                         Object value = getTargetValue(vo, field, attr);
                         String dateFormat = attr.dateFormat();
                         String readConverterExp = attr.readConverterExp();
-                        if (value.toString().endsWith("%")) {
-                            cell.setCellType(CellType.NUMERIC);
-                        } else if (value instanceof BigDecimal) {
+                        if (value instanceof BigDecimal) {
                             cell.setCellType(CellType.NUMERIC);
                             cell.setCellValue(((BigDecimal) value).doubleValue());
                             cell.getCellStyle().setDataFormat(dataFormat.getFormat("#,##0.00"));
