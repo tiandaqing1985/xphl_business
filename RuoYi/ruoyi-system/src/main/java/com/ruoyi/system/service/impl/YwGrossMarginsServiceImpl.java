@@ -1,5 +1,7 @@
 package com.ruoyi.system.service.impl;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import com.ruoyi.common.exception.BusinessException;
@@ -103,6 +105,9 @@ public class YwGrossMarginsServiceImpl implements IYwGrossMarginsService {
         int failureNum = 0;
         StringBuilder successMsg = new StringBuilder();
         StringBuilder failureMsg = new StringBuilder();
+        if (grossMarginList.size() != 0) {
+            ywGrossMarginsMapper.deleteYwGrossMarginsByQuarter(getQuarterByDate(new Date()));
+        }
         YwGrossMargins selectYwGrossMargins = new YwGrossMargins();
         for (YwGrossMargins ywGrossMargins : grossMarginList) {
             try {
@@ -117,6 +122,7 @@ public class YwGrossMarginsServiceImpl implements IYwGrossMarginsService {
                     if (ywGrossMarginsList.size() != 0) {
                         YwGrossMargins updateYwGrossMarginsVO = ywGrossMarginsList.get(0);
                         updateYwGrossMarginsVO.setGrossMargin(ywGrossMargins.getGrossMargin());
+                        updateYwGrossMarginsVO.setTerm(ywGrossMargins.getTerm());
                         successMsg.append("<br/>" + successNum + "、销售经理 " + ywGrossMargins.getSalesManager() + " 更新成功");
                         updateYwGrossMargins(updateYwGrossMarginsVO);
                         continue;
@@ -145,6 +151,29 @@ public class YwGrossMarginsServiceImpl implements IYwGrossMarginsService {
 
     }
 
+    //根据当前时间获取进度
+    public static String getQuarterByDate(Date date) {
+        String quarter = null;
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        int month = calendar.get(Calendar.MONTH) + 1;
+        if (month >= 1 && month < 4) {
+            quarter = "Q1";
+        } else if (month >= 4 && month < 7) {
+            quarter = "Q2";
+        } else if (month >= 7 && month < 10) {
+            quarter = "Q3";
+        } else if (month >= 10 && month <= 12) {
+            quarter = "Q4";
+        } else {
+            return null;
+        }
+        int year = calendar.get(Calendar.YEAR);
+        quarter = String.valueOf(year).substring(2) + "年" + quarter;
+        return quarter;
+    }
+
+    //根据日期获取季度
     private String getQuarter(String term) {
         String quarter = null;
         if (term == null || term.equals("")) {

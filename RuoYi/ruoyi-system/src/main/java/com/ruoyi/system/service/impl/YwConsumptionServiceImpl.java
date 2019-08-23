@@ -1,5 +1,7 @@
 package com.ruoyi.system.service.impl;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import com.ruoyi.common.exception.BusinessException;
@@ -99,6 +101,9 @@ public class YwConsumptionServiceImpl implements IYwConsumptionService {
         int failureNum = 0;
         StringBuilder successMsg = new StringBuilder();
         StringBuilder failureMsg = new StringBuilder();
+        if (ywConsumptions.size() != 0) {
+            ywConsumptionMapper.deleteYwConsumptionByQuarter(getQuarterByDate(new Date()));
+        }
         YwConsumption consumption = new YwConsumption();
         for (YwConsumption ywConsumption : ywConsumptions) {
             try {
@@ -115,6 +120,7 @@ public class YwConsumptionServiceImpl implements IYwConsumptionService {
                         updateYwConsumption.setDiscounts(ywConsumption.getDiscounts());
                         updateYwConsumption.setYsbd(ywConsumption.getYsbd());
                         updateYwConsumption.setSummation(ywConsumption.getSummation());
+                        updateYwConsumption.setTerm(ywConsumption.getTerm());
                         updateYwConsumption(updateYwConsumption);
                         successMsg.append("<br/>" + successNum + "、销售经理 " + ywConsumption.getSaleManager() + " 更新成功");
                         continue;
@@ -140,6 +146,28 @@ public class YwConsumptionServiceImpl implements IYwConsumptionService {
             successMsg.insert(0, "恭喜您，数据已全部导入成功！共 " + successNum + " 条，数据如下：");
         }
         return successMsg.toString();
+    }
+
+    //根据当前时间获取进度
+    public static String getQuarterByDate(Date date) {
+        String quarter = null;
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        int month = calendar.get(Calendar.MONTH) + 1;
+        if (month >= 1 && month < 4) {
+            quarter = "Q1";
+        } else if (month >= 4 && month < 7) {
+            quarter = "Q2";
+        } else if (month >= 7 && month < 10) {
+            quarter = "Q3";
+        } else if (month >= 10 && month <= 12) {
+            quarter = "Q4";
+        } else {
+            return null;
+        }
+        int year = calendar.get(Calendar.YEAR);
+        quarter = String.valueOf(year).substring(2) + "年" + quarter;
+        return quarter;
     }
 
     private String getQuarter(String term) {

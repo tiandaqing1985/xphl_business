@@ -56,7 +56,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="deptName != null  and deptName != '' "> and dept_name = #{deptName}</if>
              <if test="saleManager != null  and saleManager != '' "> and sale_manager = #{saleManager}</if>
              <if test="saleAssistant != null  and saleAssistant != '' "> and sale_assistant = #{saleAssistant}</if>
-             <if test="dueDateStart == null or dueDateStart == '' or dueDateEnd == null or dueDateEnd == ''">and due_date between last_day(curdate()) and date_add(curdate(), interval - day(curdate()) + 1 day)</if>
              <if test="dueDateStart != null  and dueDateStart != '' and dueDateEnd != null  and dueDateEnd != '' "> and due_date between #{dueDateStart} and #{dueDateEnd}</if>
              <if test="firstDueAmt != null "> and first_due_amt = #{firstDueAmt}</if>
              <if test="dueAmt != null "> and due_amt = #{dueAmt}</if>

@@ -58,5 +58,11 @@ public interface YwGrossMarginsMapper
      * @return 结果
      */
 	public int deleteYwGrossMarginsByIds(String[] ids);
-	
+	/**
+	 * 批量删除毛利情况
+	 *
+	 * @param quarter 季度
+	 * @return 结果
+	 */
+    public void deleteYwGrossMarginsByQuarter(String quarter);
 }

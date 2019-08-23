@@ -187,6 +187,10 @@ public class YwArrearageServiceImpl implements IYwArrearageService {
         return successMsg.toString();
     }
 
+    private String[] adminAccount = new String[]{
+            "admin", "majun", "liujingyi","guojuan"
+    };
+
     /**
      * 查询汇总表-按销售经理
      *
@@ -196,7 +200,19 @@ public class YwArrearageServiceImpl implements IYwArrearageService {
     public List<SaleManagerArrearageGather> selectGatherSaleManager(YwArrearage ywArrearage, SysUser loginUser) {
 
         List<SaleManagerArrearageGather> list = new ArrayList<>();
-        if (loginUser == null || loginUser.getUserId() == 1 || loginUser.getUserId() == 103) {//管理员和COO看所有
+        boolean isAll = false;
+        if (loginUser.getUserId() == 1 || loginUser.getUserId() == 103) {//管理员和COO看所有
+            isAll = true;
+        } else {
+            for (String name : adminAccount) {
+                if (name.equals(loginUser.getLoginName())) {
+                    isAll = true;
+                    break;
+                }
+            }
+        }
+
+        if (isAll) {//管理员和COO看所有
             list = ywArrearageMapper.selectGatherSaleManager(ywArrearage);
         } else {
             //查询数据

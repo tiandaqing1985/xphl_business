@@ -110,4 +110,8 @@
         </foreach>
     </delete>
 
+    <delete id="deleteYwGrossMarginsByQuarter" parameterType="String">
+        delete from yw_gross_margins where quarter = #{param1}
+    </delete>
+
 </mapper>

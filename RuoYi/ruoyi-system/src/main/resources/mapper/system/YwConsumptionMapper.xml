@@ -120,4 +120,8 @@
         </foreach>
     </delete>
 
+    <delete id="deleteYwConsumptionByQuarter" parameterType="String">
+        delete from yw_consumption where quarter = #{quarter}
+    </delete>
+
 </mapper>

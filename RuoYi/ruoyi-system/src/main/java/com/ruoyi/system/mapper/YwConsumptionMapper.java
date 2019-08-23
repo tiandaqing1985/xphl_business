@@ -58,5 +58,12 @@ public interface YwConsumptionMapper
      * @return 结果
      */
 	public int deleteYwConsumptionByIds(String[] ids);
-	
+
+	/**
+	 * 批量删除消耗情况
+	 *
+	 * @param quarter 季度
+	 * @return 结果
+	 */
+	public void deleteYwConsumptionByQuarter(String quarter);
 }
