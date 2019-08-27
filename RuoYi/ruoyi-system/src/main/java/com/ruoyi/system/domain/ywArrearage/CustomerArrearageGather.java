@@ -57,6 +57,16 @@ public class CustomerArrearageGather {
     @Excel(name = "实际应收账款回款率", type = Excel.Type.EXPORT)
     private String realReturnRate;
 
+    private BigDecimal realReturnAmtNot;//不含非当期实际回款金额
+
+    public BigDecimal getRealReturnAmtNot() {
+        return realReturnAmtNot;
+    }
+
+    public void setRealReturnAmtNot(BigDecimal realReturnAmtNot) {
+        this.realReturnAmtNot = realReturnAmtNot;
+    }
+
     public String getArea() {
         return area;
     }

@@ -188,7 +188,7 @@ public class YwArrearageServiceImpl implements IYwArrearageService {
     }
 
     private String[] adminAccount = new String[]{
-            "admin", "majun", "liujingyi","guojuan"
+            "admin", "majun", "liujingyi", "guojuan"
     };
 
     /**
@@ -254,6 +254,7 @@ public class YwArrearageServiceImpl implements IYwArrearageService {
         total.setOverdueAmt(BigDecimal.ZERO);
         total.setPlanReturnAmt(BigDecimal.ZERO);
         total.setRealReturnAmt(BigDecimal.ZERO);
+        total.setRealReturnAmtNot(BigDecimal.ZERO);
 
         for (SaleManagerArrearageGather arrearageGather : list) {
 
@@ -262,6 +263,7 @@ public class YwArrearageServiceImpl implements IYwArrearageService {
             total.setOverdueAmt(total.getOverdueAmt().add(arrearageGather.getOverdueAmt()));
             total.setPlanReturnAmt(total.getPlanReturnAmt().add(arrearageGather.getPlanReturnAmt()));
             total.setRealReturnAmt(total.getRealReturnAmt().add(arrearageGather.getRealReturnAmt()));
+            total.setRealReturnAmtNot(total.getRealReturnAmtNot().add(arrearageGather.getRealReturnAmtNot()));
 
             deptMap = deptMaps.get(arrearageGather.getArea());
 
@@ -290,6 +292,7 @@ public class YwArrearageServiceImpl implements IYwArrearageService {
                     deptSum.setOverdueAmt(gather.getOverdueAmt());
                     deptSum.setPlanReturnAmt(gather.getPlanReturnAmt());
                     deptSum.setRealReturnAmt(gather.getRealReturnAmt());
+                    deptSum.setRealReturnAmtNot(gather.getRealReturnAmtNot());
                     linkedList.addLast(deptSum);
                     if ((areaSum = sumMap.get(arrearageGather.getArea() + "合计")) == null) {
                         areaSum = new SaleManagerArrearageGather();
@@ -299,6 +302,7 @@ public class YwArrearageServiceImpl implements IYwArrearageService {
                         areaSum.setOverdueAmt(gather.getOverdueAmt());
                         areaSum.setPlanReturnAmt(gather.getPlanReturnAmt());
                         areaSum.setRealReturnAmt(gather.getRealReturnAmt());
+                        areaSum.setRealReturnAmtNot(gather.getRealReturnAmtNot());
                         sumMap.put(arrearageGather.getArea() + "合计", areaSum);
                     }
                 } else {
@@ -315,9 +319,10 @@ public class YwArrearageServiceImpl implements IYwArrearageService {
                 deptSum.setOverdueAmt(deptSum.getOverdueAmt().add(arrearageGather.getOverdueAmt()));
                 deptSum.setPlanReturnAmt(deptSum.getPlanReturnAmt().add(arrearageGather.getPlanReturnAmt()));
                 deptSum.setRealReturnAmt(deptSum.getRealReturnAmt().add(arrearageGather.getRealReturnAmt()));
+                deptSum.setRealReturnAmtNot(deptSum.getRealReturnAmtNot().add(arrearageGather.getRealReturnAmtNot()));
                 if (deptSum.getFirstDueAmt().compareTo(BigDecimal.ZERO) != 0) {
                     deptSum.setPlanReturnRate(deptSum.getPlanReturnAmt().divide(deptSum.getFirstDueAmt(), 6, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100L)).setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString() + "%");
-                    deptSum.setRealReturnRate(deptSum.getRealReturnAmt().divide(deptSum.getFirstDueAmt(), 6, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100L)).setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString() + "%");
+                    deptSum.setRealReturnRate(deptSum.getRealReturnAmtNot().divide(deptSum.getFirstDueAmt(), 6, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100L)).setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString() + "%");
                 } else {
                     total.setPlanReturnRate("0.00%");
                     total.setRealReturnRate("0.00%");
@@ -331,9 +336,10 @@ public class YwArrearageServiceImpl implements IYwArrearageService {
                 areaSum.setOverdueAmt(areaSum.getOverdueAmt().add(arrearageGather.getOverdueAmt()));
                 areaSum.setPlanReturnAmt(areaSum.getPlanReturnAmt().add(arrearageGather.getPlanReturnAmt()));
                 areaSum.setRealReturnAmt(areaSum.getRealReturnAmt().add(arrearageGather.getRealReturnAmt()));
+                areaSum.setRealReturnAmtNot(areaSum.getRealReturnAmtNot().add(arrearageGather.getRealReturnAmtNot()));
                 if (areaSum.getFirstDueAmt().compareTo(BigDecimal.ZERO) != 0) {
                     areaSum.setPlanReturnRate(areaSum.getPlanReturnAmt().divide(areaSum.getFirstDueAmt(), 6, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100L)).setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString() + "%");
-                    areaSum.setRealReturnRate(areaSum.getRealReturnAmt().divide(areaSum.getFirstDueAmt(), 6, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100L)).setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString() + "%");
+                    areaSum.setRealReturnRate(areaSum.getRealReturnAmtNot().divide(areaSum.getFirstDueAmt(), 6, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100L)).setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString() + "%");
                 } else {
                     total.setPlanReturnRate("0.00%");
                     total.setRealReturnRate("0.00%");
@@ -360,7 +366,7 @@ public class YwArrearageServiceImpl implements IYwArrearageService {
         }
         if (total.getFirstDueAmt().compareTo(BigDecimal.ZERO) != 0) {
             total.setPlanReturnRate(total.getPlanReturnAmt().divide(total.getFirstDueAmt(), 6, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100L)).setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString() + "%");
-            total.setRealReturnRate(total.getRealReturnAmt().divide(total.getFirstDueAmt(), 6, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100L)).setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString() + "%");
+            total.setRealReturnRate(total.getRealReturnAmtNot().divide(total.getFirstDueAmt(), 6, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100L)).setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString() + "%");
         } else {
             total.setPlanReturnRate("0.00%");
             total.setRealReturnRate("0.00%");
@@ -439,6 +445,7 @@ public class YwArrearageServiceImpl implements IYwArrearageService {
         total.setPlanReturnAmtH(BigDecimal.ZERO);
         total.setPlanReturnAmtL(BigDecimal.ZERO);
         total.setPlanReturnAmtM(BigDecimal.ZERO);
+        total.setRealReturnAmtNot(BigDecimal.ZERO);
         for (CustomerArrearageGather arrearageGather : list) {
 
             total.setDueAmt(total.getDueAmt().add(arrearageGather.getDueAmt()));
@@ -450,6 +457,7 @@ public class YwArrearageServiceImpl implements IYwArrearageService {
             total.setPlanReturnAmtH(arrearageGather.getPlanReturnAmtH().add(total.getPlanReturnAmtH()));
             total.setPlanReturnAmtL(arrearageGather.getPlanReturnAmtL().add(total.getPlanReturnAmtL()));
             total.setPlanReturnAmtM(arrearageGather.getPlanReturnAmtM().add(total.getPlanReturnAmtM()));
+            total.setRealReturnAmtNot(arrearageGather.getRealReturnAmtNot().add(total.getRealReturnAmtNot()));
             deptMap = deptMaps.get(arrearageGather.getArea());
 
             if (deptMap == null) {
@@ -481,6 +489,7 @@ public class YwArrearageServiceImpl implements IYwArrearageService {
                     deptSum.setPlanReturnAmtH(gather.getPlanReturnAmtH());
                     deptSum.setPlanReturnAmtL(gather.getPlanReturnAmtL());
                     deptSum.setPlanReturnAmtM(gather.getPlanReturnAmtM());
+                    deptSum.setRealReturnAmtNot(gather.getRealReturnAmtNot());
                     linkedList.addLast(deptSum);
                     if ((areaSum = sumMap.get(arrearageGather.getArea() + "合计")) == null) {
                         areaSum = new CustomerArrearageGather();
@@ -494,6 +503,7 @@ public class YwArrearageServiceImpl implements IYwArrearageService {
                         areaSum.setPlanReturnAmtH(gather.getPlanReturnAmtH());
                         areaSum.setPlanReturnAmtL(gather.getPlanReturnAmtL());
                         areaSum.setPlanReturnAmtM(gather.getPlanReturnAmtM());
+                        areaSum.setRealReturnAmtNot(gather.getRealReturnAmtNot());
                         sumMap.put(arrearageGather.getArea() + "合计", areaSum);
                     }
                 } else {
@@ -514,9 +524,10 @@ public class YwArrearageServiceImpl implements IYwArrearageService {
                 deptSum.setPlanReturnAmtH(arrearageGather.getPlanReturnAmtH().add(deptSum.getPlanReturnAmtH()));
                 deptSum.setPlanReturnAmtL(arrearageGather.getPlanReturnAmtL().add(deptSum.getPlanReturnAmtL()));
                 deptSum.setPlanReturnAmtM(arrearageGather.getPlanReturnAmtM().add(deptSum.getPlanReturnAmtM()));
+                deptSum.setRealReturnAmtNot(arrearageGather.getRealReturnAmtNot().add(deptSum.getRealReturnAmtNot()));
                 if (deptSum.getFirstDueAmt().compareTo(BigDecimal.ZERO) != 0) {
                     deptSum.setPlanReturnRate(deptSum.getPlanReturnAmt().divide(deptSum.getFirstDueAmt(), 6, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100L)).setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString() + "%");
-                    deptSum.setRealReturnRate(deptSum.getRealReturnAmt().divide(deptSum.getFirstDueAmt(), 6, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100L)).setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString() + "%");
+                    deptSum.setRealReturnRate(deptSum.getRealReturnAmtNot().divide(deptSum.getFirstDueAmt(), 6, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100L)).setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString() + "%");
                 } else {
                     total.setPlanReturnRate("0.00%");
                     total.setRealReturnRate("0.00%");
@@ -534,9 +545,10 @@ public class YwArrearageServiceImpl implements IYwArrearageService {
                 areaSum.setPlanReturnAmtH(arrearageGather.getPlanReturnAmtH().add(areaSum.getPlanReturnAmtH()));
                 areaSum.setPlanReturnAmtL(arrearageGather.getPlanReturnAmtL().add(areaSum.getPlanReturnAmtL()));
                 areaSum.setPlanReturnAmtM(arrearageGather.getPlanReturnAmtM().add(areaSum.getPlanReturnAmtM()));
+                areaSum.setRealReturnAmtNot(arrearageGather.getRealReturnAmtNot().add(areaSum.getRealReturnAmtNot()));
                 if (areaSum.getFirstDueAmt().compareTo(BigDecimal.ZERO) != 0) {
                     areaSum.setPlanReturnRate(areaSum.getPlanReturnAmt().divide(areaSum.getFirstDueAmt(), 6, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100L)).setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString() + "%");
-                    areaSum.setRealReturnRate(areaSum.getRealReturnAmt().divide(areaSum.getFirstDueAmt(), 6, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100L)).setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString() + "%");
+                    areaSum.setRealReturnRate(areaSum.getRealReturnAmtNot().divide(areaSum.getFirstDueAmt(), 6, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100L)).setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString() + "%");
                 } else {
                     total.setPlanReturnRate("0.00%");
                     total.setRealReturnRate("0.00%");
@@ -563,7 +575,7 @@ public class YwArrearageServiceImpl implements IYwArrearageService {
         }
         if (total.getFirstDueAmt().compareTo(BigDecimal.ZERO) != 0) {
             total.setPlanReturnRate(total.getPlanReturnAmt().divide(total.getFirstDueAmt(), 6, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100L)).setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString() + "%");
-            total.setRealReturnRate(total.getRealReturnAmt().divide(total.getFirstDueAmt(), 6, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100L)).setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString() + "%");
+            total.setRealReturnRate(total.getRealReturnAmtNot().divide(total.getFirstDueAmt(), 6, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100L)).setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString() + "%");
         } else {
             total.setPlanReturnRate("0.00%");
             total.setRealReturnRate("0.00%");
@@ -627,7 +639,16 @@ public class YwArrearageServiceImpl implements IYwArrearageService {
      * @return
      */
     public List<ReturnSituation> selectReturnSituation(YwArrearage ywArrearage) {
-        return ywArrearageMapper.selectReturnSituation(ywArrearage);
+        List<ReturnSituation> returnSituations = ywArrearageMapper.selectReturnSituation(ywArrearage);
+        ReturnSituation sumStation = new ReturnSituation();
+        sumStation.setReturnType("合计");
+        sumStation.setReturnAmt(BigDecimal.ZERO);
+        //求合计
+        for (ReturnSituation returnSituation : returnSituations) {
+            sumStation.setReturnAmt(sumStation.getReturnAmt().add(returnSituation.getReturnAmt()));
+        }
+        returnSituations.add(sumStation);
+        return returnSituations;
     }
 
 }

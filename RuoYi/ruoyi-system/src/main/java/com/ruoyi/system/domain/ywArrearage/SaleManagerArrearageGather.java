@@ -9,35 +9,45 @@ import java.math.BigDecimal;
  */
 public class SaleManagerArrearageGather {
 
-    @Excel(name = "区域",type = Excel.Type.EXPORT)
+    @Excel(name = "区域", type = Excel.Type.EXPORT)
     private String area;
 
-    @Excel(name = "所属部门",type = Excel.Type.EXPORT)
+    @Excel(name = "所属部门", type = Excel.Type.EXPORT)
     private String deptName;
 
-    @Excel(name = "销售经理",type = Excel.Type.EXPORT)
+    @Excel(name = "销售经理", type = Excel.Type.EXPORT)
     private String saleManager;
 
-    @Excel(name = "月初应收金额",type = Excel.Type.EXPORT)
+    @Excel(name = "月初应收金额", type = Excel.Type.EXPORT)
     private BigDecimal firstDueAmt;
 
-    @Excel(name = "实时应收金额",type = Excel.Type.EXPORT)
+    @Excel(name = "实时应收金额", type = Excel.Type.EXPORT)
     private BigDecimal dueAmt;
 
-    @Excel(name = "实时客户已逾期款",type = Excel.Type.EXPORT)
+    @Excel(name = "实时客户已逾期款", type = Excel.Type.EXPORT)
     private BigDecimal overdueAmt;
 
-    @Excel(name = "预计回款金额（可能性高）",type = Excel.Type.EXPORT)
+    @Excel(name = "预计回款金额（可能性高）", type = Excel.Type.EXPORT)
     private BigDecimal planReturnAmt;
 
-    @Excel(name = "预计应收账款回款率",type = Excel.Type.EXPORT)
+    @Excel(name = "预计应收账款回款率", type = Excel.Type.EXPORT)
     private String planReturnRate;
 
-    @Excel(name = "实际回款金额",type = Excel.Type.EXPORT)
+    @Excel(name = "实际回款金额", type = Excel.Type.EXPORT)
     private BigDecimal realReturnAmt;
 
-    @Excel(name = "实际应收账款回款率",type = Excel.Type.EXPORT)
+    @Excel(name = "实际应收账款回款率", type = Excel.Type.EXPORT)
     private String realReturnRate;
+
+    private BigDecimal realReturnAmtNot;//不含非当期的实际回款金额
+
+    public BigDecimal getRealReturnAmtNot() {
+        return realReturnAmtNot;
+    }
+
+    public void setRealReturnAmtNot(BigDecimal realReturnAmtNot) {
+        this.realReturnAmtNot = realReturnAmtNot;
+    }
 
     public String getArea() {
         return area;
