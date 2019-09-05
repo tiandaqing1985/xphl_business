@@ -56,7 +56,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="deptName != null  and deptName != '' "> and dept_name = #{deptName}</if>
              <if test="saleManager != null  and saleManager != '' "> and sale_manager = #{saleManager}</if>
              <if test="saleAssistant != null  and saleAssistant != '' "> and sale_assistant = #{saleAssistant}</if>
-             <if test="dueDateStart != null  and dueDateStart != '' and dueDateEnd != null  and dueDateEnd != '' "> and due_date between #{dueDateStart} and #{dueDateEnd}</if>
              <if test="firstDueAmt != null "> and first_due_amt = #{firstDueAmt}</if>
              <if test="dueAmt != null "> and due_amt = #{dueAmt}</if>
              <if test="notReceiveAmt != null "> and not_receive_amt = #{notReceiveAmt}</if>
@@ -68,7 +67,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="realReturnAmt != null "> and real_return_amt = #{realReturnAmt}</if>
              <if test="returnType != null  and returnType != '' "> and return_type = #{returnType}</if>
              <if test="createBy != null  and createBy != '' "> and create_by = #{createBy}</if>
-             <if test="createTime != null "> and create_time = #{createTime}</if>
+             <if test="createTime != null "> and create_time >= #{createTime} and create_time <![CDATA[<=]]> last_day(#{createTime}) </if>
              <if test="updateBy != null  and updateBy != '' "> and update_by = #{updateBy}</if>
              <if test="updateTime != null "> and update_time = #{updateTime}</if>
              <if test="remark != null  and remark != '' "> and remark = #{remark}</if>
@@ -82,6 +81,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectReturnSituation" parameterType="YwArrearage" resultType="ReturnSituation">
         select return_type returnType,ifnull(sum(real_return_amt),0) returnAmt  from yw_arrearage
+        <where>
+            <if test="createTime != null ">
+                and create_time >= #{createTime} and create_time <![CDATA[<=]]> last_day(#{createTime})
+            </if>
+        </where>
         group by return_type having return_type is not null
     </select>
 
@@ -100,9 +104,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <select id="selectGatherSaleManager" parameterType="YwArrearage" resultMap="SaleManagerArrearageGatherResult">
-        select tb1.area,tb1.dept_name,tb1.sale_manager,ifnull(tb1.first_due_amt,0) first_due_amt,ifnull(tb1.due_amt,0) due_amt,ifnull(tb1.overdue_amt,0) overdue_amt,concat(round(ifnull(plan_return_amt/first_due_amt,0)*100),'%') planReturnRate,concat(round(ifnull(tb3.real_return_amt_not/first_due_amt,0)*100),'%') realReturnRate,ifnull(tb2.plan_return_amt,0) plan_return_amt,ifnull(tb1.real_return_amt,0) real_return_amt,ifnull(tb3.real_return_amt_not,0) real_return_amt_not from
+        select tb1.area,tb1.dept_name,tb1.sale_manager,ifnull(tb1.first_due_amt,0) first_due_amt,ifnull(tb1.due_amt,0) due_amt,ifnull(tb1.overdue_amt,0) overdue_amt,concat(round(ifnull(convert(plan_return_amt/first_due_amt,decimal(20,4)),0)*100,2),'%') planReturnRate,concat(round(ifnull(convert(tb3.real_return_amt_not/first_due_amt,decimal(20,4)),0)*100,2),'%') realReturnRate,ifnull(tb2.plan_return_amt,0) plan_return_amt,ifnull(tb1.real_return_amt,0) real_return_amt,ifnull(tb3.real_return_amt_not,0) real_return_amt_not from
             (select area,dept_name,sale_manager,ifnull(sum(first_due_amt),0) first_due_amt,ifnull(sum(due_amt),0) due_amt,ifnull(sum(overdue_amt),0) overdue_amt,ifnull(sum(real_return_amt),0) real_return_amt from yw_arrearage
                 <where>
+                    <if test="createTime != null ">
+                        and create_time >= #{createTime} and create_time <![CDATA[<=]]> last_day(#{createTime})
+                    </if>
                     <if test="deptName != null and deptName != ''">
                         and dept_name = #{deptName}
                     </if>
@@ -110,14 +117,21 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             group by area,dept_name,sale_manager) tb1
         left join
             (select area,dept_name,sale_manager,ifnull(sum(plan_return_amt),0) plan_return_amt from yw_arrearage where return_prob like '高%'
+                <if test="createTime != null ">
+                    and create_time >= #{createTime} and create_time <![CDATA[<=]]> last_day(#{createTime})
+                </if>
                 <if test="deptName != null and deptName != ''">
                     and dept_name = #{deptName}
                 </if>
+            and plan_return_date between DATE_ADD(curdate(),interval -day(curdate())+1 day) and last_day(curdate())
             group by area,dept_name,sale_manager) tb2
         on tb1.area = tb2.area and tb1.dept_name = tb2.dept_name and tb1.sale_manager = tb2.sale_manager
         left join
             (select area,dept_name,sale_manager,ifnull(sum(real_return_amt),0) real_return_amt_not from yw_arrearage
-            where return_type not like '非当期%' or return_type is null
+            where (return_type not like '非当期%' or return_type is null)
+            <if test="createTime != null ">
+                and create_time >= #{createTime} and create_time <![CDATA[<=]]> last_day(#{createTime})
+            </if>
             <if test="deptName != null and deptName != ''">
                 and dept_name = #{deptName}
             </if>
@@ -128,7 +142,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectRealReturnRateRank" parameterType="YwArrearage" resultType="ReturnRateRank">
          select a.sale_manager saleManager,concat(a.realReturnRate,'%') realReturnRate,@rownum := @rownum + 1 rank from
-        (select sale_manager,round(ifnull(ifnull(sum(real_return_amt),0)/ifnull(sum(first_due_amt),0),0)*100,2) realReturnRate from yw_arrearage where return_type not like '非当期%' or return_type is null
+        (select sale_manager,round(ifnull(ifnull(sum(real_return_amt),0)/ifnull(sum(first_due_amt),0),0)*100,2) realReturnRate from yw_arrearage where (return_type not like '非当期%' or return_type is null)
+        <if test="createTime != null ">
+            and create_time >= #{createTime} and create_time <![CDATA[<=]]> last_day(#{createTime})
+        </if>
          group by sale_manager order by realReturnRate desc) a,
         (SELECT @rownum := 0) b
     </select>
@@ -156,55 +173,76 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectGatherCustomer" parameterType="YwArrearage" resultMap="CustomerArrearageGatherResult">
 
         select
-        tb1.area,tb1.dept_name,tb1.sale_manager,tb1.signatory,tb1.advertiser,tb1.first_due_amt,tb1.due_amt,tb1.not_receive_amt,tb1.overdue_amt,ifnull(tb5.plan_return_amt,0) plan_return_amt,tb1.real_return_amt,concat(round(ifnull(tb5.plan_return_amt/first_due_amt,0)*100),'%') planReturnRate,concat(round(ifnull(tb6.real_return_amt_not/first_due_amt,0)*100),'%') realReturnRate,ifnull(tb2.plan_return_amtH,0) plan_return_amtH,ifnull(tb3.plan_return_amtM,0) plan_return_amtM,ifnull(tb4.plan_return_amtL,0) plan_return_amtL,ifnull(tb6.real_return_amt_not,0) real_return_amt_not
+        tb1.area,tb1.dept_name,tb1.sale_manager,tb1.signatory,tb1.advertiser,tb1.first_due_amt,tb1.due_amt,tb1.not_receive_amt,tb1.overdue_amt,ifnull(tb5.plan_return_amt,0) plan_return_amt,tb1.real_return_amt,concat(round(ifnull(convert(tb5.plan_return_amt/first_due_amt,decimal(20,4)),0)*100,2),'%') planReturnRate,concat(round(ifnull(convert(tb6.real_return_amt_not/first_due_amt,decimal(20,4)),0)*100,2),'%') realReturnRate,ifnull(tb2.plan_return_amtH,0) plan_return_amtH,ifnull(tb3.plan_return_amtM,0) plan_return_amtM,ifnull(tb4.plan_return_amtL,0) plan_return_amtL,ifnull(tb6.real_return_amt_not,0) real_return_amt_not
         from
             (select area,dept_name,sale_manager,signatory,advertiser,ifnull(sum(first_due_amt),0) first_due_amt,ifnull(sum(due_amt),0) due_amt,ifnull(sum(not_receive_amt),0) not_receive_amt,ifnull(sum(overdue_amt),0) overdue_amt,ifnull(sum(plan_return_amt),0) plan_return_amt,ifnull(sum(real_return_amt),0) real_return_amt from yw_arrearage
+            <where>
+                <if test="createTime != null ">
+                    and create_time >= #{createTime} and create_time <![CDATA[<=]]> last_day(#{createTime})
+                </if>
+            </where>
             group by area,dept_name,sale_manager,signatory,advertiser) tb1
         left join
-            (select signatory,advertiser,area,dept_name,sale_manager,ifnull(sum(plan_return_amt),0) plan_return_amtH from yw_arrearage where return_prob like '高%'
+            (select signatory,advertiser,area,dept_name,sale_manager,ifnull(sum(plan_return_amt),0) plan_return_amtH from yw_arrearage where return_prob like '高%' and plan_return_date between DATE_ADD(curdate(),interval -day(curdate())+1 day) and last_day(curdate())
+            <if test="createTime != null ">
+                and create_time >= #{createTime} and create_time <![CDATA[<=]]> last_day(#{createTime})
+            </if>
             group by area,dept_name,sale_manager,signatory,advertiser) tb2
         on tb1.area = tb2.area and tb1.dept_name = tb2.dept_name and tb1.sale_manager = tb2.sale_manager and tb1.signatory = tb2.signatory and tb1.advertiser = tb2.advertiser
         left join
-            (select signatory,advertiser,area,dept_name,sale_manager,ifnull(sum(plan_return_amt),0) plan_return_amtM from yw_arrearage where return_prob like '中%'
+            (select signatory,advertiser,area,dept_name,sale_manager,ifnull(sum(plan_return_amt),0) plan_return_amtM from yw_arrearage where return_prob like '中%' and plan_return_date between DATE_ADD(curdate(),interval -day(curdate())+1 day) and last_day(curdate())
+            <if test="createTime != null ">
+                and create_time >= #{createTime} and create_time <![CDATA[<=]]> last_day(#{createTime})
+            </if>
             group by area,dept_name,sale_manager,signatory,advertiser) tb3
         on tb1.area = tb3.area and tb1.dept_name = tb3.dept_name and tb1.sale_manager = tb3.sale_manager and tb1.signatory = tb3.signatory and tb1.advertiser = tb3.advertiser
         left join
-            (select signatory,advertiser,area,dept_name,sale_manager,ifnull(sum(plan_return_amt),0) plan_return_amtL from yw_arrearage where return_prob like '低%'
+            (select signatory,advertiser,area,dept_name,sale_manager,ifnull(sum(plan_return_amt),0) plan_return_amtL from yw_arrearage where return_prob like '低%' and plan_return_date between DATE_ADD(curdate(),interval -day(curdate())+1 day) and last_day(curdate())
+            <if test="createTime != null ">
+                and create_time >= #{createTime} and create_time <![CDATA[<=]]> last_day(#{createTime})
+            </if>
             group by area,dept_name,sale_manager,signatory,advertiser) tb4
         on tb1.area = tb4.area and tb1.dept_name = tb4.dept_name and tb1.sale_manager = tb4.sale_manager and tb1.signatory = tb4.signatory and tb1.advertiser = tb4.advertiser
         left join
             (select tb1.signatory,tb1.advertiser,tb1.area,tb1.dept_name,tb1.sale_manager,ifnull(tb1.plan_return_amt,0)+ifnull(tb2.plan_return_amt,0) plan_return_amt from
                 (select signatory,advertiser,area,dept_name,sale_manager,sum(plan_return_amt) plan_return_amt from yw_arrearage where overdue_day_num is not null and return_prob like '高%'
-                <if test="dueDateStart != null and dueDateStart != '' and dueDateEnd != null and dueDateEnd != ''">
-                    and due_date between #{dueDateStart} and #{dueDateEnd}
+                and plan_return_date between DATE_ADD(curdate(),interval -day(curdate())+1 day) and last_day(curdate())
+                <if test="createTime != null ">
+                    and create_time >= #{createTime} and create_time <![CDATA[<=]]> last_day(#{createTime})
                 </if>
                 group by area,dept_name,sale_manager,signatory,advertiser) tb1
             left join
                 (select signatory,advertiser,area,dept_name,sale_manager,sum(plan_return_amt) plan_return_amt from yw_arrearage where overdue_day_num is null and return_prob like '高%'
-                <if test="dueDateStart != null and dueDateStart != '' and dueDateEnd != null and dueDateEnd != ''">
-                    and due_date between #{dueDateStart} and #{dueDateEnd}
+                and plan_return_date between DATE_ADD(curdate(),interval -day(curdate())+1 day) and last_day(curdate())
+                <if test="createTime != null ">
+                    and create_time >= #{createTime} and create_time <![CDATA[<=]]> last_day(#{createTime})
                 </if>
                 group by area,dept_name,sale_manager,signatory,advertiser) tb2
                 on tb1.area = tb2.area and tb1.dept_name = tb2.dept_name and tb1.sale_manager = tb2.sale_manager and tb1.signatory = tb2.signatory and tb1.advertiser = tb2.advertiser
                 union
                 select tb2.signatory,tb2.advertiser,tb2.area,tb2.dept_name,tb2.sale_manager,ifnull(tb1.plan_return_amt,0)+ifnull(tb2.plan_return_amt,0) plan_return_amt from
                 (select signatory,advertiser,area,dept_name,sale_manager,sum(plan_return_amt) plan_return_amt from yw_arrearage where overdue_day_num is not null and return_prob like '高%'
-                <if test="dueDateStart != null and dueDateStart != '' and dueDateEnd != null and dueDateEnd != ''">
-                    and due_date between #{dueDateStart} and #{dueDateEnd}
+                and plan_return_date between DATE_ADD(curdate(),interval -day(curdate())+1 day) and last_day(curdate())
+                <if test="createTime != null ">
+                    and create_time >= #{createTime} and create_time <![CDATA[<=]]> last_day(#{createTime})
                 </if>
                 group by area,dept_name,sale_manager,signatory,advertiser) tb1
                 right join
                 (select signatory,advertiser,area,dept_name,sale_manager,sum(plan_return_amt) plan_return_amt from yw_arrearage where overdue_day_num is null and return_prob like '高%'
-                <if test="dueDateStart != null and dueDateStart != '' and dueDateEnd != null and dueDateEnd != ''">
-                    and due_date between #{dueDateStart} and #{dueDateEnd}
+                and plan_return_date between DATE_ADD(curdate(),interval -day(curdate())+1 day) and last_day(curdate())
+                <if test="createTime != null ">
+                    and create_time >= #{createTime} and create_time <![CDATA[<=]]> last_day(#{createTime})
                 </if>
                 group by area,dept_name,sale_manager,signatory,advertiser) tb2
                 on tb1.area = tb2.area and tb1.dept_name = tb2.dept_name and tb1.sale_manager = tb2.sale_manager and tb1.signatory = tb2.signatory and tb1.advertiser = tb2.advertiser) tb5
         on tb1.area = tb5.area and tb1.dept_name = tb5.dept_name and tb1.sale_manager = tb5.sale_manager and tb1.signatory = tb5.signatory and tb1.advertiser = tb5.advertiser
         left join
                 (select signatory,advertiser,area,dept_name,sale_manager,ifnull(sum(real_return_amt),0) real_return_amt_not from yw_arrearage
-                where return_type not like '非当期%' or return_type is null
-                group by area,dept_name,sale_manager) tb6
+                where (return_type not like '非当期%' or return_type is null)
+                <if test="createTime != null ">
+                    and create_time >= #{createTime} and create_time <![CDATA[<=]]> last_day(#{createTime})
+                </if>
+                group by area,dept_name,sale_manager,signatory,advertiser) tb6
         on tb1.area = tb6.area and tb1.dept_name = tb6.dept_name and tb1.sale_manager = tb6.sale_manager and tb1.signatory = tb6.signatory and tb1.advertiser = tb6.advertiser
 
     </select>
@@ -317,6 +355,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>
+    </delete>
+
+    <delete id="deleteYwArrearage">
+        delete from yw_arrearage where create_time >= date_add(curdate(), interval - day(curdate()) + 1 day) and create_time <![CDATA[<=]]> last_day(curdate())
     </delete>
 
 </mapper>

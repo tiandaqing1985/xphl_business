@@ -35,12 +35,9 @@
                                 <div class="select-list">
                                     <ul>
                                         <li class="select-time">
-                                            <label>应收款日期： </label>
-                                            <input type="text" class="time-input" id="dueDateStart1" placeholder="开始时间（包含）"
-                                                   name="dueDateStart"/>
-                                            <span>-</span>
-                                            <input type="text" class="time-input" id="dueDateEnd1" placeholder="结束时间（包含）"
-                                                   name="dueDateEnd"/>
+                                            <label>导入时间： </label>
+                                            <input type="text" class="form-control" id="createTime1" placeholder="yyyy-MM"
+                                                   name="createTime"/>
                                         </li>
                                         <li>
                                             <a class="btn btn-primary btn-rounded btn-sm" onclick="mySearch(1)"><i
@@ -71,19 +68,16 @@
                         <form id="formId2">
                             <div class="select-list">
                                 <ul>
-<!--                                    <li class="select-time">-->
-<!--                                        <label>应收款日期： </label>-->
-<!--                                        <input type="text" class="time-input" id="dueDateStart2" placeholder="开始时间（包含）"-->
-<!--                                               name="dueDateStart"/>-->
-<!--                                        <span>-</span>-->
-<!--                                        <input type="text" class="time-input" id="dueDateEnd2" placeholder="结束时间（包含）"-->
-<!--                                               name="dueDateEnd"/>-->
-<!--                                    </li>-->
+                                    <li class="select-time">
+                                        <label>导入时间： </label>
+                                        <input type="text" class="form-control" id="createTime2" placeholder="yyyy-MM"
+                                               name="createTime"/>
+                                    </li>
                                     <li>
-<!--                                        <a class="btn btn-primary btn-rounded btn-sm" onclick="mySearch(2)"><i-->
-<!--                                                class="fa fa-search"></i>&nbsp;搜索</a>-->
-<!--                                        <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset('formId2')"><i-->
-<!--                                                class="fa fa-refresh"></i>&nbsp;重置</a>-->
+                                        <a class="btn btn-primary btn-rounded btn-sm" onclick="mySearch(2)"><i
+                                                class="fa fa-search"></i>&nbsp;搜索</a>
+                                        <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset('formId2')"><i
+                                                class="fa fa-refresh"></i>&nbsp;重置</a>
                                         <a class="btn btn-primary btn-rounded btn-sm" onclick="myExportExcel(2)">
                                             <i class="fa fa-download"></i> 导出
                                         </a>
@@ -105,19 +99,16 @@
                         <form id="formId3">
                             <div class="select-list">
                                 <ul>
-<!--                                    <li class="select-time">-->
-<!--                                        <label>应收款日期： </label>-->
-<!--                                        <input type="text" class="time-input" id="dueDateStart3" placeholder="开始时间（包含）"-->
-<!--                                               name="dueDateStart"/>-->
-<!--                                        <span>-</span>-->
-<!--                                        <input type="text" class="time-input" id="dueDateEnd3" placeholder="结束时间（包含）"-->
-<!--                                               name="dueDateEnd"/>-->
-<!--                                    </li>-->
+                                    <li class="select-time">
+                                        <label>导入时间： </label>
+                                        <input type="text" class="form-control" id="createTime3" placeholder="yyyy-MM"
+                                               name="createTime"/>
+                                    </li>
                                     <li>
-<!--                                        <a class="btn btn-primary btn-rounded btn-sm" onclick="mySearch(3)"><i-->
-<!--                                                class="fa fa-search"></i>&nbsp;搜索</a>-->
-<!--                                        <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset('formId3')"><i-->
-<!--                                                class="fa fa-refresh"></i>&nbsp;重置</a>-->
+                                        <a class="btn btn-primary btn-rounded btn-sm" onclick="mySearch(3)"><i
+                                                class="fa fa-search"></i>&nbsp;搜索</a>
+                                        <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset('formId3')"><i
+                                                class="fa fa-refresh"></i>&nbsp;重置</a>
                                         <a class="btn btn-primary btn-rounded btn-sm" onclick="myExportExcel(3)">
                                             <i class="fa fa-download"></i> 导出
                                         </a>
@@ -139,19 +130,16 @@
                         <form id="formId4">
                             <div class="select-list">
                                 <ul>
-<!--                                    <li class="select-time">-->
-<!--                                        <label>应收款日期： </label>-->
-<!--                                        <input type="text" class="time-input" id="dueDateStart4" placeholder="开始时间（包含）"-->
-<!--                                               name="dueDateStart"/>-->
-<!--                                        <span>-</span>-->
-<!--                                        <input type="text" class="time-input" id="dueDateEnd4" placeholder="结束时间（包含）"-->
-<!--                                               name="dueDateEnd"/>-->
-<!--                                    </li>-->
+                                    <li class="select-time">
+                                        <label>导入时间： </label>
+                                        <input type="text" class="form-control" id="createTime4" placeholder="yyyy-MM"
+                                               name="createTime"/>
+                                    </li>
                                     <li>
-<!--                                        <a class="btn btn-primary btn-rounded btn-sm" onclick="mySearch(4)"><i-->
-<!--                                                class="fa fa-search"></i>&nbsp;搜索</a>-->
-<!--                                        <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset('formId4')"><i-->
-<!--                                                class="fa fa-refresh"></i>&nbsp;重置</a>-->
+                                        <a class="btn btn-primary btn-rounded btn-sm" onclick="mySearch(4)"><i
+                                                class="fa fa-search"></i>&nbsp;搜索</a>
+                                        <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset('formId4')"><i
+                                                class="fa fa-refresh"></i>&nbsp;重置</a>
                                         <a class="btn btn-primary btn-rounded btn-sm" onclick="myExportExcel(4)">
                                             <i class="fa fa-download"></i> 导出
                                         </a>
@@ -173,17 +161,14 @@
                         <form id="formId5">
                             <div class="select-list">
                                 <ul>
-<!--                                    <li class="select-time">-->
-<!--                                        <label>应收款日期： </label>-->
-<!--                                        <input type="text" class="time-input" id="dueDateStart5" placeholder="开始时间（包含）"-->
-<!--                                               name="dueDateStart"/>-->
-<!--                                        <span>-</span>-->
-<!--                                        <input type="text" class="time-input" id="dueDateEnd5" placeholder="结束时间（包含）"-->
-<!--                                               name="dueDateEnd"/>-->
-<!--                                    </li>-->
+                                    <li class="select-time">
+                                        <label>导入时间： </label>
+                                        <input type="text" class="form-control" id="createTime5" placeholder="yyyy-MM"
+                                               name="createTime"/>
+                                    </li>
                                     <li>
-<!--                                        <a class="btn btn-primary btn-rounded btn-sm" onclick="mySearch(5)"> <i class="fa fa-search"></i>&nbsp;搜索</a>-->
-<!--                                        <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset('formId5')"><i class="fa fa-refresh"></i>&nbsp;重置</a>-->
+                                        <a class="btn btn-primary btn-rounded btn-sm" onclick="mySearch(5)"> <i class="fa fa-search"></i>&nbsp;搜索</a>
+                                        <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset('formId5')"><i class="fa fa-refresh"></i>&nbsp;重置</a>
                                         <a class="btn btn-primary btn-rounded btn-sm" onclick="myExportExcel(5)">
                                             <i class="fa fa-download"></i> 导出
                                         </a>
@@ -256,6 +241,17 @@
         } else if (id == 5) {
             $.table.init(options5);
         }
+    }
+
+    function get_thousand_num(num) {
+        if(num==null){
+            return num;
+        }
+        return num.toString().replace(/\d+/, function (n) { // 先提取整数部分
+            return n.replace(/(\d)(?=(\d{3})+$)/g, function ($1) { // 对整数部分添加分隔符
+                return $1 + ",";
+            });
+        });
     }
 
     var options1 = {
@@ -345,22 +341,34 @@
             {
                 field: 'firstDueAmt',
                 title: '月初应收账款金额',
-                sortable: true
+                sortable: true,
+                formatter: function(value, row, index) {
+                    return get_thousand_num(value);
+                }
             },
             {
                 field: 'dueAmt',
                 title: '实时应收金额',
-                sortable: true
+                sortable: true,
+                formatter: function(value, row, index) {
+                    return get_thousand_num(value);
+                }
             },
             {
                 field: 'notReceiveAmt',
                 title: '未到账期未收款',
-                sortable: true
+                sortable: true,
+                formatter: function(value, row, index) {
+                    return get_thousand_num(value);
+                }
             },
             {
                 field: 'overdueAmt',
                 title: '实时客户已逾期款',
-                sortable: true
+                sortable: true,
+                formatter: function(value, row, index) {
+                    return get_thousand_num(value);
+                }
             },
             {
                 field: 'overdueDayNum',
@@ -375,7 +383,10 @@
             {
                 field: 'planReturnAmt',
                 title: '预计回款金额',
-                sortable: true
+                sortable: true,
+                formatter: function(value, row, index) {
+                    return get_thousand_num(value);
+                }
             },
             {
                 field: 'returnProb',
@@ -385,7 +396,10 @@
             {
                 field: 'realReturnAmt',
                 title: '实际回款金额',
-                sortable: true
+                sortable: true,
+                formatter: function(value, row, index) {
+                    return get_thousand_num(value);
+                }
             },
             {
                 field: 'returnType',
@@ -458,22 +472,34 @@
             {
                 field: 'firstDueAmt',
                 title: '月初应收金额',
-                sortable: true
+                sortable: true,
+                formatter: function(value, row, index) {
+                    return get_thousand_num(value);
+                }
             },
             {
                 field: 'dueAmt',
                 title: '实时应收金额',
-                sortable: true
+                sortable: true,
+                formatter: function(value, row, index) {
+                    return get_thousand_num(value);
+                }
             },
             {
                 field: 'overdueAmt',
                 title: '实时客户已逾期款',
-                sortable: true
+                sortable: true,
+                formatter: function(value, row, index) {
+                    return get_thousand_num(value);
+                }
             },
             {
                 field: 'planReturnAmt',
                 title: '预计回款金额（可能性高）',
-                sortable: true
+                sortable: true,
+                formatter: function(value, row, index) {
+                    return get_thousand_num(value);
+                }
             },
             {
                 field: 'planReturnRate',
@@ -483,7 +509,10 @@
             {
                 field: 'realReturnAmt',
                 title: '实际回款金额',
-                sortable: true
+                sortable: true,
+                formatter: function(value, row, index) {
+                    return get_thousand_num(value);
+                }
             },
             {
                 field: 'realReturnRate',
@@ -536,47 +565,74 @@
             {
                 field: 'firstDueAmt',
                 title: '月初应收金额',
-                sortable: false
+                sortable: false,
+                formatter: function(value, row, index) {
+                    return get_thousand_num(value);
+                }
             },
             {
                 field: 'dueAmt',
                 title: '实时应收金额',
-                sortable: false
+                sortable: false,
+                formatter: function(value, row, index) {
+                    return get_thousand_num(value);
+                }
             },
             {
                 field: 'notReceiveAmt',
                 title: '未到账期未收款',
-                sortable: false
+                sortable: false,
+                formatter: function(value, row, index) {
+                    return get_thousand_num(value);
+                }
             },
             {
                 field: 'overdueAmt',
                 title: '实时客户已逾期款',
-                sortable: false
+                sortable: false,
+                formatter: function(value, row, index) {
+                    return get_thousand_num(value);
+                }
             },
             {
                 field: 'planReturnAmt',
                 title: '预计回款金额（当月）',
-                sortable: false
+                sortable: false,
+                formatter: function(value, row, index) {
+                    return get_thousand_num(value);
+                }
             },
             {
                 field: 'planReturnAmtH',
                 title: '预计回款金额（可能性为高）',
-                sortable: false
+                sortable: false,
+                formatter: function(value, row, index) {
+                    return get_thousand_num(value);
+                }
             },
             {
                 field: 'planReturnAmtM',
                 title: '预计回款金额（可能性为中）',
-                sortable: false
+                sortable: false,
+                formatter: function(value, row, index) {
+                    return get_thousand_num(value);
+                }
             },
             {
                 field: 'planReturnAmtL',
                 title: '预计回款金额（可能性为低）',
-                sortable: false
+                sortable: false,
+                formatter: function(value, row, index) {
+                    return get_thousand_num(value);
+                }
             },
             {
                 field: 'realReturnAmt',
                 title: '实际回款金额',
-                sortable: false
+                sortable: false,
+                formatter: function(value, row, index) {
+                    return get_thousand_num(value);
+                }
             },
             {
                 field: 'planReturnRate',
@@ -640,13 +696,43 @@
             {
                 field: 'returnAmt',
                 title: '回款金额',
-                sortable: true
+                sortable: true,
+                formatter: function(value, row, index) {
+                    return get_thousand_num(value);
+                }
+
             }
         ]
     };
 
     $(function () {
         $.table.init(options1);
+        <!-- laydate示例 -->
+        layui.use('laydate', function(){
+            var laydate = layui.laydate;
+
+            laydate.render({
+                elem: '#createTime1',
+                type: "month"
+            });
+            laydate.render({
+                elem: '#createTime2',
+                type: "month"
+            });
+            laydate.render({
+                elem: '#createTime3',
+                type: "month"
+            });
+            laydate.render({
+                elem: '#createTime4',
+                type: "month"
+            });
+            laydate.render({
+                elem: '#createTime5',
+                type: "month"
+            });
+
+        });
     });
 </script>
 </body>

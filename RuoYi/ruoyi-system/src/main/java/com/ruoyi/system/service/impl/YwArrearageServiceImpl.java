@@ -117,6 +117,7 @@ public class YwArrearageServiceImpl implements IYwArrearageService {
 
         SimpleDateFormat sdf1 = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.US);
         SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
+        ywArrearageMapper.deleteYwArrearage();
         //查询是否重复的条件VO
         YwArrearage selectVO = new YwArrearage();
         for (YwArrearage ywArrearage : ywArrearageList) {
@@ -145,25 +146,26 @@ public class YwArrearageServiceImpl implements IYwArrearageService {
                     }
                 }
                 //更新信息
-                if (updateSupport) {
-                    selectVO.setFundNo(ywArrearage.getFundNo());
-                    selectVO.setContractNo(ywArrearage.getContractNo());
-                    selectVO.setScheduleNo(ywArrearage.getScheduleNo());
-                    List<YwArrearage> ywArrearages = ywArrearageMapper.selectYwArrearageList(selectVO);
-                    if (ywArrearages.size() > 0) {
-                        YwArrearage updateVO = ywArrearages.get(0);
-                        ywArrearage.setId(updateVO.getId());
-                        ywArrearage.setUpdateBy(operName);
-                        ywArrearage.setUpdateTime(DateUtils.getNowDate());
-                        ywArrearage.setCreateBy(updateVO.getCreateBy());
-                        ywArrearage.setCreateTime(updateVO.getCreateTime());
-                        ywArrearage.setRemark(updateVO.getRemark());
-                        ywArrearageMapper.updateYwArrearage(ywArrearage);
-                        successNum++;
-                        successMsg.append("<br/>" + successNum + "、销售经理 " + ywArrearage.getSaleManager() + " 更新成功");
-                        continue;
-                    }
-                }
+//                if (updateSupport) {
+//                    selectVO.setFundNo(ywArrearage.getFundNo());
+//                    selectVO.setContractNo(ywArrearage.getContractNo());
+//                    selectVO.setScheduleNo(ywArrearage.getScheduleNo());
+//                    selectVO.setReturnType(ywArrearage.getReturnType());
+//                    List<YwArrearage> ywArrearages = ywArrearageMapper.selectYwArrearageList(selectVO);
+//                    if (ywArrearages.size() > 0) {
+//                        YwArrearage updateVO = ywArrearages.get(0);
+//                        ywArrearage.setId(updateVO.getId());
+//                        ywArrearage.setUpdateBy(operName);
+//                        ywArrearage.setUpdateTime(DateUtils.getNowDate());
+//                        ywArrearage.setCreateBy(updateVO.getCreateBy());
+//                        ywArrearage.setCreateTime(updateVO.getCreateTime());
+//                        ywArrearage.setRemark(updateVO.getRemark());
+//                        ywArrearageMapper.updateYwArrearage(ywArrearage);
+//                        successNum++;
+//                        successMsg.append("<br/>" + successNum + "、销售经理 " + ywArrearage.getSaleManager() + " 更新成功");
+//                        continue;
+//                    }
+//                }
                 //插入新信息
                 ywArrearage.setCreateBy(operName);
                 ywArrearage.setCreateTime(DateUtils.getNowDate());

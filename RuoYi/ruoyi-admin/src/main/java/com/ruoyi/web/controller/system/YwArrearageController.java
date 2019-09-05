@@ -66,6 +66,9 @@ public class YwArrearageController extends BaseController {
         if(ywArrearage.getDueDateEnd()==null||ywArrearage.getDueDateEnd().equals("")){
             ywArrearage.setDueDateEnd(QuarterUtil.getNowMonthFinallyDay());
         }
+        if(ywArrearage.getCreateTime()==null){
+            ywArrearage.setCreateTime(DateUtils.dateTime("yyyy-MM-dd",QuarterUtil.getNowMonthFirstDay()));
+        }
         List<YwArrearage> list = ywArrearageService.selectYwArrearageList(ywArrearage);
         return getDataTable(list);
     }
@@ -83,6 +86,9 @@ public class YwArrearageController extends BaseController {
         }
         if(ywArrearage.getDueDateEnd()==null||ywArrearage.getDueDateEnd().equals("")){
             ywArrearage.setDueDateEnd(QuarterUtil.getNowMonthFinallyDay());
+        }
+        if(ywArrearage.getCreateTime()==null){
+            ywArrearage.setCreateTime(DateUtils.dateTime("yyyy-MM-dd",QuarterUtil.getNowMonthFirstDay()));
         }
         list = ywArrearageService.selectGatherSaleManager(ywArrearage, loginUser);
         return getDataTable(list);
@@ -102,6 +108,9 @@ public class YwArrearageController extends BaseController {
         if(ywArrearage.getDueDateEnd()==null||ywArrearage.getDueDateEnd().equals("")){
             ywArrearage.setDueDateEnd(QuarterUtil.getNowMonthFinallyDay());
         }
+        if(ywArrearage.getCreateTime()==null){
+            ywArrearage.setCreateTime(DateUtils.dateTime("yyyy-MM-dd",QuarterUtil.getNowMonthFirstDay()));
+        }
         list = ywArrearageService.selectGatherSaleManager(ywArrearage, loginUser);
         GatherExcelUtil<SaleManagerArrearageGather> excelUtil = new GatherExcelUtil<SaleManagerArrearageGather>(SaleManagerArrearageGather.class);
         return excelUtil.exportGatherExcel(list, "汇总表-按销售经理");
@@ -119,6 +128,9 @@ public class YwArrearageController extends BaseController {
         if(ywArrearage.getDueDateEnd()==null||ywArrearage.getDueDateEnd().equals("")){
             ywArrearage.setDueDateEnd(QuarterUtil.getNowMonthFinallyDay());
         }
+        if(ywArrearage.getCreateTime()==null){
+            ywArrearage.setCreateTime(DateUtils.dateTime("yyyy-MM-dd",QuarterUtil.getNowMonthFirstDay()));
+        }
         List<CustomerArrearageGather> list = ywArrearageService.selectGatherCustomer(ywArrearage);
         return getDataTable(list);
     }
@@ -134,6 +146,9 @@ public class YwArrearageController extends BaseController {
         }
         if(ywArrearage.getDueDateEnd()==null||ywArrearage.getDueDateEnd().equals("")){
             ywArrearage.setDueDateEnd(QuarterUtil.getNowMonthFinallyDay());
+        }
+        if(ywArrearage.getCreateTime()==null){
+            ywArrearage.setCreateTime(DateUtils.dateTime("yyyy-MM-dd",QuarterUtil.getNowMonthFirstDay()));
         }
         List<CustomerArrearageGather> list = ywArrearageService.selectGatherCustomer(ywArrearage);
         GatherExcelUtil<CustomerArrearageGather> excelUtil = new GatherExcelUtil<>(CustomerArrearageGather.class);
@@ -153,6 +168,9 @@ public class YwArrearageController extends BaseController {
         if(ywArrearage.getDueDateEnd()==null||ywArrearage.getDueDateEnd().equals("")){
             ywArrearage.setDueDateEnd(QuarterUtil.getLastMonthFinallyDay());
         }
+        if(ywArrearage.getCreateTime()==null){
+            ywArrearage.setCreateTime(DateUtils.dateTime("yyyy-MM-dd",QuarterUtil.getNowMonthFirstDay()));
+        }
         List<ReturnRateRank> returnRateRanks = ywArrearageService.selectRealReturnRateRank(ywArrearage);
         return getDataTable(returnRateRanks);
     }
@@ -168,6 +186,9 @@ public class YwArrearageController extends BaseController {
         }
         if(ywArrearage.getDueDateEnd()==null||ywArrearage.getDueDateEnd().equals("")){
             ywArrearage.setDueDateEnd(QuarterUtil.getLastMonthFinallyDay());
+        }
+        if(ywArrearage.getCreateTime()==null){
+            ywArrearage.setCreateTime(DateUtils.dateTime("yyyy-MM-dd",QuarterUtil.getNowMonthFirstDay()));
         }
         List<ReturnRateRank> returnRateRanks = ywArrearageService.selectRealReturnRateRank(ywArrearage);
         ExcelUtil<ReturnRateRank> excelUtil = new ExcelUtil<>(ReturnRateRank.class);
@@ -187,6 +208,9 @@ public class YwArrearageController extends BaseController {
         if(ywArrearage.getDueDateEnd()==null||ywArrearage.getDueDateEnd().equals("")){
             ywArrearage.setDueDateEnd(QuarterUtil.getNowMonthFinallyDay());
         }
+        if(ywArrearage.getCreateTime()==null){
+            ywArrearage.setCreateTime(DateUtils.dateTime("yyyy-MM-dd",QuarterUtil.getNowMonthFirstDay()));
+        }
         List<ReturnSituation> returnRateRanks = ywArrearageService.selectReturnSituation(ywArrearage);
         return getDataTable(returnRateRanks);
     }
@@ -204,6 +228,9 @@ public class YwArrearageController extends BaseController {
         if(ywArrearage.getDueDateEnd()==null||ywArrearage.getDueDateEnd().equals("")){
             ywArrearage.setDueDateEnd(QuarterUtil.getNowMonthFinallyDay());
         }
+        if(ywArrearage.getCreateTime()==null){
+            ywArrearage.setCreateTime(DateUtils.dateTime("yyyy-MM-dd",QuarterUtil.getNowMonthFirstDay()));
+        }
         List<ReturnSituation> returnRateRanks = ywArrearageService.selectReturnSituation(ywArrearage);
         ExcelUtil<ReturnSituation> excelUtil = new ExcelUtil<>(ReturnSituation.class);
         return excelUtil.exportExcel(returnRateRanks, "回款情况");
@@ -215,6 +242,9 @@ public class YwArrearageController extends BaseController {
     @PostMapping("/export")
     @ResponseBody
     public AjaxResult export(YwArrearage ywArrearage) {
+        if(ywArrearage.getCreateTime()==null){
+            ywArrearage.setCreateTime(DateUtils.dateTime("yyyy-MM-dd",QuarterUtil.getNowMonthFirstDay()));
+        }
         List<YwArrearage> list = ywArrearageService.selectYwArrearageList(ywArrearage);
         ExcelUtil<YwArrearage> util = new ExcelUtil<YwArrearage>(YwArrearage.class);
         return util.exportExcel(list, "ywArrearage");

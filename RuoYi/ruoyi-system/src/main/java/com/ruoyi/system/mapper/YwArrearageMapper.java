@@ -94,4 +94,8 @@ public interface YwArrearageMapper
 	 */
     public List<ReturnSituation> selectReturnSituation(YwArrearage ywArrearage);
 
+	/**
+	 * 删除表ywArrearage中的数据
+	 */
+	public void deleteYwArrearage();
 }
