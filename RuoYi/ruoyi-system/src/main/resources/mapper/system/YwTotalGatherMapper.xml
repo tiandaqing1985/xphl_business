@@ -35,13 +35,14 @@
         <result column="summation" property="summation"/>
         <result column="quotas" property="quotas"/>
         <result column="term" property="term"/>
+        <result column="fine" property="fine"/>
     </resultMap>
 
     <select id="selectTotalGatherConsum" resultMap="YwTotalConsumGatherResult" parameterType="YwTotalConsumGather">
-        select tb3.dept_name,tb3.media,tb3.quotas,tb2.summation,tb2.term,ifnull(tb3.quarter,tb2.quarter) quarter from (select ta.dept_name,ta.media,ta.quarter,ifnull(sum(ta.quotas),0) quotas from yw_task ta group by ta.dept_name,ta.media,ta.quarter,ta.type having ta.type = '消耗'
+        select tb3.dept_name,tb3.media,tb3.quotas,tb2.summation,tb2.fine,tb2.term,ifnull(tb3.quarter,tb2.quarter) quarter from (select ta.dept_name,ta.media,ta.quarter,ifnull(sum(ta.quotas),0) quotas from yw_task ta group by ta.dept_name,ta.media,ta.quarter,ta.type having ta.type = '消耗'
         <if test="quarter != null and quarter != ''">and ta.quarter = #{quarter}</if>) tb3
         left join
-        (select tb1.dept_name,tb1.media,tb1.quarter,ifnull(sum(con.summation),0) summation,con.term from (select ta.sale_manager,ta.dept_name,ta.media,ta.quarter from yw_task ta where ta.type = '消耗'
+        (select tb1.dept_name,tb1.media,tb1.quarter,ifnull(sum(con.summation),0) summation,ifnull( sum( con.fine ), 0 ) fine,con.term from (select ta.sale_manager,ta.dept_name,ta.media,ta.quarter from yw_task ta where ta.type = '消耗'
         <if test="quarter != null and quarter != ''"> and ta.quarter = #{quarter}</if>) tb1 left join yw_consumption con on tb1.sale_manager = con.sale_manager and tb1.media = con.media and tb1.quarter = con.quarter group by tb1.dept_name,tb1.media) tb2
         on tb3.dept_name = tb2.dept_name and tb3.media = tb2.media
     </select>

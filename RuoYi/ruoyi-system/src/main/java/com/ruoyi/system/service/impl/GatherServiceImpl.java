@@ -106,6 +106,7 @@ public class GatherServiceImpl implements IGatherService {
         totalGather.setQuotas(BigDecimal.ZERO);
         totalGather.setSummation(BigDecimal.ZERO);
         totalGather.setXhptAmt(BigDecimal.ZERO);
+        totalGather.setFine(BigDecimal.ZERO);
         //只有一条的数据
         List<Gather> singleGathers = new ArrayList<>();
         //需要放一起的只有一条的数据
@@ -159,6 +160,7 @@ public class GatherServiceImpl implements IGatherService {
             sumGather.setQuotas(BigDecimal.ZERO);
             sumGather.setSummation(BigDecimal.ZERO);
             sumGather.setXhptAmt(BigDecimal.ZERO);
+            sumGather.setFine(BigDecimal.ZERO);
             Collections.sort(gatherList);
             //遍历每个人的记录
             for (Gather g : gatherList) {
@@ -178,6 +180,9 @@ public class GatherServiceImpl implements IGatherService {
                 if (g.getXhptAmt() != null) {
                     sumGather.setXhptAmt(g.getXhptAmt().add(sumGather.getXhptAmt()));
                 }
+                if(g.getFine()!=null){
+                    sumGather.setFine(g.getFine().add(sumGather.getFine()));
+                }
             }
             if (sumGather.getQuotas().compareTo(BigDecimal.ZERO) != 0) {
                 sumGather.setXhwcRate(sumGather.getSummation().divide(sumGather.getQuotas(), 4, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100L)).setScale(2, BigDecimal.ROUND_HALF_UP).toString() + "%");
@@ -187,6 +192,7 @@ public class GatherServiceImpl implements IGatherService {
             totalGather.setQuotas(totalGather.getQuotas().add(sumGather.getQuotas()));
             totalGather.setSummation(totalGather.getSummation().add(sumGather.getSummation()));
             totalGather.setXhptAmt(totalGather.getXhptAmt().add(sumGather.getXhptAmt()));
+            totalGather.setFine(totalGather.getFine().add(sumGather.getFine()));
 
             exportlist.add(sumGather);
         }
@@ -203,6 +209,9 @@ public class GatherServiceImpl implements IGatherService {
             if (specialGath.getXhptAmt() != null) {
                 totalGather.setXhptAmt(specialGath.getXhptAmt().add(totalGather.getXhptAmt()));
             }
+            if (specialGath.getFine() != null) {
+                totalGather.setFine(specialGath.getFine().add(totalGather.getFine()));
+            }
         }
         //将只有一条记录的金额加入总计
         for (Gather singleGather : singleGathers) {
@@ -214,6 +223,9 @@ public class GatherServiceImpl implements IGatherService {
             }
             if (singleGather.getXhptAmt() != null) {
                 totalGather.setXhptAmt(singleGather.getXhptAmt().add(totalGather.getXhptAmt()));
+            }
+            if (singleGather.getFine()!=null){
+                totalGather.setFine(singleGather.getFine().add(totalGather.getFine()));
             }
         }
         exportlist.addAll(singleGathers);
@@ -347,7 +359,7 @@ public class GatherServiceImpl implements IGatherService {
             } else {
                 mlptAmt = grossMarginGather.getGrossMargin().divide(BigDecimal.valueOf(getTermDayNum(grossMarginGather.getTerm())), 6, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(getQuarterDayNum(grossMarginGather.getQuarter())));
             }
-            grossMarginGather.setMlptAmt(mlptAmt.setScale(2,BigDecimal.ROUND_HALF_UP));
+            grossMarginGather.setMlptAmt(mlptAmt.setScale(2, BigDecimal.ROUND_HALF_UP));
             grossMarginGather.setTimeSchedule(timeSch);
             //消除科学计数法
             grossMarginGather.setGrossMargin(new BigDecimal(grossMarginGather.getGrossMargin().toPlainString()));

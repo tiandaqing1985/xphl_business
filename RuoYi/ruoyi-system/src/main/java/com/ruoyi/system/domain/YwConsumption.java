@@ -45,6 +45,17 @@ public class YwConsumption extends BaseEntity
 	/** 期间 */
 	private String quarter;
 
+	@Excel(name="违规扣罚",type = Excel.Type.ALL)
+	private BigDecimal fine;
+
+	public BigDecimal getFine() {
+		return fine;
+	}
+
+	public void setFine(BigDecimal fine) {
+		this.fine = fine;
+	}
+
 	public String getTerm() {
 		return term;
 	}

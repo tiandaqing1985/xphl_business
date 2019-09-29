@@ -20,10 +20,11 @@
         <result property="remark" column="remark"/>
         <result property="quarter" column="quarter"/>
         <result property="term" column="term"/>
+        <result property="fine" column="fine"/>
     </resultMap>
 
     <sql id="selectYwConsumptionVo">
-        select id, sale_manager, advertiser, media, operating_income, discounts, ysbd, summation, quarter, term, create_by, create_time, update_by, update_time, remark from yw_consumption
+        select fine,id, sale_manager, advertiser, media, operating_income, discounts, ysbd, summation, quarter, term, create_by, create_time, update_by, update_time, remark from yw_consumption
     </sql>
 
     <select id="selectYwConsumptionList" parameterType="YwConsumption" resultMap="YwConsumptionResult">
@@ -69,6 +70,7 @@
             <if test="remark != null  and remark != ''  ">remark,</if>
             <if test="quarter != null  and quarter != ''  ">quarter,</if>
             <if test="term != null  and term != ''  ">term,</if>
+            <if test="fine != null and fine != ''">fine,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="saleManager != null  and saleManager != ''  ">#{saleManager},</if>
@@ -85,6 +87,7 @@
             <if test="remark != null  and remark != ''  ">#{remark},</if>
             <if test="quarter != null  and quarter != ''  ">#{quarter},</if>
             <if test="term != null  and term != ''  ">#{term},</if>
+            <if test="fine != null and fine != ''">#{fine},</if>
         </trim>
     </insert>
 

@@ -169,6 +169,14 @@
         showExport: false,
         showFooter: false,
         pagination: false,
+        responseHandler: function (res) {
+            var i = res.total - 1;
+            if(res.rows[i].fine == 0){
+                $.table.hideColumn("fine");
+            }else{
+                $.table.showColumn("fine");
+            }
+        },
         importUrl: prefix + "/importData",
         importTemplateUrl: prefix + "/importTemplate",
         columns: [{
@@ -212,6 +220,11 @@
             {
                 field: 'summation',
                 title: '完成金额',
+                sortable: true
+            },
+            {
+                field: 'fine',
+                title: '违规扣罚',
                 sortable: true
             },
             {
@@ -288,14 +301,22 @@
         showToggle: false,
         showColumns: false,
         pagination: false,
+        responseHandler: function (res) {
+            var i = res.total - 1;
+            if(res.rows[i].fine == 0){
+                $.table.hideColumn("fine");
+            }else{
+                $.table.showColumn("fine");
+            }
+        },
         columns: [
-            [
-                {
-                    title: '华东华北毛利整体完成率',
-                    align: 'center',
-                    colspan: 8
-                }
-            ],
+            // [
+            //     {
+            //         title: '华东华北消耗整体完成率',
+            //         align: 'center',
+            //         colspan: 9
+            //     }
+            // ],
             [{
                 checkbox: true
             },
@@ -314,6 +335,10 @@
                 {
                     field: 'summation',
                     title: '消耗完成金额'
+                },
+                {
+                    field: 'fine',
+                    title: '违规扣罚'
                 },
                 {
                     field: 'xhptAmt',

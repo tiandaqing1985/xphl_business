@@ -39,6 +39,7 @@ public class TotalGatherServiceImpl implements TotalGatherService {
         totalSum.setSummation(BigDecimal.ZERO);
         totalSum.setQuotas(BigDecimal.ZERO);
         totalSum.setXhptAmt(BigDecimal.ZERO);
+        totalSum.setFine(BigDecimal.ZERO);
         //时间进度
         String timeSchedule = null;
         //统计部门相同的记录的合计
@@ -73,6 +74,7 @@ public class TotalGatherServiceImpl implements TotalGatherService {
             totalSum.setQuotas(totalConsumGather.getQuotas().add(totalSum.getQuotas()));
             totalSum.setXhptAmt(totalConsumGather.getXhptAmt().add(totalSum.getXhptAmt()));
             totalSum.setSummation(totalConsumGather.getSummation().add(totalSum.getSummation()));
+            totalSum.setFine(totalConsumGather.getFine().add(totalSum.getFine()));
 
             //计算完成率
             if (totalConsumGather.getQuotas().compareTo(BigDecimal.ZERO) == 0 || totalConsumGather.getSummation().compareTo(BigDecimal.ZERO) == 0) {
@@ -96,6 +98,7 @@ public class TotalGatherServiceImpl implements TotalGatherService {
                     sumGather.setQuotas(totalConsumGathers.getLast().getQuotas());
                     sumGather.setSummation(totalConsumGathers.getLast().getSummation());
                     sumGather.setXhptAmt(totalConsumGathers.getLast().getXhptAmt());
+                    sumGather.setFine(totalConsumGathers.getLast().getFine());
                     sumGather.setTimeSchedule(timeSchedule);
                     totalConsumGathers.addLast(sumGather);
                 }
@@ -103,6 +106,7 @@ public class TotalGatherServiceImpl implements TotalGatherService {
                 sumGather.setQuotas(totalConsumGather.getQuotas().add(sumGather.getQuotas()));
                 sumGather.setXhptAmt(totalConsumGather.getXhptAmt().add(sumGather.getXhptAmt()));
                 sumGather.setSummation(totalConsumGather.getSummation().add(sumGather.getSummation()));
+                sumGather.setFine(totalConsumGather.getFine().add(sumGather.getFine()));
                 //计算完成率
                 if (sumGather.getQuotas().compareTo(BigDecimal.ZERO) == 0 || sumGather.getSummation().compareTo(BigDecimal.ZERO) == 0) {
                     sumGather.setXhwcRate("0.00%");

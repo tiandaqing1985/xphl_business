@@ -68,7 +68,7 @@ public class YwConsumeGatherController extends BaseController {
     }
 
     /**
-     * 导出消耗毛利汇总列表
+     * 导出消耗汇总列表
      */
     @PostMapping("/export")
     @ResponseBody
@@ -83,7 +83,7 @@ public class YwConsumeGatherController extends BaseController {
     }
 
     /**
-     * 查询毛利部门整体汇总
+     * 查询部门整体汇总
      */
     @PostMapping("/exportTotalConsume")
     @ResponseBody
@@ -95,7 +95,7 @@ public class YwConsumeGatherController extends BaseController {
         }
         List<YwTotalConsumGather> list = totalGatherService.selectTotalConsumGather(ywTotalConsumGather);
         GatherExcelUtil<YwTotalConsumGather> util = new GatherExcelUtil<YwTotalConsumGather>(YwTotalConsumGather.class);
-        return util.exportGatherExcel(list, "华东华北毛利整体完成率");
+        return util.exportGatherExcel(list, "华东华北消耗整体完成率");
     }
 
     /**
@@ -156,7 +156,7 @@ public class YwConsumeGatherController extends BaseController {
         ExcelUtil<YwConsumption> util = new ExcelUtil<YwConsumption>(YwConsumption.class);
         List<YwConsumption> ywConsumptions = util.importExcel(file.getInputStream(), 0, 1);
         String operName = ShiroUtils.getSysUser().getLoginName();
-        String message = ywConsumptionService.importYwConsumption(ywConsumptions, true, operName);
+        String message = ywConsumptionService.importYwConsumption(ywConsumptions, false, operName);
         return AjaxResult.success(message);
     }
 

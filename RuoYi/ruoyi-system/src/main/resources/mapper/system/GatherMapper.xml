@@ -18,10 +18,11 @@
         <result property="timeSchedule" column="timeSchedule"/>
         <result property="xhwcRate" column="xhwcRate"/>
         <result property="term" column="term"/>
+        <result property="fine" column="fine"/>
     </resultMap>
 
     <select id="selectGatherList" parameterType="Gather" resultMap="GatherResult">
-        SELECT type,quarter,area,dept_name,sales_manager,media,quotas,summation,xhwcRate,term from (
+        SELECT type,quarter,area,dept_name,sales_manager,media,quotas,summation,xhwcRate,term,ifnull(fine,0) fine from (
         SELECT
         tb1.type,
         tb1.quarter,
@@ -32,6 +33,7 @@
         tb1.quotas,
         IFNULL( tb2.summation, '0' ) summation,
         tb2.term,
+        tb2.fine,
         concat( round( IFNULL( tb2.summation, '0' ) / tb1.quotas * 100, 2 ), '%' ) xhwcRate
         FROM
         (
@@ -59,7 +61,8 @@
         d.media,
         d.quarter,
         sum( d.summation ) summation,
-        d.term
+        d.term,
+        ifnull(sum(d.fine),0) fine
         FROM
         yw_consumption d
         GROUP BY
@@ -79,6 +82,7 @@
         tb1.quotas,
         IFNULL( tb2.summation, '0' ) summation,
         tb2.term,
+        tb2.fine,
         concat( round( IFNULL( tb2.summation, '0' ) / tb1.quotas * 100, 2 ), '%' ) xhwcRate
         FROM
         (
@@ -105,7 +109,8 @@
         d.media,
         d.quarter,
         sum( d.summation ) summation,
-        d.term
+        d.term,
+        ifnull(sum(d.fine),0) fine
         FROM
         yw_consumption d
         GROUP BY

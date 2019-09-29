@@ -154,7 +154,7 @@ public class YwGrossMarginGatherController extends BaseController {
         ExcelUtil<YwGrossMargins> util = new ExcelUtil<YwGrossMargins>(YwGrossMargins.class);
         List<YwGrossMargins> grossMarginList = util.importExcel(file.getInputStream(), 0, 1);
         String operName = ShiroUtils.getSysUser().getLoginName();
-        String message = ywGrossMarginsService.importYwGrossMargins(grossMarginList, true, operName);
+        String message = ywGrossMarginsService.importYwGrossMargins(grossMarginList, false, operName);
         return AjaxResult.success(message);
     }
 
